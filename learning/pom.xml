@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>umons.ac.be</groupId>
+        <artifactId>visiblyrecursiveautomata</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>learning</artifactId>
+
+    <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>umons.ac.be</groupId>
+            <artifactId>vra</artifactId>
+        </dependency>
+
+        <!-- AutomataLib and LearnLib -->
+        <dependency>
+            <groupId>net.automatalib.distribution</groupId>
+            <artifactId>automata-distribution</artifactId>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>de.learnlib.distribution</groupId>
+            <artifactId>learnlib-distribution</artifactId>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+</project>
