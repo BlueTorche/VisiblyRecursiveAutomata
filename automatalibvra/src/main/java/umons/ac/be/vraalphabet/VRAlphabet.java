@@ -3,8 +3,10 @@ package umons.ac.be.vraalphabet;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.Alphabet;
 
-public interface VRAlphabet<I> extends Alphabet<I> {
-    VPAlphabet<I> getInputAlphabet();
+public interface VRAlphabet<I> extends VPAlphabet<I> {
+    Alphabet<I> getInputAlphabet();
+
+    Alphabet<I> getAutomatonAlphabet();
 
     /**
      * Returns the procedural symbols of {@code this} alphabet as a (sub-) alphabet.
@@ -14,25 +16,63 @@ public interface VRAlphabet<I> extends Alphabet<I> {
     Alphabet<I> getProceduralAlphabet();
 
     /**
-     * Returns the procedural symbols of {@code this} alphabet as a (sub-) alphabet.
+     * Returns all procedural symbols of {@code this} alphabet linked to the given call symbol as a (sub-) alphabet.
      *
-     * @return the procedural alphabet
+     * @param callSymbol is the call symbol whose the procedural symbols returned are linked to.
+     *
+     * @return the procedural alphabet linked to the given call symbol
      */
-    Alphabet<I> getInternalAlphabet();
+    Alphabet<I> getProceduralAlphabetFromCall(I callSymbol);
 
     /**
-     * Returns the procedural symbols of {@code this} alphabet as a (sub-) alphabet.
+     * Returns all procedural symbols of {@code this} alphabet linked to the given return symbol as a (sub-) alphabet.
      *
-     * @return the procedural alphabet
+     * @param retSymbol is the return symbol whose the procedural symbols returned are linked to.
+     *
+     * @return the procedural alphabet linked to the given call symbol
      */
-    Alphabet<I> getCallAlphabet();
+    Alphabet<I> getProceduralAlphabetFromReturn(I retSymbol);
 
     /**
-     * Returns the procedural symbols of {@code this} alphabet as a (sub-) alphabet.
+     * Returns the call symbol of {@code this} alphabet linked to the given procedural symbol.
      *
-     * @return the procedural alphabet
+     * @param proceduralSymbol is the procedural symbol whose the call symbol returned are linked to.
+     *
+     * @return the procedural alphabet linked to the given call symbol
      */
-    Alphabet<I> getReturnAlphabet();
+    I getCallSymbolFromProceduralSymbol(I proceduralSymbol);
+
+    /**
+     * Returns the return symbol of {@code this} alphabet linked to the given procedural symbol.
+     *
+     * @param proceduralSymbol is the procedural symbol whose the call symbol returned are linked to.
+     *
+     * @return the procedural alphabet linked to the given call symbol
+     */
+    I getReturnSymbolFromProceduralSymbol(I proceduralSymbol);
+
+    /**
+     * Returns all procedural symbols of {@code this} alphabet linked to the given call and return symbols
+     * as a (sub-) alphabet.
+     *
+     * @param callSymbol is the return symbol whose the procedural symbols returned are linked to.
+     * @param retSymbol is the return symbol whose the procedural symbols returned are linked to.
+     *
+     * @return the procedural alphabet linked to the given call symbol
+     */
+    Alphabet<I> getProceduralAlphabetFromCallAndReturn(I callSymbol, I retSymbol);
+
+
+    /**
+     * Add a procedural symbol to the procedural alphabet of {@code this} alphabet,
+     * and link the symbol to a call and a return symbol.
+     *
+     * @param proceduralSymbol is the procedural symbol to add.
+     * @param callSymbol is the call symbol linked to the procedural symbol.
+     * @param returnSymbol is the return symbol linked to the procedural symbol.
+     */
+    void addProceduralSymbol(I proceduralSymbol, I callSymbol, I returnSymbol);
+
 
     /**
      * The {@link Alphabet#size()} variant for the procedural alphabet.
@@ -40,20 +80,6 @@ public interface VRAlphabet<I> extends Alphabet<I> {
      * @return the number of call symbols
      */
     int getNumProcedurals();
-
-
-    /**
-     * Returns the {@link SymbolType symbol type} of the given alphabet symbol.
-     *
-     * @param symbol
-     *         the symbol whose type should be returned
-     *
-     * @return the {@link SymbolType symbol type} of the given alphabet symbol.
-     *
-     * @throws IllegalArgumentException
-     *         if the provided symbol does not belong to the alphabet.
-     */
-    SymbolType getSymbolType(I symbol);
 
 
     /**
@@ -68,62 +94,6 @@ public interface VRAlphabet<I> extends Alphabet<I> {
      *         if the provided symbol does not belong to the alphabet.
      */
     default boolean isProceduralSymbol(I symbol) {
-        return getSymbolType(symbol) == SymbolType.PROCEDURAL;
-    }
-
-    /**
-     * Returns whether the given symbol is a call symbol of {@code this} alphabet.
-     *
-     * @param symbol
-     *         the symbol to analyze
-     *
-     * @return {@code true} if the given symbol is a call symbol of this alphabet, {@code false} otherwise
-     *
-     * @throws IllegalArgumentException
-     *         if the provided symbol does not belong to the alphabet.
-     */
-    default boolean isCallSymbol(I symbol) {
-        return getInputAlphabet().isCallSymbol(symbol);
-    }
-
-    /**
-     * Returns whether the given symbol is a call symbol of {@code this} alphabet.
-     *
-     * @param symbol
-     *         the symbol to analyze
-     *
-     * @return {@code true} if the given symbol is a call symbol of this alphabet, {@code false} otherwise
-     *
-     * @throws IllegalArgumentException
-     *         if the provided symbol does not belong to the alphabet.
-     */
-    default boolean isInternalSymbol(I symbol) {
-        return getInputAlphabet().isInternalSymbol(symbol);
-    }
-
-    /**
-     * Returns whether the given symbol is a call symbol of {@code this} alphabet.
-     *
-     * @param symbol
-     *         the symbol to analyze
-     *
-     * @return {@code true} if the given symbol is a call symbol of this alphabet, {@code false} otherwise
-     *
-     * @throws IllegalArgumentException
-     *         if the provided symbol does not belong to the alphabet.
-     */
-    default boolean isReturnSymbol(I symbol) {
-        return getInputAlphabet().isReturnSymbol(symbol);
-    }
-
-
-    /**
-     * Classifies a symbol as a procedural symbol.
-     */
-    enum SymbolType {
-        PROCEDURAL,
-        INTERNAL,
-        CALL,
-        RETURN
+        return getProceduralAlphabet().contains(symbol);
     }
 }

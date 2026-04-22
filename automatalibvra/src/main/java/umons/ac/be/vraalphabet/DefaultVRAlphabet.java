@@ -13,8 +13,7 @@ public class DefaultVRAlphabet<I> extends AbstractVRAlphabet<I> implements VRAlp
     public DefaultVRAlphabet(
             Alphabet<I> internalAlphabet,
             Alphabet<I> callAlphabet,
-            Alphabet<I> returnAlphabet,
-            Alphabet<I> proceduralAlphabet) {
-        super(internalAlphabet, callAlphabet, returnAlphabet, proceduralAlphabet);
+            Alphabet<I> returnAlphabet) {
+        super(internalAlphabet, callAlphabet, returnAlphabet);
     }
 }

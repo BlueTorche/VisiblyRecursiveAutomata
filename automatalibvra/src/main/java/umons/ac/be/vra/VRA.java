@@ -1,15 +1,13 @@
 package umons.ac.be.vra;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.ProceduralInputAlphabet;
 import net.automatalib.automaton.UniversalDeterministicAutomaton;
 import net.automatalib.automaton.concept.FiniteRepresentation;
 import net.automatalib.automaton.concept.InputAlphabetHolder;
-import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.procedural.ProceduralGraphView;
 import net.automatalib.automaton.simple.SimpleAutomaton;
 import net.automatalib.graph.Graph;
@@ -29,7 +27,7 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      *
      * @return the input alphabet
      */
-    VRAlphabet<I> getVRAlphabet();
+    Alphabet<I> getAutomatonAlphabet();
 
     /**
      * Convenience method for {@link #getProceduralInputs(Collection)} which uses the
@@ -37,19 +35,8 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      *
      * @return a collection of defined inputs for {@code this} system's procedures.
      */
-    default Collection<I> getProceduralInputs(Collection<I> constraints) {
-        final VRAlphabet<I> alphabet = getVRAlphabet();
-        final Map<I, M> procedures = getProcedures();
-
-        final List<I> result = new ArrayList<>(Math.min(alphabet.size() - 1, constraints.size()));
-
-        for (I i : constraints) {
-            if (procedures.containsKey(i) || alphabet.isInternalSymbol(i)) {
-                result.add(i);
-            }
-        }
-
-        return result;
+    default Alphabet<I> getProceduralInputs(Collection<I> constraints) {
+        return getAutomatonAlphabet();
     }
 
     /**
@@ -58,7 +45,7 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      *
      * @return the initial procedure, may be {@code null} if undefined
      */
-    I getStartingProcedure();
+    M getStartingProcedure();
 
     /**
      * Returns a {@link Map} from {@link VRAlphabet#getProceduralAlphabet() call symbols} to the procedures of
@@ -110,4 +97,6 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
                 this.getProceduralInputs(alphabet),
                 this.getProcedures());
     }
+
+    boolean isAccepting(VRAState<S, I, M> s);
 }
