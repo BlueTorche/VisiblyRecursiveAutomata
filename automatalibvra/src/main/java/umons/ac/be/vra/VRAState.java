@@ -41,17 +41,8 @@ public final class VRAState<S, I, P> {
         return procedureStates.getOrDefault(procedure, null) ;
     }
 
-    boolean isAccepting() {
-        if (prev != null) {
-            return false;
-        }
-        for(P procedure: procedureStates.keySet()) {
-            for(S state: procedureStates.get(procedure)) {
-                if (procedure.isAccepting(state)) {
-                    return true;
-                }
-            }
-        }
-        return false;
+    @Override
+    public String toString() {
+        return "VRAState{procedureStates=" + procedureStates.values() + ", prev=" + prev + '}';
     }
 }

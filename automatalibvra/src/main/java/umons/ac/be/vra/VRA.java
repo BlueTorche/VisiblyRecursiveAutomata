@@ -14,6 +14,7 @@ import net.automatalib.graph.Graph;
 import net.automatalib.graph.concept.GraphViewable;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.ts.simple.SimpleTS;
+import net.automatalib.word.Word;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
@@ -57,6 +58,21 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
     Map<I, M> getProcedures();
 
     /**
+     * Returns a {@link Map} from {@link VRAlphabet#getProceduralAlphabet() call symbols} to the procedures of
+     * {@code this} system. Note that a (non-minimal) {@link VRA} may not contain a procedure for every
+     * procedural symbol.
+     *
+     * @return the procedures of this system
+     */
+    Map<I, M> getAllProcedures();
+
+    /**
+     * TODO
+     */
+    boolean accepts(Word<I> word);
+
+
+    /**
      * Convenience method for {@link #getProcedures()} to quickly return the procedure of a given call symbol.
      *
      * @param proceduralSymbol
@@ -95,8 +111,6 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
         final VRAlphabet<I> alphabet = this.getInputAlphabet();
         return new ProceduralGraphView<>(alphabet.getInternalAlphabet(),
                 this.getProceduralInputs(alphabet),
-                this.getProcedures());
+                this.getAllProcedures());
     }
-
-    boolean isAccepting(VRAState<S, I, M> s);
 }
