@@ -96,4 +96,11 @@ public interface VRAlphabet<I> extends VPAlphabet<I> {
     default boolean isProceduralSymbol(I symbol) {
         return getProceduralAlphabet().contains(symbol);
     }
+
+
+    static <T> VRAlphabet<T> fromVPAlphabet(VPAlphabet<T> alphabet) {
+        return new DefaultVRAlphabet<>(
+                alphabet.getInternalAlphabet(), alphabet.getCallAlphabet(), alphabet.getReturnAlphabet()
+        );
+    }
 }

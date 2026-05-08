@@ -19,7 +19,7 @@ public final class VRAState<S, I, P> {
         this.procedureStates = procedureStates;
     }
 
-    VRAState<S, I, P> push( Map<P, Set<S>> newProcedureStates) {
+    VRAState<S, I, P> push(Map<P, Set<S>> newProcedureStates) {
         return new VRAState<>(this, newProcedureStates);
     }
 

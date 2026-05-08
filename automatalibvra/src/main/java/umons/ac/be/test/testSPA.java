@@ -23,11 +23,11 @@ import org.slf4j.LoggerFactory;
  * A small example for constructing a (context-free) palindrome example over the letters {@code a, b, c} using two
  * separate procedures (non-terminals) {@code F} and {@code G}.
  */
-public final class testVPA {
+public final class testSPA {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(testVPA.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(testSPA.class);
 
-    private testVPA() {
+    private testSPA() {
         // prevent instantiation
     }
 

@@ -1,40 +1,75 @@
 package umons.ac.be.test;
 
+import learner.VRA.VRALearner;
 import net.automatalib.alphabet.Alphabet;
+import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.Alphabets;
+import net.automatalib.alphabet.impl.DefaultVPAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.CompactDFA;
+import net.automatalib.automaton.vpa.impl.DefaultOneSEVPA;
+import net.automatalib.automaton.vpa.impl.Location;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
+import oracle.vpl.VPLOracleFromOneSEVPAWithConformance;
+import oracle.vpl.VPLOracleFromVRAWithConformance;
+import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
 import umons.ac.be.vraalphabet.DefaultVRAlphabet;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.HashMap;
 
-public class testVRA {
+public class TestLearningVRA {
     public static void main(String[] args) {
-        testVRA();
-        testMinimalVRA();
+        // testLearningWithOneSEVPA1();
+        testLearningWithVRA();
     }
 
-    private static void testVRA(){
-        VRAlphabet<String> alphabet = buildAlphabet();
-        DefaultVRAwithDFA<?, String> vra = buildVRA(alphabet);
+    private static void testLearningWithOneSEVPA1() {
+        VPAlphabet<String> alphabet = new DefaultVPAlphabet<String>(
+                Alphabets.fromArray("i1", "i2"), Alphabets.fromArray("c"), Alphabets.fromArray("r")
+        );
+        final DefaultOneSEVPA<String> oneSEVPA = new DefaultOneSEVPA<>(alphabet);
 
-        System.out.println("Initial State:" + vra.getInitialState());
+        final Location l0 = oneSEVPA.addInitialLocation(false);
+        final Location l1 = oneSEVPA.addLocation(true);
 
-        String[] w1 = new String[]{"c1", "i1", "c1", "i2", "i1", "r1", "r1",
-                "i1", "c1", "c2", "i1", "r2", "i1", "r1", "i2"};
-        System.out.println(vra.accepts(Word.fromArray(w1, 0, w1.length)));
+        oneSEVPA.setInternalSuccessor(l0, "i1", l1);
+        oneSEVPA.setInternalSuccessor(l1, "i2", l0);
 
-        String[] w2 = new String[]{"c1", "i1", "c1", "i2", "i1", "r1", "r1",
-                "i1", "c1", "c1", "i1", "r1", "i1", "r1", "i2"};
-        System.out.println(vra.accepts(Word.fromArray(w2, 0, w2.length)));
+        oneSEVPA.setReturnSuccessor(l0, "r", oneSEVPA.encodeStackSym(l1, "c"), l1);
+        oneSEVPA.setReturnSuccessor(l1, "r", oneSEVPA.encodeStackSym(l0, "c"), l1);
 
+        Visualization.visualize(oneSEVPA);
+
+        final VPLOracleFromOneSEVPAWithConformance<String, AbstractVRAwithDFA<?, String>> oracle =
+                new VPLOracleFromOneSEVPAWithConformance<>(alphabet, oneSEVPA);
+
+        final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
+
+        AbstractVRAwithDFA<?, String> vra = learner.learn();
         Visualization.visualize(vra);
     }
+
+    public static void testLearningWithVRA() {
+        VRAlphabet<String> alphabet = buildAlphabet();
+        DefaultVRAwithDFA<?, String> vra = buildVRA(alphabet);
+        Visualization.visualize(vra);
+
+        final VPLOracleFromVRAWithConformance<String, AbstractVRAwithDFA<?, String>> oracle =
+                new VPLOracleFromVRAWithConformance<>(alphabet, vra);
+
+        final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
+
+        AbstractVRAwithDFA<?, String> learnedVRA = learner.learn();
+        Visualization.visualize(learnedVRA);
+
+        Word<String> w = Word.fromSymbols("c2", "c1", "c1", "r2", "r1", "r2");
+        System.out.println(w + "\t" + learnedVRA.accepts(w) + "\t" + vra.accepts(w));
+    }
+
 
     private static VRAlphabet<String> buildAlphabet(){
         Alphabet<String> internalAlphabet = Alphabets.fromArray("i1", "i2");
@@ -96,9 +131,5 @@ public class testVRA {
         procedures.put("J3", J3Procedure);
 
         return new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure);
-    }
-
-    private static void testMinimalVRA(){
-
     }
 }

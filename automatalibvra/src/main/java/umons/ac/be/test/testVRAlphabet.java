@@ -26,7 +26,9 @@ public class testVRAlphabet {
         System.out.println(vrAlphabet);
         System.out.println(vrAlphabet.getSymbol(3));
         System.out.println(vrAlphabet.getSymbolIndex("J1"));
-
         System.out.println(vrAlphabet.getProceduralAlphabetFromCallAndReturn("c1", "r1"));
+
+        System.out.println(vrAlphabet.isProceduralSymbol("J1"));
+        System.out.println(vrAlphabet.isProceduralSymbol("i1"));
     }
 }

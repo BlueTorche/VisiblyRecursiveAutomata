@@ -53,6 +53,7 @@
         <!-- Dependency versions -->
         <automatalib.version>0.12.0</automatalib.version>
         <learnlib.version>0.18.0</learnlib.version>
+        <antlr.version>4.7.1</antlr.version>
     </properties>
 
 
@@ -67,6 +68,11 @@
                 <artifactId>vra</artifactId>
                 <version>${project.version}</version>
             </dependency>
+            <dependency>
+                <groupId>umons.ac.be</groupId>
+                <artifactId>automatalibvra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
             <!-- AutomataLib and LearnLib -->
             <dependency>
@@ -79,6 +85,14 @@
                 <groupId>de.learnlib.distribution</groupId>
                 <artifactId>learnlib-distribution</artifactId>
                 <version>${learnlib.version}</version>
+                <type>pom</type>
+            </dependency>
+
+            <!-- Other dependencies -->
+            <dependency>
+                <groupId>org.antlr</groupId>
+                <artifactId>antlr4-runtime</artifactId>
+                <version>${antlr.version}</version>
                 <type>pom</type>
             </dependency>
         </dependencies>

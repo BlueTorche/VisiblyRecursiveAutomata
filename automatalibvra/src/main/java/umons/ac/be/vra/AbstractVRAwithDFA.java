@@ -67,7 +67,6 @@ public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
                         }
                     }
                 }
-                System.out.println(finalProcedures);
 
                 VRAState<S, I, DFA<S, I>> prevState = currentState.pop();
                 if (prevState == null) {
@@ -78,7 +77,10 @@ public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
                     Set<S> nextStates = new HashSet<>();
                     for(S state : prevState.getCurrentStatesFromProcedure(procedure)) {
                         for (I proceduralSymbol : finalProcedures) {
-                            nextStates.add(procedure.getTransition(state, proceduralSymbol));
+                            S next = procedure.getTransition(state, proceduralSymbol);
+                            if (next != null) {
+                                nextStates.add(procedure.getTransition(state, proceduralSymbol));
+                            }
                         }
                     }
                     if (!nextStates.isEmpty()) {
@@ -98,11 +100,22 @@ public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
         if (vraState.pop() != null) {
             return false;
         }
+        if (vraState.getCurrentStatesFromProcedure(getStartingProcedure()) == null) {
+            return false;
+        }
         for (S state: vraState.getCurrentStatesFromProcedure(getStartingProcedure())) {
             if (getStartingProcedure().isAccepting(state)) {
                 return true;
             }
         }
-        return false; // TODO
+        return false;
+    }
+
+    public AbstractVRA<S, I, DFA<S, I>> removeBinStatesAndAutomata() {
+        for (DFA<S, I> dfa: getProcedures().values()) {
+            // TODO
+        }
+
+        return null;
     }
 }
