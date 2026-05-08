@@ -30,7 +30,7 @@ public class utils {
         for (S s: dfa.getStates()) {
             if (!stateToNewState.containsKey(s)) { continue; }
             for (I i : alphabet) {
-                S nextState = dfa.getSuccessor(s, i)
+                S nextState = dfa.getSuccessor(s, i);
                 if (nextState != null && stateToNewState.containsKey(nextState)) {
                     toReturn.addTransition(
                             stateToNewState.get(s),
