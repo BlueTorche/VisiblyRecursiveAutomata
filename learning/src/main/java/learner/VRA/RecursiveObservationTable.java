@@ -8,6 +8,7 @@ import net.automatalib.common.util.Pair;
 import net.automatalib.word.Word;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RecursiveObservationTable<I> implements ObservationTable<I> {
     GrowingAlphabet<I> regularAlphabet;
@@ -243,11 +244,11 @@ public class RecursiveObservationTable<I> implements ObservationTable<I> {
                 FastDFAState s = hypothesis.getState(classToID.get(eq));
                 System.out.println(classToID);
                 for(I i: regularAlphabet) {
-                    System.out.println(Word.fromWords(eq, Word.fromLetter(i)) + ": " +
-                            getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i))) + " "
-                            + equivalenceClasses.get(
-                            getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i)))
-                    ));
+//                    System.out.println(Word.fromWords(eq, Word.fromLetter(i)) + ": " +
+//                            getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i))) + " "
+//                            + equivalenceClasses.get(
+//                            getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i)))
+//                    ));
                     hypothesis.addTransition(s, i,
                             hypothesis.getState(classToID.get(
                                     equivalenceClasses.get(
@@ -304,6 +305,91 @@ public class RecursiveObservationTable<I> implements ObservationTable<I> {
         }
     }
 
+    public Map<Word<I>, FastDFA<I>> constructReducedHypotheses() {
+        List<Word<I>> recEquivClasses = learner.getRecursiveEquivalenceClasses(callSymbol, returnSymbol);
+        Map<Word<I>, FastDFA<I>> hypotheses = new HashMap<>();
+
+        printTable();
+
+        for (Word<I> recEquivClass : recEquivClasses) {
+            Set<Pair<Word<I>,Word<I>>> contextEquivClass = table.get(recEquivClass.subWord(1, recEquivClass.size()-1));
+            Map<Word<I>, Word<I>> reducedEquivClass = getReducedEquivClasses(contextEquivClass);
+
+            System.out.println(reducedEquivClass);
+
+            FastDFA<I> hypothesis = new FastDFA<>(regularAlphabet);
+            HashMap<Word<I>, Integer> classToID = new HashMap<>();
+
+            for(Word<I> eq : new HashSet<>(reducedEquivClass.values())) {
+                FastDFAState s = hypothesis.addState(table.get(eq).equals(contextEquivClass));
+                classToID.put(eq, s.getId());
+                if (eq.equals(Word.epsilon())) {
+                    hypothesis.setInitial(s, true);
+                }
+            }
+            for(Word<I> eq : new HashSet<>(reducedEquivClass.values())) {
+                FastDFAState s = hypothesis.getState(classToID.get(eq));
+                for(I i: regularAlphabet) {
+//                    System.out.println(Word.fromWords(eq, Word.fromLetter(i)) + ": " +
+//                            getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i))) + " "
+//                            + reducedEquivClass.get(equivalenceClasses.get(
+//                                getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i)))
+//                    ))
+//                            + " " + equivalenceClasses.get(
+//                                getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i))))
+//                    );
+                    hypothesis.addTransition(s, i,
+                            hypothesis.getState(classToID.get(
+                                    reducedEquivClass.get(
+                                        equivalenceClasses.get(
+                                                getRegularEquivalenceClass(Word.fromWords(eq, Word.fromLetter(i)))
+                                        )
+                                    )
+                            ))
+                    );
+                }
+            }
+            hypotheses.put(recEquivClass, hypothesis);
+        }
+        return hypotheses;
+    }
+
+    private Map<Word<I>, Word<I>> getReducedEquivClasses(Set<Pair<Word<I>,Word<I>>> context) {
+        Map<Word<I>, Word<I>> EquivClass = new HashMap<>();
+        List<Word<I>> equivClass = equivalenceClasses.values().stream().toList();
+        for (int i = 0; i < equivalenceClasses.size(); i++) {
+            Word<I> r1 = equivClass.get(i);
+            Word<I> equivalent = r1;
+            for (int j = equivalenceClasses.size()-1; j > i; j--) {
+                Word<I> r2 = equivClass.get(j);
+                boolean areEquivalent = true;
+                for (Word<I> s: separators) {
+                    boolean ac1 = table.get(Word.fromWords(r1, s)).equals(context);
+                    boolean ac2 = table.get(Word.fromWords(r2, s)).equals(context);
+                    if (!(ac1 && ac2 || !ac1 && !ac2)) {
+                        areEquivalent = false;
+                        break;
+                    }
+                    for (I symbol: regularAlphabet) {
+                        ac1 = table.get(Word.fromWords(r1, Word.fromLetter(symbol), s)).equals(context);
+                        ac2 = table.get(Word.fromWords(r2, Word.fromLetter(symbol), s)).equals(context);
+                        if (!(ac1 && ac2 || !ac1 && !ac2)) {
+                            areEquivalent = false;
+                            break;
+                        }
+                    }
+                    if (!areEquivalent) { break; }
+                }
+
+                if (areEquivalent) {
+                    equivalent = r2;
+                    break;
+                }
+            }
+            EquivClass.put(r1, equivalent);
+        }
+        return EquivClass;
+    }
 
     private void printTable() {
         System.out.println("\t" + separators);

@@ -126,6 +126,20 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
         return new DefaultVRAwithDFA<>(alphabet, procedures, startingAutomaton);
     }
 
+    public AbstractVRAwithDFA<?, I> constructReducedHypothesis() {
+        FastDFA<I> startingAutomaton = startingObservationTable.constructHypothesis();
+        HashMap<Word<I>, FastDFA<I>> hypotheses = new HashMap<>();
+        for (RecursiveObservationTable<I> table: recursiveObservationTables.values()) {
+            hypotheses.putAll(table.constructReducedHypotheses());
+        }
+        HashMap<I, FastDFA<I>> procedures = new HashMap<>();
+        procedures.put((I) "S", startingAutomaton);
+        for (Word<I> recEquivClass : hypotheses.keySet()) {
+            procedures.put(wordToProceduralSymbol.get(recEquivClass), hypotheses.get(recEquivClass));
+        }
+        return new DefaultVRAwithDFA<>(alphabet, procedures, startingAutomaton);
+    }
+
     @Override
     public AbstractVRAwithDFA<?, I> learn() {
         startingObservationTable.initialize();
@@ -134,7 +148,7 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
         }
         for (int i = 0; i < 1000; i++) {
             AbstractVRAwithDFA<?, I> hypothesis = constructHypothesis();
-
+            Visualization.visualize(hypothesis);
             Word<I> cx = oracle.EquivalenceQuery(hypothesis);
             System.out.println("Processing counterexample: " + cx);
             if (cx == null) {
@@ -143,7 +157,8 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
                 processCounterExample(cx);
             }
         }
-        return constructHypothesis();
+        oracle.displayStats();
+        return constructReducedHypothesis();
     }
 
     @Override

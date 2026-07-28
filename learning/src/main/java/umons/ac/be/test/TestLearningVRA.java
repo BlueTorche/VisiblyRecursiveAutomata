@@ -50,7 +50,8 @@ public class TestLearningVRA {
         final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
 
         AbstractVRAwithDFA<?, String> vra = learner.learn();
-        Visualization.visualize(vra);
+        Visualization.visualize(vra.removeBinStatesAndAutomata());
+
     }
 
     public static void testLearningWithVRA() {
@@ -64,12 +65,14 @@ public class TestLearningVRA {
         final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
 
         AbstractVRAwithDFA<?, String> learnedVRA = learner.learn();
-        Visualization.visualize(learnedVRA);
+        oracle.displayStats();
+
+//        Visualization.visualize(learnedVRA);
+//        Visualization.visualize(learnedVRA.removeBinStatesAndAutomata());
 
         Word<String> w = Word.fromSymbols("c2", "c1", "c1", "r2", "r1", "r2");
         System.out.println(w + "\t" + learnedVRA.accepts(w) + "\t" + vra.accepts(w));
     }
-
 
     private static VRAlphabet<String> buildAlphabet(){
         Alphabet<String> internalAlphabet = Alphabets.fromArray("i1", "i2");

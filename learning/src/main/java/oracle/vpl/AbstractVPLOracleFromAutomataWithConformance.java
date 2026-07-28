@@ -13,6 +13,7 @@ public class AbstractVPLOracleFromAutomataWithConformance<I, M extends Determini
     private final DeterministicAcceptorTS<?, I> teacherAutomata;
     private final int maxLength = 10;
     private int equivalenceCounter = 0;
+    private int membershipCounter = 0;
 
     public AbstractVPLOracleFromAutomataWithConformance(VPAlphabet<I> alphabet,
                                                         DeterministicAcceptorTS<?, I> teacherAutomata) {
@@ -25,6 +26,7 @@ public class AbstractVPLOracleFromAutomataWithConformance<I, M extends Determini
      */
     @Override
     public boolean MembershipQuery(Word<I> word) {
+        membershipCounter++;
         return teacherAutomata.accepts(word);
     }
 
@@ -43,8 +45,8 @@ public class AbstractVPLOracleFromAutomataWithConformance<I, M extends Determini
 
         for(int length = 1;  length < maxLength; length++) {
             List<Word<I>> toTest = generateWellMatchedWords(length, 0);
+            System.out.println("Testing word of size " + length);
             for (Word<I> word : toTest) {
-                System.out.println("Testing " + word);
                 if (hypothesis.accepts(word)
                         != teacherAutomata.accepts(word)) {
                     return word;
@@ -90,5 +92,11 @@ public class AbstractVPLOracleFromAutomataWithConformance<I, M extends Determini
             }
         }
         return words;
+    }
+
+    @Override
+    public void displayStats() {
+        System.out.println("Number of MQ: " + membershipCounter);
+        System.out.println("Number of EQ: " + equivalenceCounter);
     }
 }

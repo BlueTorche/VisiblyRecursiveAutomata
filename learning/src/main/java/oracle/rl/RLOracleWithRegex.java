@@ -70,4 +70,10 @@ public class RLOracleWithRegex<I> implements Oracle<I, DFA<?, I>> {
         }
         return words;
     }
+
+    @Override
+    public void displayStats() {
+        System.out.println("#MQ: " + this.membershipCounter);
+        System.out.println("#EQ: " + this.equivalenceCounter);
+    }
 }

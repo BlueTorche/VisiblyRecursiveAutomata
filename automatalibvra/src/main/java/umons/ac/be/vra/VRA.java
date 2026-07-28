@@ -71,6 +71,10 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      */
     boolean accepts(Word<I> word);
 
+    /**
+     * TODO
+     */
+    void removeProcedure(I proceduralSymbol);
 
     /**
      * Convenience method for {@link #getProcedures()} to quickly return the procedure of a given call symbol.

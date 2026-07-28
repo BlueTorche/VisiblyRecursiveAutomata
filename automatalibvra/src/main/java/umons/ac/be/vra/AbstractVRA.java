@@ -61,15 +61,18 @@ public abstract class AbstractVRA<S, I, M extends UniversalDeterministicAutomato
     @Override
     public boolean accepts(Word<I> word) {
         VRAState<S, I, M> currentState = getInitialState();
-        System.out.println(currentState);
 
         for (I symbol: word) {
             currentState = getTransition(currentState, symbol);
-            System.out.println(currentState);
             if (currentState.getCurrentProcedures().isEmpty()) {
                 return false;
             }
         }
         return isAccepting(currentState);
+    }
+
+    @Override
+    public void removeProcedure(I proceduralSymbol){
+        procedures.remove(proceduralSymbol);
     }
 }

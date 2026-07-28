@@ -32,4 +32,10 @@ public class RLOracleWithDFA<I> implements Oracle<I, DFA<?, I>> {
 
         return null;
     }
+
+    @Override
+    public void displayStats() {
+        System.out.println("#MQ: " + this.membershipCounter);
+        System.out.println("#EQ: " + this.equivalenceCounter);
+    }
 }

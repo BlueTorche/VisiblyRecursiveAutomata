@@ -13,18 +13,17 @@ public class utils {
         FastDFA<I> toReturn = new FastDFA<>(alphabet);
         Map<S, FastDFAState> stateToNewState = new HashMap<>();
         for (S s: dfa.getStates()) {
-            if (!dfa.isAccepting(s)) {
-                boolean to_remove = true;
-                for (I i : alphabet) {
-                    if (dfa.getSuccessor(s, i) != null && !dfa.getSuccessor(s, i).equals(s)) {
-                        to_remove = false;
-                        break;
-                    }
+            boolean to_remove = true;
+            for (I i : alphabet) {
+                S nextState = dfa.getSuccessor(s, i);
+                if (nextState != null && !nextState.equals(s)) {
+                    to_remove = false;
+                    break;
                 }
-                if (!to_remove) {
-                    FastDFAState newState = toReturn.addState(dfa.isAccepting(s));
-                    stateToNewState.put(s, newState);
-                }
+            }
+            if (dfa.isAccepting(s) || !to_remove) {
+                FastDFAState newState = toReturn.addState(dfa.isAccepting(s));
+                stateToNewState.put(s, newState);
             }
         }
         for (S s: dfa.getStates()) {
@@ -42,5 +41,14 @@ public class utils {
         }
 
         return toReturn;
+    }
+
+    public static <S,I> boolean hasTransition(DFA<S, I> dfa, I symbol) {
+        for (S s: dfa.getStates()) {
+            if (dfa.getTransition(s, symbol) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

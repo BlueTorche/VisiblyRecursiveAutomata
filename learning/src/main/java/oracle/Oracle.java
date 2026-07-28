@@ -7,4 +7,6 @@ public interface Oracle<I, M> {
     boolean MembershipQuery(Word<I> word);
 
     Word<I> EquivalenceQuery(M hypothesis);
+
+    void displayStats();
 }

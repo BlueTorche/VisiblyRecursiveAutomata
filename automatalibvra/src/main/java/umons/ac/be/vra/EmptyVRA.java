@@ -59,4 +59,7 @@ public class EmptyVRA<I> implements VRA<Void, I,  DFA<Void, I>> {
     public boolean accepts(Word<I> word) {
         return false;
     }
+
+    @Override
+    public void removeProcedure(I proceduralSymbol) { }
 }

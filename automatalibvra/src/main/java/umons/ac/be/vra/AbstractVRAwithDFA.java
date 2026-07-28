@@ -1,7 +1,11 @@
 package umons.ac.be.vra;
 
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.alphabet.VPAlphabet;
+import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.DFA;
+import umons.ac.be.utils;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
@@ -111,11 +115,40 @@ public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
         return false;
     }
 
-    public AbstractVRA<S, I, DFA<S, I>> removeBinStatesAndAutomata() {
-        for (DFA<S, I> dfa: getProcedures().values()) {
-            // TODO
+    public AbstractVRAwithDFA<S, I> removeBinStatesAndAutomata() {
+        Map<I, DFA<S, I>> newProcedures = new HashMap<>();
+        for (Map.Entry<I, DFA<S, I>> dfa: getProcedures().entrySet()) {
+            newProcedures.put(dfa.getKey(), (DFA<S, I>) utils.removeBinState(dfa.getValue(), getAutomatonAlphabet()));
         }
+        AbstractVRAwithDFA<S, I> newVRA = new AbstractVRAwithDFA<>(
+                getInputAlphabet(),
+                newProcedures,
+                (DFA<S, I>) utils.removeBinState(getStartingProcedure(), getAutomatonAlphabet())
+        );
+        Alphabet<I> nonEmptyProcSymbol = newVRA.detectNonEmptyContext();
+        for (I proceduralSymbol : getInputAlphabet().getProceduralAlphabet()) {
+            if (!nonEmptyProcSymbol.contains(proceduralSymbol)) {
+                newVRA.removeProcedure(proceduralSymbol);
+            }
+        }
+        return newVRA;
+    }
 
-        return null;
+    public Alphabet<I> detectNonEmptyContext() {
+        Alphabet<I> nonEmpty =  new GrowingMapAlphabet<>();
+        HashSet<DFA<S, I>> stack = new HashSet<>();
+        stack.add(getStartingProcedure());
+        while (!stack.isEmpty()) {
+            DFA<S, I> dfa = stack.iterator().next();
+            stack.remove(dfa);
+            for (I proceduralSymbol: getInputAlphabet().getProceduralAlphabet()) {
+                if (!nonEmpty.contains(proceduralSymbol) &&
+                    utils.hasTransition(dfa, proceduralSymbol)) {
+                    nonEmpty.add(proceduralSymbol);
+                    stack.add(getProcedures().get(proceduralSymbol));
+                }
+            }
+        }
+        return nonEmpty;
     }
 }
