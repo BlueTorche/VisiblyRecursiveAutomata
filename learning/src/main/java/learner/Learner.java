@@ -9,4 +9,6 @@ public interface Learner<I, M extends DeterministicAcceptorTS<?, I>> {
     M learn();
 
     void processCounterExample(Word<I> cx);
+
+    boolean askMembershipQuery(Word<I> word);
 }

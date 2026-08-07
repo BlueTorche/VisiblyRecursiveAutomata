@@ -2,14 +2,14 @@ package learner.VRA;
 
 import java.util.*;
 
-import learner.ObservationTable;
+import learner.ObservationTable.ObservationTable;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.word.Word;
 
 
-public class StartingObservationTable<I> implements ObservationTable<I> {
+public class RegularObservationTable<I> implements ObservationTable<I> {
     GrowingAlphabet<I> alphabet;
     VRALearner<I> learner;
 
@@ -18,7 +18,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
     Map<Word<I>, Boolean> table = new HashMap<>();
     Map<Integer, Word<I>> equivalenceClasses = new HashMap<>();
 
-    public StartingObservationTable(GrowingAlphabet<I> alphabet, VRALearner<I> learner) {
+    public RegularObservationTable(GrowingAlphabet<I> alphabet, VRALearner<I> learner) {
         this.alphabet = alphabet;
         this.learner = learner;
     }
@@ -32,7 +32,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
         for (Word<I> s : separators) {
             Word<I> rs = Word.fromWords(r, s);
             if (!table.containsKey(rs)) {
-                table.put(rs, learner.MembershipQuery(rs));
+                table.put(rs, learner.askMembershipQuery(rs));
             }
         }
 
@@ -48,7 +48,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
             for (Word<I> s : separators) {
                 Word<I> ris = Word.fromWords(ri, s);
                 if (!table.containsKey(ris)) {
-                    table.put(ris, learner.MembershipQuery(ris));
+                    table.put(ris, learner.askMembershipQuery(ris));
                 }
             }
         }
@@ -67,7 +67,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
         for (Word<I> r : representatives) {
             Word<I> rs = Word.fromWords(r, s);
             if (!table.containsKey(rs)) {
-                table.put(rs, learner.MembershipQuery(rs));
+                table.put(rs, learner.askMembershipQuery(rs));
             }
             Integer equivalenceClass = getEquivalenceClassKey(r);
             if (!equivalenceClasses.containsKey(equivalenceClass)) {
@@ -77,7 +77,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
             for (I i : alphabet) {
                 Word<I> ris = Word.fromWords(r, Word.fromLetter(i), s);
                 if (!table.containsKey(ris)) {
-                    table.put(ris, learner.MembershipQuery(ris));
+                    table.put(ris, learner.askMembershipQuery(ris));
                 }
             }
         }
@@ -87,7 +87,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
     }
 
     @Override
-    public void closeTable() {
+    public boolean close() {
         Word<I> newRepresentative = null;
         for (Word<I> r : representatives) {
             for (I i  : alphabet) {
@@ -100,12 +100,13 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
         }
         if (newRepresentative != null) {
             addRepresentative(newRepresentative);
-            closeTable();
+            close();
         }
+        return false;
     }
 
     @Override
-    public boolean makeTableSigmaConsistent() {
+    public boolean consistent() {
         boolean result = false;
         for (int i =  0; i < representatives.size(); i++) {
             for (int j = i + 1; j < representatives.size(); j++) {
@@ -130,10 +131,10 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
     }
 
     @Override
-    public void makeTableClosedConsistent() {
+    public void enforce() {
         do {
-            closeTable();
-        } while (makeTableSigmaConsistent());
+            close();
+        } while (consistent());
     }
 
     public FastDFA<I> constructHypothesis() {
@@ -165,15 +166,10 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
     }
 
     @Override
-    public void processCounterExample(Word<I> cx) {
-        addRepresentative(cx);
-    }
-
-    @Override
     public void initialize() {
         addRepresentative(Word.epsilon());
         addSeparator(Word.epsilon());
-        makeTableClosedConsistent();
+        enforce();
     }
 
     public void addSymbol(I symbol) {
@@ -182,7 +178,7 @@ public class StartingObservationTable<I> implements ObservationTable<I> {
         for (Word<I> r: representatives) {
             for(Word<I> s: separators) {
                 Word<I> word = Word.fromWords(r, Word.fromLetter(symbol), s);
-                table.put(word, learner.MembershipQuery(word));
+                table.put(word, learner.askMembershipQuery(word));
             }
         }
     }

@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ClosingStrategy/ClosingStrategies.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ClosingStrategy/ClosingStrategy.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/AbstractObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/RecursiveObservationTable/AbstractRecursiveObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/RecursiveObservationTable/IsomorphicRecursiveObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/RecursiveObservationTable/SeperateObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/RegularObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/Content.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/IsomorphicRecursiveRow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/RecursiveContent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/RegularContent.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/RegularRow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/Row/Row.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestBitSet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/learning/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/DefaultLStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/DefaultLStar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/Learner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/Learner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/ObservationTable/ObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/VRA/RecursiveObservationTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/VRA/StartingObservationTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/VRA/VRALearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/VRA/VRALearner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningDFA.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningDFA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningVRA.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="3ChTSsDiiiRPvpWoTQhuGtkhZo8" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.TestBitSet.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TestLearningVRA.executor&quot;: &quot;Run&quot;,
+    &quot;Application.TestObservationTable.executor&quot;: &quot;Run&quot;,
+    &quot;Application.testVRA.executor&quot;: &quot;Run&quot;,
+    &quot;Application.testVRAlphabet.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dubru/Documents/GitHub/VisiblyRecursiveAutomata&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RunManager" selected="Application.TestObservationTable">
+    <configuration name="TestBitSet" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="umons.ac.be.test.TestBitSet" />
+      <module name="learning" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="umons.ac.be.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestObservationTable" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="umons.ac.be.test.TestObservationTable" />
+      <module name="learning" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="umons.ac.be.test.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="VisiblyRecursiveAutomata" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="VisiblyRecursiveAutomata" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.TestObservationTable" />
+        <item itemvalue="Application.TestBitSet" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="jdk-22-openjdk-22-4caba194b151-f504ca98" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="" />
+      <created>1776836805114</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1776836805114</updated>
+      <workItem from="1776836806183" duration="24857000" />
+      <workItem from="1785823096132" duration="8560000" />
+      <workItem from="1785908906819" duration="11201000" />
+      <workItem from="1785995865542" duration="18574000" />
+      <workItem from="1786100113993" duration="6015000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

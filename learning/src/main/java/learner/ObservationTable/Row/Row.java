@@ -1,0 +1,25 @@
+package learner.ObservationTable.Row;
+
+import net.automatalib.word.Word;
+
+public interface Row<I> {
+    Word<I> getPrefix();
+
+    void setSuccessorRow(int succIdx, Row<I> row);
+
+    boolean equivalentTo(Row<I> other);
+
+    int getDistinctionSeparator(Row<I> other);
+
+    boolean isPrime();
+
+    Row<I> getParent();
+
+    void setParent(Row<I> row);
+
+    Row<I> getSuccessor(int idx);
+
+    boolean isAccepting() ;
+
+    Content getContent();
+}

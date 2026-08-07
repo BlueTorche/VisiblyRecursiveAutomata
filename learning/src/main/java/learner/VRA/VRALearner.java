@@ -1,36 +1,31 @@
 package learner.VRA;
 
 import learner.Learner;
+import learner.VRA.isomophicLearning.RecursiveObservationTable;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.alphabet.impl.GrowingMapAlphabet;
-import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFA;
-import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.common.util.Pair;
-import net.automatalib.graph.concept.GraphViewable;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
 import oracle.Oracle;
-import umons.ac.be.vra.AbstractVRA;
 import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
-import umons.ac.be.vra.VRA;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
-import javax.swing.plaf.synth.SynthTextAreaUI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
-    VRAlphabet<I> alphabet;
-    Oracle<I, AbstractVRAwithDFA<?, I>> oracle;
+public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
+    protected VRAlphabet<I> alphabet;
+    protected Oracle<I, AbstractVRAwithDFA<?, I>> oracle;
 
-    HashMap<I, Word<I>> proceduralSymbolToWord = new HashMap<>();
-    HashMap<Word<I>, I> wordToProceduralSymbol= new HashMap<>();
-    StartingObservationTable<I> startingObservationTable;
-    HashMap<Pair<I, I>, RecursiveObservationTable<I>> recursiveObservationTables = new HashMap<>();
+    protected HashMap<I, Word<I>> proceduralSymbolToWord = new HashMap<>();
+    protected HashMap<Word<I>, I> wordToProceduralSymbol= new HashMap<>();
+    protected RegularObservationTable<I> startingObservationTable;
+    protected HashMap<Pair<I, I>, RecursiveObservationTable<I>> recursiveObservationTables = new HashMap<>();
 
     int ProceduralSymbolCounter = 0;
 
@@ -39,7 +34,7 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
         this.oracle = oracle;
 
         GrowingAlphabet<I> automatonAlphabet = new GrowingMapAlphabet<>(alphabet.getInternalAlphabet());
-        startingObservationTable = new StartingObservationTable<>(automatonAlphabet, this);
+        startingObservationTable = new RegularObservationTable<>(automatonAlphabet, this);
         for (I call: alphabet.getCallAlphabet()) {
             for (I ret: alphabet.getReturnAlphabet()) {
                 recursiveObservationTables.put(
@@ -58,7 +53,8 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
         ));
     }
 
-    public boolean MembershipQuery(Word<I> regularWord) {
+    @Override
+    public boolean askMembershipQuery(Word<I> regularWord) {
         System.out.println("MQ of : " + regularWord);
         return oracle.MembershipQuery(extend(regularWord));
     }
@@ -161,54 +157,7 @@ public class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
         return constructReducedHypothesis();
     }
 
-    @Override
-    public void processCounterExample(Word<I> cx) {
-        Word<I> regularCX = getRegularWord(cx, Word.epsilon(), Word.epsilon());
-        System.out.println("Processing counterexample: " + cx + " with regular proj " + regularCX);
-        startingObservationTable.addRepresentative(regularCX);
-        startingObservationTable.makeTableClosedConsistent();
-    }
-
-    private I processRecursiveCounterExample(Word<I> prefix, I callSymbol, Word<I> cx, I returnSymbol, Word<I> suffix) {
-        RecursiveObservationTable<I> recObsTab = recursiveObservationTables.get(Pair.of(callSymbol, returnSymbol));
-        Word<I> regularWord = getRegularWord(cx,
-                Word.fromWords(prefix, Word.fromLetter(callSymbol)),
-                Word.fromWords(suffix, Word.fromLetter(returnSymbol)));
-        recObsTab.addContext(prefix, suffix);
-        recObsTab.addRepresentative(regularWord);
-        for (RecursiveObservationTable<I> rot:  recursiveObservationTables.values()) {
-            rot.makeTableClosedConsistent();
-        }
-        return wordToProceduralSymbol.get(recObsTab.getRecursiveEquivalent(regularWord));
-    }
-
-    private Word<I> getRegularWord(Word<I> cx, Word<I> prefix, Word<I> suffix) {
-        Word<I> regularWord = Word.epsilon();
-        for (int i = 0; i < cx.size(); i++) {
-            if (alphabet.isCallSymbol(cx.getSymbol(i))) {
-                int indexReturn = getMatchingReturnIndex(cx, i);
-                System.out.println(i + "\t\t" +
-                                Word.fromWords(prefix, cx.prefix(i)) + "\t\t" + cx.getSymbol(i) + "\t\t" +
-                                cx.subWord(i+1, indexReturn) + "\t\t" + cx.getSymbol(indexReturn) + "\t\t" +
-                                Word.fromWords(cx.suffix(cx.size()-indexReturn-1), suffix)
-                );
-                regularWord = regularWord.append(processRecursiveCounterExample(
-                        Word.fromWords(prefix, cx.prefix(i)),
-                        cx.getSymbol(i),
-                        cx.subWord(i+1, indexReturn),
-                        cx.getSymbol(indexReturn),
-                        Word.fromWords(cx.suffix(cx.size()-indexReturn-1), suffix)
-                ));
-                i = indexReturn;
-            }
-            else {
-                regularWord = regularWord.append(cx.getSymbol(i));
-            }
-        }
-        return regularWord;
-    }
-
-    private int getMatchingReturnIndex(Word<I> word, int callIndex) {
+    protected int getMatchingReturnIndex(Word<I> word, int callIndex) {
         int unmatchedCall = 1;
         for (int i = callIndex+1; i < word.size(); i++) {
             if (alphabet.isCallSymbol(word.getSymbol(i))) {

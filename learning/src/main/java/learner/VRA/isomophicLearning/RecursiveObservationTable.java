@@ -1,26 +1,27 @@
-package learner.VRA;
+package learner.VRA.isomophicLearning;
 
-import learner.ObservationTable;
+import learner.ObservationTable.ObservationTable;
+import learner.VRA.VRALearner;
 import net.automatalib.alphabet.GrowingAlphabet;
+import net.automatalib.automaton.Automaton;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.common.util.Pair;
 import net.automatalib.word.Word;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class RecursiveObservationTable<I> implements ObservationTable<I> {
-    GrowingAlphabet<I> regularAlphabet;
-    I callSymbol;
-    I returnSymbol;
-    VRALearner<I> learner;
+    protected GrowingAlphabet<I> regularAlphabet;
+    protected I callSymbol;
+    protected I returnSymbol;
+    protected VRALearner<I> learner;
 
-    Set<Pair<Word<I>, Word<I>>> context = new HashSet<>();
-    List<Word<I>> representatives = new ArrayList<>();
-    List<Word<I>> separators = new ArrayList<>();
-    Map<Word<I>, Set<Pair<Word<I>, Word<I>>>> table = new HashMap<>();
-    Map<Long,Word<I>> equivalenceClasses = new HashMap<>();
+    protected Set<Pair<Word<I>, Word<I>>> context = new HashSet<>();
+    protected List<Word<I>> representatives = new ArrayList<>();
+    protected List<Word<I>> separators = new ArrayList<>();
+    protected Map<Word<I>, Set<Pair<Word<I>, Word<I>>>> table = new HashMap<>();
+    protected Map<Long,Word<I>> equivalenceClasses = new HashMap<>();
 
     public RecursiveObservationTable(GrowingAlphabet<I> regularAlphabet, I callSymbol, I returnSymbol, VRALearner<I> learner) {
         this.regularAlphabet = regularAlphabet;
@@ -76,26 +77,23 @@ public class RecursiveObservationTable<I> implements ObservationTable<I> {
     }
 
     @Override
-    public void closeTable() {
-        Word<I> newRepresentative = null;
+    public boolean close() {
+        boolean toRet = false;
         for (Word<I> r : representatives) {
             for (I i  : regularAlphabet) {
                 Word<I> ri = Word.fromWords(r, Word.fromLetter(i));
                 Long equivClass = getRegularEquivalenceClass(ri);
                 if (equivClass != null && !equivalenceClasses.containsKey(equivClass)) {
-                    newRepresentative = ri;
-                    break;
+                    addRepresentative(ri);
+                    close();
                 }
             }
         }
-        if (newRepresentative != null) {
-            addRepresentative(newRepresentative);
-            closeTable();
-        }
+        return toRet;
     }
 
     @Override
-    public boolean makeTableSigmaConsistent() {
+    public boolean consistent() {
         for (int i =  0; i < representatives.size(); i++) {
             Word<I> r1 = representatives.get(i);
             Long equivClass1 = getRegularEquivalenceClass(r1);
@@ -122,37 +120,23 @@ public class RecursiveObservationTable<I> implements ObservationTable<I> {
         return false;
     }
 
-    public boolean makeTablePConsistent() {
+    public boolean makeTableProcComplete() {
         for (Word<I> r : representatives) {
-            for (Word<I> s : separators) {
-                Word<I> word =  Word.fromWords(r, s);
-                if (getRecursiveEquivalent(word) == null) {
-                    learner.addProceduralSymbol(word, callSymbol, returnSymbol);
-                    addRepresentative(word);
-                    return true;
-                }
-            }
-            for (I i : regularAlphabet) {
-                for (Word<I> s : separators) {
-                    Word<I> word =  Word.fromWords(r, Word.fromLetter(i), s);
-                    if (getRecursiveEquivalent(word) == null) {
-                        learner.addProceduralSymbol(word, callSymbol, returnSymbol);
-                        addRepresentative(word);
-                        return true;
-                    }
-                }
+            if (getRecursiveEquivalent(r) == null) {
+                learner.addProceduralSymbol(r, callSymbol, returnSymbol);
+                addRepresentative(r);
+                return true;
             }
         }
-
         return false;
     }
 
     @Override
-    public void makeTableClosedConsistent() {
+    public void enforce() {
         int iter = 0;
         do {
             do {
-                closeTable();
+                do {} while(close());
                 System.out.println("Rec Table: " + table);
                 System.out.println("\t representatives : " + representatives);
                 System.out.println("\t separators : " + separators);
@@ -160,19 +144,19 @@ public class RecursiveObservationTable<I> implements ObservationTable<I> {
                 System.out.println("Context: " + context);
                 iter++;
                 if (iter > 5) throw new RuntimeException("Too many iterations");
-            } while (makeTableSigmaConsistent());
-        } while(makeTablePConsistent());
-    }
-
-    @Override
-    public void processCounterExample(Word<I> cx) {
-        addRepresentative(cx);
+            } while (consistent());
+        } while(makeTableProcComplete());
     }
 
     @Override
     public void initialize() {
         addRepresentative(Word.epsilon());
         addSeparator(Word.epsilon());
+    }
+
+    @Override
+    public Automaton<?, I, ?> constructHypothesis() {
+        return null;
     }
 
     public void addContext(Word<I> prefix, Word<I> suffix){

@@ -31,5 +31,9 @@
             <artifactId>antlr4-runtime</artifactId>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>umons.ac.be</groupId>
+            <artifactId>vra</artifactId>
+        </dependency>
     </dependencies>
 </project>

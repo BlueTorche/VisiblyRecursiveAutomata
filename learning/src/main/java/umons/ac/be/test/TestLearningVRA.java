@@ -1,6 +1,7 @@
 package umons.ac.be.test;
 
 import learner.VRA.VRALearner;
+import learner.VRA.isomophicLearning.VRAIsomorphicLearner;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.Alphabets;
@@ -23,11 +24,11 @@ import java.util.HashMap;
 
 public class TestLearningVRA {
     public static void main(String[] args) {
-        // testLearningWithOneSEVPA1();
-        testLearningWithVRA();
+        // testLearningIsomoprhicWithOneSEVPA1();
+        testLearningIsomorphicWithVRA();
     }
 
-    private static void testLearningWithOneSEVPA1() {
+    private static void testLearningIsomorphicWithOneSEVPA1() {
         VPAlphabet<String> alphabet = new DefaultVPAlphabet<String>(
                 Alphabets.fromArray("i1", "i2"), Alphabets.fromArray("c"), Alphabets.fromArray("r")
         );
@@ -47,14 +48,14 @@ public class TestLearningVRA {
         final VPLOracleFromOneSEVPAWithConformance<String, AbstractVRAwithDFA<?, String>> oracle =
                 new VPLOracleFromOneSEVPAWithConformance<>(alphabet, oneSEVPA);
 
-        final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
+        final VRALearner<String> learner = new VRAIsomorphicLearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
 
         AbstractVRAwithDFA<?, String> vra = learner.learn();
         Visualization.visualize(vra.removeBinStatesAndAutomata());
 
     }
 
-    public static void testLearningWithVRA() {
+    public static void testLearningIsomorphicWithVRA() {
         VRAlphabet<String> alphabet = buildAlphabet();
         DefaultVRAwithDFA<?, String> vra = buildVRA(alphabet);
         Visualization.visualize(vra);
@@ -62,7 +63,7 @@ public class TestLearningVRA {
         final VPLOracleFromVRAWithConformance<String, AbstractVRAwithDFA<?, String>> oracle =
                 new VPLOracleFromVRAWithConformance<>(alphabet, vra);
 
-        final VRALearner<String> learner = new VRALearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
+        final VRALearner<String> learner = new VRAIsomorphicLearner<>(VRAlphabet.fromVPAlphabet(alphabet), oracle);
 
         AbstractVRAwithDFA<?, String> learnedVRA = learner.learn();
         oracle.displayStats();
