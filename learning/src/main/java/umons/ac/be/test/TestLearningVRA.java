@@ -41,7 +41,7 @@ public class TestLearningVRA {
 //        testLearningVRA(BenchmarkType.ONE_SEVPA, LearnerType.SEPARATE_LEARNER);
 //        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.ISOMORPHIC_LEARNER);
 //        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.SEPARATE_LEARNER);
-        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.ISOMORPHIC_LEARNER);
+//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.ISOMORPHIC_LEARNER);
         testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.SEPARATE_LEARNER);
     }
 

@@ -37,22 +37,27 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
 
 
     public boolean recursiveMembershipQuery(Word<I> prefix, I callSymbol, Word<I> regularWord, I returnSymbol, Word<I> suffix) {
-        System.out.println("MQ of : " + prefix + " " + callSymbol + " " + regularWord + " " + returnSymbol + " "+  suffix);
-        return oracle.MembershipQuery(Word.fromWords(
+        boolean answer = oracle.MembershipQuery(Word.fromWords(
                 prefix, Word.fromLetter(callSymbol), extend(regularWord), Word.fromLetter(returnSymbol), suffix
         ));
+        System.out.println("MQ of : " + prefix + " " + callSymbol + " " + regularWord + " " + returnSymbol + " "+  suffix + " = " + answer);
+        return answer;
     }
 
     @Override
     public boolean askMembershipQuery(Word<I> regularWord) {
-        System.out.println("MQ of : " + regularWord);
-        return oracle.MembershipQuery(extend(regularWord));
+        boolean answer =  oracle.MembershipQuery(extend(regularWord));
+        System.out.println("MQ of : " + regularWord + " = " + answer);
+        return answer;
     }
 
     public void addProceduralSymbol(Word<I> regularWord, I callSymbol, I returnSymbol) {
-        I newSymbol = generateProceduralSymbol(regularWord, callSymbol, returnSymbol);
-        alphabet.addProceduralSymbol(newSymbol, callSymbol, returnSymbol);
+        I newSymbol = generateProceduralSymbol(extend(regularWord), callSymbol, returnSymbol);
         Word<I> recEquivClass = Word.fromWords(Word.fromLetter(callSymbol), regularWord, Word.fromLetter(returnSymbol));
+
+        System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
+
+        alphabet.addProceduralSymbol(newSymbol, callSymbol, returnSymbol);
         proceduralSymbolToWord.put(newSymbol, recEquivClass);
         wordToProceduralSymbol.put(recEquivClass, newSymbol);
 
@@ -61,8 +66,6 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
             table.addSymbol(newSymbol);
         }
         enforce();
-
-        System.out.println("Added procedural symbol " + newSymbol + " linked to " + recEquivClass);
     }
 
     public I generateProceduralSymbol(Word<I> regularWord, I callSymbol, I returnSymbol) {
@@ -134,6 +137,7 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
         }
         enforce();
         for (int i = 0; i < 1000; i++) {
+            printTables();
             AbstractVRAwithDFA<?, I> hypothesis = constructHypothesis();
 //            Visualization.visualize(hypothesis);
             Word<I> cx = oracle.EquivalenceQuery(hypothesis);
@@ -185,11 +189,11 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
         Word<I> regularWord = getRegularWord(cx,
                 Word.fromWords(prefix, Word.fromLetter(callSymbol)),
                 Word.fromWords(suffix, Word.fromLetter(returnSymbol)));
-        recObsTab.addContext(prefix, suffix);
         recObsTab.addRepresentative(regularWord);
+        recObsTab.addContext(prefix, suffix);
         enforce();
 
-        System.out.println(recObsTab);
+//        System.out.println(recObsTab);
         System.out.println("Processed counterexample: " + regularWord +
                 " with recursive equivalent " + recObsTab.getRecursiveEquivalent(regularWord) +
                 " with regular proj " + wordToProceduralSymbol.get(
@@ -231,5 +235,14 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
             }
         }
         return regularWord;
+    }
+
+    void printTables() {
+        System.out.println("Starting Table:");
+        System.out.println(startingObservationTable);
+        System.out.println("\nRecursive Tables:");
+        for (RecursiveObservationTable<I> table: recursiveObservationTables.values()) {
+            System.out.println(table + "\n+++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+        }
     }
 }

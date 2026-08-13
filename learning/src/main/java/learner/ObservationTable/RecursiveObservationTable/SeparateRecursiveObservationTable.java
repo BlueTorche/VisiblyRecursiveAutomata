@@ -30,12 +30,12 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
     public FastDFA<I> constructIndividualHypothesis(Word<I> recEquivClass) {
 //        BitSet context =((SeparateRecursiveRow<I>) allRows.get(recEquivClass)).getBaseContext();
 
-        System.out.println(this);
-        System.out.println();
-        System.out.println(primeContextRepresentatives.get(recEquivClass));
-        System.out.println();
-        System.out.println(primeRepresentatives);
-        System.out.println("---------------");
+//        System.out.println(this);
+//        System.out.println();
+//        System.out.println(primeContextRepresentatives.get(recEquivClass));
+//        System.out.println();
+//        System.out.println(primeRepresentatives);
+//        System.out.println("---------------");
 
         FastDFA<I> hypothesis = new FastDFA<>(inputAlphabet);
         HashMap<Row<I>, Integer> rowToStateID = new HashMap<>();
@@ -174,9 +174,9 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
                 if (!row.isContextPrime(recPrime)) {
                     Word<I> separator = getInconsistentSeparator(row, row.getContextParent(recPrime), context);
                     if (separator != null) {
+                        System.out.println("Non consistent. Adding separator " + separator);
                         addSeparator(separator);
 //                        System.out.println(r + " -- " + row.getContextParent(recPrime).getPrefix() + " -- " + separator + " -- " + context);
-                        System.out.println("Non consistent. Added separator " + separator);
                         toRet = true;
                     }
                 }

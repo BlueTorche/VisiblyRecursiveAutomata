@@ -54,7 +54,7 @@ public abstract class AbstractRecursiveObservationTable<I>
     @Override
     public void enforce() {
         while(procComplete() || close() || consistent()) {
-            System.out.println(this);
+//            System.out.println(this);
         }
     }
 

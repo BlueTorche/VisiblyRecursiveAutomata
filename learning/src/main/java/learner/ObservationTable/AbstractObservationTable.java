@@ -50,8 +50,8 @@ public abstract class AbstractObservationTable<I, M> implements ObservationTable
         boolean toRet = false;
         for (Word<I> r: new HashSet<>(primeRepresentatives)) {
             if (!representatives.contains(r)) {
+                System.out.println("Non closed. Adding representatives " + r);
                 addRepresentative(r);
-                System.out.println("Non closed. Added representatives " + r);
                 toRet = true;
             }
         }
