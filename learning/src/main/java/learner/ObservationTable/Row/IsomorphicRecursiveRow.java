@@ -6,12 +6,25 @@ import net.automatalib.word.Word;
 import java.util.BitSet;
 
 public class IsomorphicRecursiveRow<I> extends RegularRow<I> {
-    public IsomorphicRecursiveRow(Word<I> prefix) {
+    public IsomorphicRecursiveRow(Word<I> prefix, int separatorSize) {
         super(prefix);
-        contents = new RecursiveContent();
+        contents = new RecursiveContent(separatorSize);
     }
 
     public void fetchContent(int colIdx, int contIdx) {
         contents.set(Pair.of(colIdx, contIdx));
+    }
+
+    public boolean equivalentTo(Row<I> other) {
+        return contents.equals(((IsomorphicRecursiveRow<I>) other).contents);
+    }
+
+    public BitSet getBaseContext() {
+        return ((RecursiveContent) contents).getContentVal(0);
+    }
+
+    @Override
+    public void addSeparator() {
+        ((RecursiveContent) contents).addSeparator();
     }
 }

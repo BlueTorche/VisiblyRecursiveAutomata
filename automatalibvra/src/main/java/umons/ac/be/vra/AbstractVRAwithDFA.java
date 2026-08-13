@@ -5,12 +5,14 @@ import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.DFA;
+import net.automatalib.graph.concept.GraphViewable;
+import net.automatalib.visualization.Visualization;
 import umons.ac.be.utils;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
 
-public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
+public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
 
     public AbstractVRAwithDFA(VRAlphabet<I> vrAlphabet, Map<I, DFA<S, I>> procedures, DFA<S, I> startingProcedure) {
         super(vrAlphabet, procedures, startingProcedure);
@@ -120,7 +122,7 @@ public class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
         for (Map.Entry<I, DFA<S, I>> dfa: getProcedures().entrySet()) {
             newProcedures.put(dfa.getKey(), (DFA<S, I>) utils.removeBinState(dfa.getValue(), getAutomatonAlphabet()));
         }
-        AbstractVRAwithDFA<S, I> newVRA = new AbstractVRAwithDFA<>(
+        AbstractVRAwithDFA<S, I> newVRA = new DefaultVRAwithDFA<>(
                 getInputAlphabet(),
                 newProcedures,
                 (DFA<S, I>) utils.removeBinState(getStartingProcedure(), getAutomatonAlphabet())

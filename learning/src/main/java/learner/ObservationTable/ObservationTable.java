@@ -1,9 +1,9 @@
 package learner.ObservationTable;
 
-import net.automatalib.automaton.Automaton;
+import learner.ObservationTable.Row.Row;
 import net.automatalib.word.Word;
 
-public interface ObservationTable<I> {
+public interface ObservationTable<I, M> {
 
     void addRepresentative(Word<I> r);
 
@@ -17,5 +17,21 @@ public interface ObservationTable<I> {
 
     void initialize();
 
-    Automaton<?, I, ?> constructHypothesis();
+    M constructHypothesis();
+
+    Word<I> getInconsistentSeparator(Row<I> row1, Row<I> row2);
+
+    Row<I> createNewRow(Word<I> r);
+
+    void createNewColumn(int idx);
+
+    void fetchMembership(Row<I> row, int idx);
+
+    void checkRowPrime(Row<I> row);
+
+    void checkNewPrimes();
+
+    void addSymbol(I symbol);
+
+    Word<I> getParent(Word<I> word);
 }

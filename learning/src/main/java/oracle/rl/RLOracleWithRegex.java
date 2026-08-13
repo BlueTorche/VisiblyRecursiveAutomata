@@ -76,4 +76,9 @@ public class RLOracleWithRegex<I> implements Oracle<I, DFA<?, I>> {
         System.out.println("#MQ: " + this.membershipCounter);
         System.out.println("#EQ: " + this.equivalenceCounter);
     }
+
+    @Override
+    public Alphabet<I> getInputAlphabet() {
+        return alphabet;
+    }
 }

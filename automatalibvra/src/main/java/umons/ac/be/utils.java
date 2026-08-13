@@ -23,6 +23,9 @@ public class utils {
             }
             if (dfa.isAccepting(s) || !to_remove) {
                 FastDFAState newState = toReturn.addState(dfa.isAccepting(s));
+                if (dfa.getInitialState().equals(s)) {
+                    toReturn.setInitialState(newState);
+                }
                 stateToNewState.put(s, newState);
             }
         }

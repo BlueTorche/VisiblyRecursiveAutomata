@@ -1,22 +1,21 @@
 package learner.ObservationTable;
 
 import learner.Learner;
-import learner.ObservationTable.Row.RegularRow;
+import learner.ObservationTable.Row.IsomorphicRecursiveRow;
+import learner.ObservationTable.Row.Row;
 import net.automatalib.alphabet.GrowingAlphabet;
-import net.automatalib.automaton.Automaton;
-import net.automatalib.automaton.fsa.impl.FastDFA;
-import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.word.Word;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
-public abstract class AbstractObservationTable<I> implements ObservationTable<I> {
+public abstract class AbstractObservationTable<I, M> implements ObservationTable<I, M> {
     protected List<Word<I>> representatives = new ArrayList<>();
     protected Set<Word<I>> primeRepresentatives = new HashSet<>();
 
     protected List<Word<I>> separators = new ArrayList<>();
 
-    protected Map<Word<I>, RegularRow<I>> allRows = new HashMap<>();
+    protected Map<Word<I>, Row<I>> allRows = new HashMap<>();
 
     protected GrowingAlphabet<I> inputAlphabet;
     protected Learner<I, ?> learner;
@@ -29,7 +28,7 @@ public abstract class AbstractObservationTable<I> implements ObservationTable<I>
             addRepresentative(r.prefix(r.size()-1));
         }
         representatives.add(r);
-        RegularRow<I> row = createNewRow(r);
+        Row<I> row = createNewRow(r);
         for(int idx = 0; idx < inputAlphabet.size(); idx++) {
             row.setSuccessorRow(idx, createNewRow(Word.fromWords(r, Word.fromLetter(inputAlphabet.getSymbol(idx)))));
         }
@@ -49,9 +48,10 @@ public abstract class AbstractObservationTable<I> implements ObservationTable<I>
     @Override
     public boolean close() {
         boolean toRet = false;
-        for (Word<I> r: primeRepresentatives) {
+        for (Word<I> r: new HashSet<>(primeRepresentatives)) {
             if (!representatives.contains(r)) {
                 addRepresentative(r);
+                System.out.println("Non closed. Added representatives " + r);
                 toRet = true;
             }
         }
@@ -62,11 +62,11 @@ public abstract class AbstractObservationTable<I> implements ObservationTable<I>
     public boolean consistent() {
         boolean toRet = false;
         for (Word<I> r: representatives) {
-            RegularRow<I> row = allRows.get(r);
+            Row<I> row = allRows.get(r);
             if (!row.isPrime()) {
-                Word<I> separator = getInconsistentSeparator(row, (RegularRow<I>) row.getParent());
+                Word<I> separator = getInconsistentSeparator(row, row.getParent());
                 if (separator != null) {
-                    System.out.println(r + " -- " + row.getParent().getPrefix() + " -- " + separator);
+//                    System.out.println(r + " -- " + row.getParent().getPrefix() + " -- " + separator);
                     addSeparator(separator);
                     toRet = true;
                 }
@@ -76,127 +76,9 @@ public abstract class AbstractObservationTable<I> implements ObservationTable<I>
     }
 
     @Override
-    public void enforce() {
-        int i = 0;
-        while(close() || consistent()) {
-            System.out.println(close());
-            System.out.println(consistent());
-            System.out.println(primeRepresentatives);
-            i++;
-            if (i>10){
-                break;
-            }
-        }
-    }
-
-    @Override
     public void initialize() {
         addRepresentative(Word.epsilon());
         addSeparator(Word.epsilon());
-    }
-
-    private RegularRow<I> createNewRow(Word<I> r){
-        if (!allRows.containsKey(r)) {
-            allRows.put(r, new RegularRow<>(r));
-            for (int idx = 0; idx < separators.size(); idx++) {
-                fetchMembership(allRows.get(r), idx);
-            }
-            checkRowPrime(allRows.get(r));
-        }
-        return allRows.get(r);
-    }
-
-    private void createNewColumn(int idx) {
-        for(RegularRow<I> row: allRows.values()) {
-            fetchMembership(row, idx);
-        }
-        checkNewColumnPrimes();
-    }
-
-    private void fetchMembership(RegularRow<I> row, int idx) {
-        if (learner.askMembershipQuery(
-                Word.fromWords(row.getPrefix(), separators.get(idx))
-        )) {
-            row.fetchContent(idx);
-        }
-    }
-
-    private void checkRowPrime(RegularRow<I> row) {
-        for (Word<I> prime: primeRepresentatives) {
-            if (areEquivalent(allRows.get(prime), row)){
-                System.out.println("Equivalent: " + prime + "-" + row.getPrefix());
-                return;
-            }
-        }
-        row.setParent(null);
-        primeRepresentatives.add(row.getPrefix());
-    }
-
-    private void checkNewColumnPrimes() {
-        for (Word<I> r: representatives) {
-            RegularRow<I> row = allRows.get(r);
-            if (!row.isPrime() && !areEquivalent((RegularRow<I>) row.getParent(), row)) {
-                checkRowPrime(row);
-            }
-        }
-        for (RegularRow<I> row: allRows.values()) {
-            if (!representatives.contains(row.getPrefix())) {
-                if (!row.isPrime() && !areEquivalent((RegularRow<I>) row.getParent(), row)) {
-                    checkRowPrime(row);
-                }
-            }
-        }
-    }
-
-    public void addSymbol(I symbol) {
-        inputAlphabet.add(symbol);
-        for (Word<I> r: representatives){
-            allRows.get(r).setSuccessorRow(inputAlphabet.size() -1,
-                    createNewRow(Word.fromWords(r, Word.fromLetter(symbol))));
-        }
-    }
-
-    private boolean areEquivalent(RegularRow<I> prime, RegularRow<I> row){
-        if(row.equivalentTo(prime)) {
-            row.setParent(prime);
-            return true;
-        }
-        return false;
-    }
-
-    private Word<I> getInconsistentSeparator(RegularRow<I> row1, RegularRow<I> row2) {
-        int symbolIdx = row1.consistentTo(row2);
-        if (symbolIdx == -1)
-            return null;
-        int separatorIdx = row1.getSuccessor(symbolIdx).getDistinctionSeparator(row2.getSuccessor(symbolIdx));
-        assert separatorIdx != -1;
-        return Word.fromWords(Word.fromLetter(inputAlphabet.getSymbol(symbolIdx)), separators.get(separatorIdx));
-    }
-
-    @Override
-    public Automaton<?, I, ?> constructHypothesis() {
-        FastDFA<I> hypothesis = new FastDFA<>(inputAlphabet);
-        HashMap<RegularRow<I>, Integer> rowToStateID = new HashMap<>();
-        for(Word<I> eqClass : primeRepresentatives) {
-            FastDFAState s = hypothesis.addState(allRows.get(eqClass).isAccepting());
-            rowToStateID.put(allRows.get(eqClass), s.getId());
-            if (eqClass.equals(Word.epsilon())) {
-                hypothesis.setInitial(s, true);
-            }
-        }
-        for(Word<I> eqClass : primeRepresentatives) {
-            for (int idx = 0; idx < inputAlphabet.size(); idx++) {
-                RegularRow<I> ingoingRow = (RegularRow<I>) allRows.get(eqClass).getSuccessor(idx);
-                RegularRow<I> primeIngoingRow = ingoingRow.isPrime() ? ingoingRow : (RegularRow<I>) ingoingRow.getParent();
-                hypothesis.addTransition(
-                        hypothesis.getState(rowToStateID.get(allRows.get(eqClass))),
-                        inputAlphabet.getSymbol(idx),
-                        hypothesis.getState((rowToStateID.get(primeIngoingRow)))
-                );
-            }
-        }
-
-        return hypothesis;
     }
 
     @Override
@@ -212,5 +94,33 @@ public abstract class AbstractObservationTable<I> implements ObservationTable<I>
             }
         }
         return output.toString();
+    }
+
+
+    @Override
+    public void createNewColumn(int idx) {
+        for(Row<I> row: allRows.values()) {
+            row.addSeparator();
+            fetchMembership(row, idx);
+        }
+        checkNewPrimes();
+    }
+
+    @Override
+    public void addSymbol(I symbol) {
+        inputAlphabet.add(symbol);
+        checkNewPrimes();
+        for (Word<I> r: representatives){
+            allRows.get(r).setSuccessorRow(inputAlphabet.size() -1,
+                    createNewRow(Word.fromWords(r, Word.fromLetter(symbol))));
+        }
+    }
+
+    @Override
+    public Word<I> getParent(Word<I> word) {
+        if (allRows.get(word).isPrime()) {
+            return word;
+        }
+        return allRows.get(word).getParent().getPrefix();
     }
 }

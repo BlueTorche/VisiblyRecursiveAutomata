@@ -22,4 +22,8 @@ public interface Row<I> {
     boolean isAccepting() ;
 
     Content getContent();
+
+    int consistentTo(Row<I> other);
+
+    void addSeparator();
 }

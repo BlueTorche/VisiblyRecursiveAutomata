@@ -9,7 +9,7 @@ import java.util.List;
 public class RegularRow<I> implements Row<I> {
     private final Word<I> prefix;
     protected Content contents;
-    private final List<Row<I>> successorRows = new ArrayList<>();
+    protected final List<Row<I>> successorRows = new ArrayList<>();
     private Row<I> equivalentParent = null;
 
 
@@ -41,6 +41,9 @@ public class RegularRow<I> implements Row<I> {
         }
         return -1;
     }
+
+    @Override
+    public void addSeparator() { }
 
     public int getDistinctionSeparator(Row<I> other) {
         return contents.getSeparator(other.getContent());

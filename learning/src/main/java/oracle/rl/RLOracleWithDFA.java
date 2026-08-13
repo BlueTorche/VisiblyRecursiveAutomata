@@ -1,5 +1,6 @@
 package oracle.rl;
 
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.word.Word;
@@ -37,5 +38,10 @@ public class RLOracleWithDFA<I> implements Oracle<I, DFA<?, I>> {
     public void displayStats() {
         System.out.println("#MQ: " + this.membershipCounter);
         System.out.println("#EQ: " + this.equivalenceCounter);
+    }
+
+    @Override
+    public Alphabet<I> getInputAlphabet() {
+        return null;
     }
 }

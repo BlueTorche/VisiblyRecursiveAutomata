@@ -1,5 +1,6 @@
 package oracle.vpl;
 
+import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
@@ -8,7 +9,7 @@ import oracle.Oracle;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AbstractVPLOracleFromAutomataWithConformance<I, M extends DeterministicAcceptorTS<?, I>> implements Oracle<I, M> {
+public abstract class AbstractVPLOracleFromAutomataWithConformance<I, M extends DeterministicAcceptorTS<?, I>> implements Oracle<I, M> {
     private final VPAlphabet<I> alphabet;
     private final DeterministicAcceptorTS<?, I> teacherAutomata;
     private final int maxLength = 10;
@@ -98,5 +99,10 @@ public class AbstractVPLOracleFromAutomataWithConformance<I, M extends Determini
     public void displayStats() {
         System.out.println("Number of MQ: " + membershipCounter);
         System.out.println("Number of EQ: " + equivalenceCounter);
+    }
+
+    @Override
+    public Alphabet<I> getInputAlphabet() {
+        return alphabet;
     }
 }
