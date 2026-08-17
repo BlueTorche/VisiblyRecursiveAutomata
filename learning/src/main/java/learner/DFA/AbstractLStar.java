@@ -6,7 +6,7 @@ import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.word.Word;
-import oracle.Oracle;
+import oracle.rl.Oracle;
 
 import java.util.HashMap;
 

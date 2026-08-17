@@ -11,7 +11,6 @@ import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
-import oracle.Oracle;
 import oracle.rl.RLOracleWithRegex;
 
 public class TestObservationTable {

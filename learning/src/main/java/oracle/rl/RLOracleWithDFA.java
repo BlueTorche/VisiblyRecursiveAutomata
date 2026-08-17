@@ -2,9 +2,7 @@ package oracle.rl;
 
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.fsa.DFA;
-import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.word.Word;
-import oracle.Oracle;
 
 public class RLOracleWithDFA<I> implements Oracle<I, DFA<?, I>> {
     DFA<?, I> dfa;

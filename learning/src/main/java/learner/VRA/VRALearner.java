@@ -1,25 +1,27 @@
 package learner.VRA;
 
+import de.learnlib.oracle.EquivalenceOracle;
+import de.learnlib.oracle.MembershipOracle;
+import de.learnlib.query.Query;
 import learner.Learner;
 import learner.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
 import learner.ObservationTable.RegularObservationTable;
-import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.common.util.Pair;
-import net.automatalib.visualization.Visualization;
+import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
-import oracle.Oracle;
 import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
-import javax.annotation.processing.SupportedSourceVersion;
 import java.util.HashMap;
 
 public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, I>> {
     protected VRAlphabet<I> alphabet;
-    protected Oracle<I, AbstractVRAwithDFA<?, I>> oracle;
+    protected MembershipOracle<I, Boolean> membershipOracle;
+    protected EquivalenceOracle<DeterministicAcceptorTS<?, I>, I, Boolean> equivalenceOracle;
+//    protected Oracle<I, AbstractVRAwithDFA<?, I>> oracle;
 
     protected HashMap<I, Word<I>> proceduralSymbolToWord = new HashMap<>();
     protected HashMap<Word<I>, I> wordToProceduralSymbol= new HashMap<>();
@@ -28,27 +30,41 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
 
     int ProceduralSymbolCounter = 0;
 
-    public VRALearner(VRAlphabet<I> alphabet, Oracle<I, AbstractVRAwithDFA<?, I>> oracle) {
+//    public VRALearner(VRAlphabet<I> alphabet, Oracle<I, AbstractVRAwithDFA<?, I>> oracle) {
+//        this.alphabet = alphabet;
+//        this.oracle = oracle;
+//
+//        startingObservationTable = new RegularObservationTable<>(new GrowingMapAlphabet<>(alphabet.getInternalAlphabet()), this);
+//    }
+
+    public VRALearner(VRAlphabet<I> alphabet,
+                      MembershipOracle<I, Boolean> membershipOracle,
+                      EquivalenceOracle<DeterministicAcceptorTS<?, I>, I, Boolean> equivalenceOracle) {
         this.alphabet = alphabet;
-        this.oracle = oracle;
+        this.membershipOracle = membershipOracle;
+        this.equivalenceOracle = equivalenceOracle;
 
         startingObservationTable = new RegularObservationTable<>(new GrowingMapAlphabet<>(alphabet.getInternalAlphabet()), this);
     }
 
+    private boolean askMembership(Word<I> input) {
+        boolean answer =  membershipOracle.answerQuery(input);
+        System.out.println("MQ of : " + input + " = " + answer);
+        return answer;
+    }
 
     public boolean recursiveMembershipQuery(Word<I> prefix, I callSymbol, Word<I> regularWord, I returnSymbol, Word<I> suffix) {
-        boolean answer = oracle.MembershipQuery(Word.fromWords(
+//        boolean answer = oracle.MembershipQuery(Word.fromWords(
+//                prefix, Word.fromLetter(callSymbol), extend(regularWord), Word.fromLetter(returnSymbol), suffix
+//        ));
+        return askMembership(Word.fromWords(
                 prefix, Word.fromLetter(callSymbol), extend(regularWord), Word.fromLetter(returnSymbol), suffix
         ));
-        System.out.println("MQ of : " + prefix + " " + callSymbol + " " + regularWord + " " + returnSymbol + " "+  suffix + " = " + answer);
-        return answer;
     }
 
     @Override
     public boolean askMembershipQuery(Word<I> regularWord) {
-        boolean answer =  oracle.MembershipQuery(extend(regularWord));
-        System.out.println("MQ of : " + regularWord + " = " + answer);
-        return answer;
+        return askMembership(extend(regularWord));
     }
 
     public void addProceduralSymbol(Word<I> regularWord, I callSymbol, I returnSymbol) {
@@ -101,7 +117,7 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
     }
 
     @Override
-    public AbstractVRAwithDFA<?, I> constructHypothesis() {
+    public AbstractVRAwithDFA<?,I> constructHypothesis() {
         FastDFA<I> startingAutomaton = startingObservationTable.constructHypothesis();
         HashMap<Word<I>, FastDFA<I>> hypotheses = new HashMap<>();
         for (RecursiveObservationTable<I> table: recursiveObservationTables.values()) {
@@ -140,12 +156,13 @@ public abstract class VRALearner<I> implements Learner<I, AbstractVRAwithDFA<?, 
             printTables();
             AbstractVRAwithDFA<?, I> hypothesis = constructHypothesis();
 //            Visualization.visualize(hypothesis);
-            Word<I> cx = oracle.EquivalenceQuery(hypothesis);
+//            Word<I> cx = oracle.EquivalenceQuery(hypothesis);
+            Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis, null);
             System.out.println("Processing counterexample: " + cx);
             if (cx == null) {
                 break;
             } else {
-                processCounterExample(cx);
+                processCounterExample(cx.getInput());
             }
         }
 //        oracle.displayStats();

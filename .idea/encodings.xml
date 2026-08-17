@@ -3,10 +3,14 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/automatalibvra/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/automatalibvra/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jsonschemainference/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/jsonschemainference/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/learning/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/learning/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vpajsonlearning/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/vpajsonlearning/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vra/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/vra/src/main/resources" charset="UTF-8" />
   </component>

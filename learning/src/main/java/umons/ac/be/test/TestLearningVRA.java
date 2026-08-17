@@ -11,11 +11,13 @@ import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.CompactDFA;
 import net.automatalib.automaton.vpa.impl.DefaultOneSEVPA;
 import net.automatalib.automaton.vpa.impl.Location;
+import net.automatalib.common.util.Pair;
+import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
+import net.automatalib.util.ts.acceptor.Acceptors;
 import net.automatalib.visualization.Visualization;
-import oracle.Oracle;
-import oracle.vpl.VPLOracleFromOneSEVPAWithConformance;
-import oracle.vpl.VPLOracleFromVRAWithConformance;
+import oracle.vpl.VPLConformanceOracleEnumeratingAcceptor;
+import oracle.vpl.VPLMembershipOracleFromAcceptor;
 import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
 import umons.ac.be.vraalphabet.DefaultVRAlphabet;
@@ -40,35 +42,41 @@ public class TestLearningVRA {
 //        testLearningVRA(BenchmarkType.ONE_SEVPA, LearnerType.ISOMORPHIC_LEARNER);
 //        testLearningVRA(BenchmarkType.ONE_SEVPA, LearnerType.SEPARATE_LEARNER);
 //        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.ISOMORPHIC_LEARNER);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.SEPARATE_LEARNER);
+        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.SEPARATE_LEARNER);
 //        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.ISOMORPHIC_LEARNER);
-        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.SEPARATE_LEARNER);
+//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.SEPARATE_LEARNER);
     }
 
     public static void testLearningVRA(BenchmarkType benchmarkType, LearnerType learnerType) {
-        Oracle<String, AbstractVRAwithDFA<?, String>> oracle = switch(benchmarkType) {
+        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> teacher = switch(benchmarkType) {
             case ONE_SEVPA -> getOneSEVPAOracle();
             case VRA_BENCHMARK_1 -> getVRA_Benchmark1_Oracle();
             case VRA_BENCHMARK_2 ->  getVRA_Benchmark2_Oracle();
         };
 
-        VPAlphabet<String> alphabet = (VPAlphabet<String>) oracle.getInputAlphabet();
+        DeterministicAcceptorTS<?, String> teacherBlackbox = teacher.getFirst();
+        VPAlphabet<String> alphabet = teacher.getSecond();
+
+        VPLMembershipOracleFromAcceptor<String> membershipOracle = new VPLMembershipOracleFromAcceptor<>(teacherBlackbox);
+        VPLConformanceOracleEnumeratingAcceptor<String> equivalenceOracle =
+                new VPLConformanceOracleEnumeratingAcceptor<>(teacherBlackbox, alphabet);
 
         final VRALearner<String> learner = switch (learnerType) {
             case ISOMORPHIC_LEARNER -> new VRAIsomorphicLearner<>(
-                    VRAlphabet.fromVPAlphabet(alphabet), oracle);
+                    VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
             case SEPARATE_LEARNER -> new VRASeparateLearner<>(
-                    VRAlphabet.fromVPAlphabet(alphabet), oracle);
+                    VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
         };
 
         AbstractVRAwithDFA<?, String> learnedVRA = learner.learn();
-        oracle.displayStats();
+        membershipOracle.displayStats();
+        equivalenceOracle.displayStats();
 
         Visualization.visualize(learnedVRA);
         Visualization.visualize(learnedVRA.removeBinStatesAndAutomata());
     }
 
-    private static Oracle<String, AbstractVRAwithDFA<?, String>> getOneSEVPAOracle() {
+    private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getOneSEVPAOracle() {
         VPAlphabet<String> alphabet = new DefaultVPAlphabet<String>(
                 Alphabets.fromArray("i1", "i2"), Alphabets.fromArray("c"), Alphabets.fromArray("r")
         );
@@ -85,10 +93,10 @@ public class TestLearningVRA {
 
 //        Visualization.visualize(oneSEVPA);
 
-        return new VPLOracleFromOneSEVPAWithConformance<>(alphabet, oneSEVPA);
+        return Pair.of(oneSEVPA, alphabet);
     }
 
-    private static Oracle<String, AbstractVRAwithDFA<?, String>> getVRA_Benchmark1_Oracle() {
+    private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRA_Benchmark1_Oracle() {
         Alphabet<String> internalAlphabet = Alphabets.fromArray("i1", "i2");
         Alphabet<String> callAlphabet = Alphabets.fromArray("c1", "c2");
         Alphabet<String> returnAlphabet = Alphabets.fromArray("r1", "r2");
@@ -144,12 +152,10 @@ public class TestLearningVRA {
         procedures.put("J2", J2Procedure);
         procedures.put("J3", J3Procedure);
 
-        DefaultVRAwithDFA<?, String> vra = new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure);
-
-        return new VPLOracleFromVRAWithConformance<>(alphabet, vra);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
     }
 
-    private static Oracle<String, AbstractVRAwithDFA<?, String>> getVRA_Benchmark2_Oracle() {
+    private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRA_Benchmark2_Oracle() {
         Alphabet<String> internalAlphabet = Alphabets.fromArray("a");
         Alphabet<String> callAlphabet = Alphabets.fromArray("c");
         Alphabet<String> returnAlphabet = Alphabets.fromArray("r");
@@ -218,10 +224,6 @@ public class TestLearningVRA {
         procedures.put("J2", J2Procedure);
         procedures.put("J3", J3Procedure);
 
-        DefaultVRAwithDFA<?, String> vra = new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure);
-
-        Visualization.visualize(vra);
-
-        return new VPLOracleFromVRAWithConformance<>(alphabet, vra);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
     }
 }

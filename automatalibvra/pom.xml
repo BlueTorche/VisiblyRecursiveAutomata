@@ -20,5 +20,9 @@
             <artifactId>automata-distribution</artifactId>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>be.ac.umons.jsonschematools</groupId>
+            <artifactId>jsonschematools-generator</artifactId>
+        </dependency>
     </dependencies>
 </project>

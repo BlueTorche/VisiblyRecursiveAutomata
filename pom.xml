@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,6 +14,7 @@
     <packaging>pom</packaging>
 
     <name>Validation and Learning of Visibly Recursive Automata</name>
+
     <licenses>
         <!-- TODO -->
     </licenses>
@@ -36,6 +37,7 @@
         <module>vra</module>
         <module>learning</module>
         <module>automatalibvra</module>
+        <module>jsonschemainference</module>
     </modules>
 
 
@@ -52,8 +54,10 @@
 
         <!-- Dependency versions -->
         <automatalib.version>0.12.0</automatalib.version>
-        <learnlib.version>0.18.0</learnlib.version>
+        <learnlib.version>19.0.0</learnlib.version>
         <antlr.version>4.7.1</antlr.version>
+        <jsonschematools.version>2.0</jsonschematools.version>
+        <json.version>20231013</json.version>
     </properties>
 
 
@@ -76,6 +80,11 @@
 
             <!-- AutomataLib and LearnLib -->
             <dependency>
+                <groupId>org.json</groupId>
+                <artifactId>json</artifactId>
+                <version>${json.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>net.automatalib.distribution</groupId>
                 <artifactId>automata-distribution</artifactId>
                 <version>${automatalib.version}</version>
@@ -94,6 +103,21 @@
                 <artifactId>antlr4-runtime</artifactId>
                 <version>${antlr.version}</version>
                 <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>be.ac.umons.jsonschematools</groupId>
+                <artifactId>jsonschematools-core</artifactId>
+                <version>${jsonschematools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>be.ac.umons.jsonschematools</groupId>
+                <artifactId>jsonschematools-validator</artifactId>
+                <version>${jsonschematools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>be.ac.umons.jsonschematools</groupId>
+                <artifactId>jsonschematools-generator</artifactId>
+                <version>${jsonschematools.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

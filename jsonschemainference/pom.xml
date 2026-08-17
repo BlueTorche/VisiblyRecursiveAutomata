@@ -11,7 +11,7 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>learning</artifactId>
+    <artifactId>jsonschemainference</artifactId>
 
     <dependencies>
         <!-- Internal -->
@@ -24,7 +24,6 @@
             <artifactId>vra</artifactId>
         </dependency>
 
-        <!-- AutomataLib and LearnLib -->
         <dependency>
             <groupId>net.automatalib.distribution</groupId>
             <artifactId>automata-distribution</artifactId>
@@ -40,6 +39,14 @@
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>be.ac.umons.jsonschematools</groupId>
+            <artifactId>jsonschematools-validator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
         </dependency>
     </dependencies>
 </project>

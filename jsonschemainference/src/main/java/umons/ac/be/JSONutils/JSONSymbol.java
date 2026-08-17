@@ -1,0 +1,115 @@
+package umons.ac.be.JSONutils;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+
+import be.ac.umons.jsonschematools.AbstractConstants;
+import net.automatalib.alphabet.Alphabet;
+import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
+import net.automatalib.alphabet.impl.AbstractSymbol;
+import net.automatalib.alphabet.impl.Alphabets;
+
+public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
+
+    public static final JSONSymbol commaSymbol = JSONSymbol.toSymbol(",");
+    public static final JSONSymbol openingCurlyBraceSymbol = JSONSymbol.toSymbol("{");
+    public static final JSONSymbol closingCurlyBraceSymbol = JSONSymbol.toSymbol("}");
+    public static final JSONSymbol openingBracketSymbol = JSONSymbol.toSymbol("[");
+    public static final JSONSymbol closingBracketSymbol = JSONSymbol.toSymbol("]");
+    public static final JSONSymbol nullSymbol = JSONSymbol.toSymbol("null");
+    public static final JSONSymbol integerSymbol = JSONSymbol.toSymbol("\"" + AbstractConstants.integerConstant + "\"");
+    public static final JSONSymbol numberSymbol = JSONSymbol.toSymbol("\"" + AbstractConstants.numberConstant + "\"");
+    public static final JSONSymbol stringSymbol = JSONSymbol.toSymbol("\"" + AbstractConstants.stringConstant + "\"");
+    public static final JSONSymbol enumSymbol = JSONSymbol.toSymbol("\"" + AbstractConstants.enumConstant + "\"");
+    public static final JSONSymbol trueSymbol = JSONSymbol.toSymbol("true");
+    public static final JSONSymbol falseSymbol = JSONSymbol.toSymbol("false");
+    /**
+     * Contains the symbols for enum, false, integer, null, number, string, and
+     * true.
+     */
+    public static final Alphabet<JSONSymbol> primitiveValuesAlphabet;
+
+    static {
+        // @formatter:off
+        final List<JSONSymbol> primitiveValuesSymbols = Arrays.asList(
+                JSONSymbol.nullSymbol,
+                JSONSymbol.integerSymbol,
+                JSONSymbol.numberSymbol,
+                JSONSymbol.stringSymbol,
+                JSONSymbol.enumSymbol,
+                JSONSymbol.trueSymbol,
+                JSONSymbol.falseSymbol
+        );
+        // @formatter:on
+        primitiveValuesAlphabet = Alphabets.fromList(primitiveValuesSymbols);
+    }
+
+    private final String actualSymbol;
+
+    private JSONSymbol(String actualSymbol) {
+        this.actualSymbol = actualSymbol;
+    }
+
+//    @Override
+//    public boolean equals(Object obj) {
+//        if (obj == this) {
+//            return true;
+//        }
+//        if (!(obj instanceof JSONSymbol)) {
+//            return false;
+//        }
+//        JSONSymbol o = (JSONSymbol) obj;
+//        return Objects.equals(actualSymbol, o.actualSymbol);
+//    }
+
+    @Override
+    public int compareTo(JSONSymbol other) {
+        return actualSymbol.compareTo(other.actualSymbol);
+    }
+
+    /**
+     * If the current symbol is a call, returns the corresponding return symbol.
+     *
+     * More explicitly, if the current symbol is { (resp. [), returns } (resp. ]).
+     *
+     * @return Null, or the symbols }, ]
+     */
+    public JSONSymbol callToReturn() {
+        if (Objects.equals(this, openingCurlyBraceSymbol)) {
+            return closingCurlyBraceSymbol;
+        } else if (Objects.equals(this, openingBracketSymbol)) {
+            return closingBracketSymbol;
+        } else {
+            return null;
+        }
+    }
+
+    public static JSONSymbol toSymbol(String string) {
+        return new JSONSymbol(string);
+    }
+
+    public static JSONSymbol toSymbol(Character character) {
+        return new JSONSymbol(Character.toString(character));
+    }
+
+    public static Word<JSONSymbol> toWord(String... symbols) {
+        WordBuilder<JSONSymbol> wordBuilder = new WordBuilder<>(symbols.length);
+        for (String symbol : symbols) {
+            wordBuilder.add(toSymbol(symbol));
+        }
+        return wordBuilder.toWord();
+    }
+
+    @Override
+    public String toString() {
+        return actualSymbol;
+    }
+
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(actualSymbol);
+//    }
+
+}

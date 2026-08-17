@@ -3,7 +3,6 @@ package oracle.rl;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.word.Word;
-import oracle.Oracle;
 
 import java.util.ArrayList;
 import java.util.List;

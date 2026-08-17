@@ -17,7 +17,9 @@ public abstract class AbstractVRA<S, I, M extends UniversalDeterministicAutomato
     private final Map<I, M> procedures;
     private final M startingProcedure;
 
-    public AbstractVRA(VRAlphabet<I> vrAlphabet, Map<I, M> procedures, M startingProcedure) {
+    public AbstractVRA(VRAlphabet<I> vrAlphabet,
+                       Map<I, M> procedures,
+                       M startingProcedure) {
         this.vrAlphabet = vrAlphabet;
         this.procedures = procedures;
         this.startingProcedure = startingProcedure;

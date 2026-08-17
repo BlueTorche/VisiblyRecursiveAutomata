@@ -14,7 +14,9 @@ import java.util.*;
 
 public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
 
-    public AbstractVRAwithDFA(VRAlphabet<I> vrAlphabet, Map<I, DFA<S, I>> procedures, DFA<S, I> startingProcedure) {
+    public AbstractVRAwithDFA(VRAlphabet<I> vrAlphabet,
+                              Map<I, DFA<S, I>> procedures,
+                              DFA<S, I> startingProcedure) {
         super(vrAlphabet, procedures, startingProcedure);
     }
 
