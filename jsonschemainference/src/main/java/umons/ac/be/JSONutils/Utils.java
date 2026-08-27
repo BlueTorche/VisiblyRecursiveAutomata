@@ -6,6 +6,7 @@ import be.ac.umons.jsonschematools.JSONSchemaException;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.DefaultVPAlphabet;
 import net.automatalib.word.Word;
+import net.automatalib.word.WordBuilder;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -118,10 +119,143 @@ public class Utils {
         return true;
     }
 
+    public static boolean validWordObject(final Word<JSONSymbol> word) {
+        if (word.size() < 2) {
+            return false;
+        }
+        if (!word.getSymbol(0).equals(JSONSymbol.openingCurlyBraceSymbol) &&
+            !word.getSymbol(word.size()-1).equals(JSONSymbol.closingCurlyBraceSymbol)) {
+            return false;
+        }
+        boolean shouldBeKey = true;
+        boolean shouldBeValue = false;
+        boolean shouldBeComma = false;
+        for (int i = 1; i < word.size()-1; i++) {
+            if (shouldBeKey && !JSONSymbol.isKeySymbol(word.getSymbol(i))) {
+//                System.out.println("Invalid key symbol at index " + i + " : " + word);
+                return false;
+            }
+            if (shouldBeComma && !word.getSymbol(i).equals(JSONSymbol.commaSymbol)) {
+//                System.out.println("Invalid comma symbol at index " + i + " : " + word);
+                return false;
+            }
+            if (shouldBeValue) {
+                if (!JSONSymbol.primitiveValuesAlphabet.containsSymbol(word.getSymbol(i)) &&
+                        !word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) &&
+                        !word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+//                    System.out.println("Invalid value symbol at index " + i + " : " + word);
+                    return false;
+                }
+                if (word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) ||
+                        word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+                    boolean isObject = word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol);
+                    WordBuilder<JSONSymbol> jsonObject = new WordBuilder<>();
+                    jsonObject.add(word.getSymbol(i));
+                    int depth = 0;
+                    for (i = i + 1; i < word.size() && depth >= 0; ++i) {
+                        if (word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) ||
+                                word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+                            depth++;
+                        }
+                        if (word.getSymbol(i).equals(JSONSymbol.closingCurlyBraceSymbol) ||
+                                word.getSymbol(i).equals(JSONSymbol.closingBracketSymbol)) {
+                            depth--;
+                        }
+                        jsonObject.add(word.getSymbol(i));
+                    }
+                    i--;
+                    if (isObject && !validWordObject(jsonObject.toWord())) {
+//                        System.out.println("Invalid object at index " + i);
+                        return false;
+                    }
+                    if (!isObject && !validWordArray(jsonObject.toWord())) {
+//                        System.out.println("Invalid array at index " + i);
+                        return false;
+                    }
+                }
+            }
+
+//            System.out.println("Idx " + i + " key " + shouldBeKey + " val " + shouldBeValue + " com " + shouldBeComma);
+            if (shouldBeKey) {
+                shouldBeKey = false;
+                shouldBeValue = true;
+            }
+            else if (shouldBeValue) {
+                shouldBeValue = false;
+                shouldBeComma = true;
+            } else if (shouldBeComma) {
+                shouldBeComma = false;
+                shouldBeKey = true;
+            }
+        }
+
+        return shouldBeComma || word.size() == 2;
+    }
+
+    public static boolean validWordArray(final Word<JSONSymbol> word) {
+        if (word.size() < 2) {
+            return false;
+        }
+        if (!word.getSymbol(0).equals(JSONSymbol.openingBracketSymbol) &&
+                !word.getSymbol(word.size()-1).equals(JSONSymbol.closingBracketSymbol)) {
+            return false;
+        }
+        boolean shouldBeValue = true;
+        boolean shouldBeComma = false;
+
+        for (int i = 1; i < word.size()-1; i++) {
+            if (shouldBeComma && !word.getSymbol(i).equals(JSONSymbol.commaSymbol)) {
+//                System.out.println("Invalid comma symbol at index " + i + " : " + word);
+                return false;
+            }
+            if (shouldBeValue) {
+                if (!JSONSymbol.primitiveValuesAlphabet.containsSymbol(word.getSymbol(i)) &&
+                        !word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) &&
+                        !word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+//                    System.out.println("Invalid value symbol at index " + i + " : " + word);
+                    return false;
+                }
+                if (word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) ||
+                        word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+                    boolean isObject = word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol);
+                    WordBuilder<JSONSymbol> jsonObject = new WordBuilder<>();
+                    jsonObject.add(word.getSymbol(i));
+                    int depth = 0;
+                    for (i = i+1; i < word.size()  && depth >= 0; ++i) {
+                        if (word.getSymbol(i).equals(JSONSymbol.openingCurlyBraceSymbol) ||
+                                word.getSymbol(i).equals(JSONSymbol.openingBracketSymbol)) {
+                            depth++;
+                        }
+                        if (word.getSymbol(i).equals(JSONSymbol.closingCurlyBraceSymbol) ||
+                                word.getSymbol(i).equals(JSONSymbol.closingBracketSymbol)) {
+                            depth--;
+                        }
+                        jsonObject.add(word.getSymbol(i));
+                    }
+                    i--;
+                    if (isObject && !validWordObject(jsonObject.toWord())) {
+//                        System.out.println("Invalid object at index " + i);
+                        return false;
+                    }
+                    if (!isObject && !validWordArray(jsonObject.toWord())) {
+//                        System.out.println("Invalid array at index " + i);
+                        return false;
+                    }
+                }
+            }
+
+            shouldBeValue = !shouldBeValue;
+            shouldBeComma = !shouldBeComma;
+        }
+
+        return shouldBeComma || word.size() == 2;
+    }
+
+
     /**
      * We escape the "\S", "\E", "\I", and "\D" symbols in the document (to avoid
      * errors from JSONObject).
-     *
+     * <p>
      * That means we replace every \\([SIDE]) by \\\\$1.
      *
      * @param string The string to escape

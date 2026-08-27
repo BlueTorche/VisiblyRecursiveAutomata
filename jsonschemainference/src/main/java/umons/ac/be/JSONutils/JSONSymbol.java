@@ -1,17 +1,17 @@
 package umons.ac.be.JSONutils;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import be.ac.umons.jsonschematools.AbstractConstants;
 import net.automatalib.alphabet.Alphabet;
+import net.automatalib.common.util.nid.AbstractMutableNumericID;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 import net.automatalib.alphabet.impl.AbstractSymbol;
 import net.automatalib.alphabet.impl.Alphabets;
 
 public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
+    private static final Map<String, JSONSymbol> symbols = new HashMap<>();
 
     public static final JSONSymbol commaSymbol = JSONSymbol.toSymbol(",");
     public static final JSONSymbol openingCurlyBraceSymbol = JSONSymbol.toSymbol("{");
@@ -25,6 +25,7 @@ public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
     public static final JSONSymbol enumSymbol = JSONSymbol.toSymbol("\"" + AbstractConstants.enumConstant + "\"");
     public static final JSONSymbol trueSymbol = JSONSymbol.toSymbol("true");
     public static final JSONSymbol falseSymbol = JSONSymbol.toSymbol("false");
+
     /**
      * Contains the symbols for enum, false, integer, null, number, string, and
      * true.
@@ -48,8 +49,47 @@ public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
 
     private final String actualSymbol;
 
+    public static boolean isKeySymbol(JSONSymbol symbol) {
+        return !primitiveValuesAlphabet.contains(symbol) &&
+                !symbol.equals(JSONSymbol.commaSymbol) &&
+                !symbol.equals(JSONSymbol.openingCurlyBraceSymbol) &&
+                !symbol.equals(JSONSymbol.closingCurlyBraceSymbol) &&
+                !symbol.equals(JSONSymbol.openingBracketSymbol) &&
+                !symbol.equals(JSONSymbol.closingBracketSymbol);
+    }
+
+    public static JSONSymbol getRandomInternalOrKey(Random random) {
+        while (true) {
+            int r = random.nextInt(symbols.size());
+            JSONSymbol symbol = symbols.values().stream().toList().get(r);
+            if (symbol.equals(JSONSymbol.openingCurlyBraceSymbol) &&
+                    !symbol.equals(JSONSymbol.closingCurlyBraceSymbol) &&
+                    !symbol.equals(JSONSymbol.openingBracketSymbol) &&
+                    !symbol.equals(JSONSymbol.closingBracketSymbol)) {
+                return symbol;
+            }
+        }
+    }
+
+    public static JSONSymbol getRandomKey(Random random) {
+        while (true) {
+            int r = random.nextInt(symbols.size());
+            JSONSymbol symbol = symbols.values().stream().toList().get(r);
+            if (isKeySymbol(symbol)) {
+                return symbol;
+            }
+        }
+    }
+
     private JSONSymbol(String actualSymbol) {
         this.actualSymbol = actualSymbol;
+    }
+
+    private static JSONSymbol getJSONSymbol(String actualSymbol) {
+        if (!symbols.containsKey(actualSymbol)) {
+            symbols.put(actualSymbol, new JSONSymbol(actualSymbol));
+        }
+        return symbols.get(actualSymbol);
     }
 
 //    @Override
@@ -87,11 +127,11 @@ public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
     }
 
     public static JSONSymbol toSymbol(String string) {
-        return new JSONSymbol(string);
+        return getJSONSymbol(string);
     }
 
     public static JSONSymbol toSymbol(Character character) {
-        return new JSONSymbol(Character.toString(character));
+        return getJSONSymbol(Character.toString(character));
     }
 
     public static Word<JSONSymbol> toWord(String... symbols) {

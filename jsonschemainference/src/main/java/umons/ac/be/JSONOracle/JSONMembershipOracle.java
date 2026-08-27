@@ -23,10 +23,11 @@ import umons.ac.be.JSONutils.WordConversion;
  *
  * @author Gaëtan Staquet
  */
-public class JSONMembershipOracle implements SingleQueryOracle<JSONSymbol, Boolean> {
+public class JSONMembershipOracle implements SingleQueryOracle.SingleQueryOracleDFA<JSONSymbol> {
 
     private final JSONSchema schema;
     private final Validator validator;
+    private int numberOfMQ = 0;
 
     public JSONMembershipOracle(JSONSchema schema) {
         this.schema = schema;
@@ -35,8 +36,10 @@ public class JSONMembershipOracle implements SingleQueryOracle<JSONSymbol, Boole
 
     @Override
     public Boolean answerQuery(Word<JSONSymbol> input) {
+        numberOfMQ++;
+
         String string = WordConversion.fromJSONSymbolWordToString(input);
-        if (!Utils.validWord(string)) {
+        if (!Utils.validWord(string) || !Utils.validWordObject(input)) {
             return false;
         }
         string = Utils.escapeSymbolsForJSON(string);
@@ -44,6 +47,12 @@ public class JSONMembershipOracle implements SingleQueryOracle<JSONSymbol, Boole
         try {
             json = new JSONObject(string);
         } catch (JSONException e) {
+            return false;
+        }
+
+        // Assert good order of key
+        if (!input.equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json))) {
+//            System.out.println("Bad order of key:" + input + " --- " + WordConversion.fromJSONDocumentToJSONSymbolWord(json));
             return false;
         }
 
@@ -58,6 +67,10 @@ public class JSONMembershipOracle implements SingleQueryOracle<JSONSymbol, Boole
             e.printStackTrace(System.err);
             return false;
         }
+    }
+
+    public int getNumberOfMQ() {
+        return numberOfMQ;
     }
 
     @Override

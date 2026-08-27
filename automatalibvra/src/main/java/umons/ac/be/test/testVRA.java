@@ -9,8 +9,8 @@ import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
 import umons.ac.be.utils;
-import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
+import umons.ac.be.vra.VRA;
 import umons.ac.be.vraalphabet.DefaultVRAlphabet;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
@@ -181,7 +181,7 @@ public class testVRA {
 
     private static void testReducedVRA(){
         VRAlphabet<String> alphabet = buildAlphabet();
-        AbstractVRAwithDFA<?, ?> vra = buildVRA2(alphabet);
+        VRA<?, String, ?> vra = buildVRA2(alphabet);
         Visualization.visualize(vra);
         Visualization.visualize(vra.removeBinStatesAndAutomata());
     }

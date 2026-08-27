@@ -21,7 +21,7 @@
         </dependency>
         <dependency>
             <groupId>umons.ac.be</groupId>
-            <artifactId>vra</artifactId>
+            <artifactId>learning</artifactId>
         </dependency>
 
         <dependency>

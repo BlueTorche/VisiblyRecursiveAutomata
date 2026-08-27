@@ -54,7 +54,7 @@
 
         <!-- Dependency versions -->
         <automatalib.version>0.12.0</automatalib.version>
-        <learnlib.version>19.0.0</learnlib.version>
+        <learnlib.version>0.18.0</learnlib.version>
         <antlr.version>4.7.1</antlr.version>
         <jsonschematools.version>2.0</jsonschematools.version>
         <json.version>20231013</json.version>
@@ -75,6 +75,12 @@
             <dependency>
                 <groupId>umons.ac.be</groupId>
                 <artifactId>automatalibvra</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>umons.ac.be</groupId>
+                <artifactId>learning</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

@@ -37,10 +37,12 @@ public class WordConversion {
     private static void fromJSONObjectToJSONWord(JSONObject object, boolean shuffleKeys, Random rand,
                                                  WordBuilder<JSONSymbol> wordBuilder) {
         List<String> keys = new ArrayList<>(object.keySet());
+        keys.sort(String.CASE_INSENSITIVE_ORDER);
         if (shuffleKeys) {
             Collections.shuffle(keys, rand);
         }
         boolean first = true;
+//        System.out.println(object.toString());
         for (String key : keys) {
             if (!first) {
                 wordBuilder.add(JSONSymbol.commaSymbol);

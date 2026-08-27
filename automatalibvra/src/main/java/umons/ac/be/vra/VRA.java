@@ -19,7 +19,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
 public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?, ?>>
-        extends FiniteRepresentation, GraphViewable, InputAlphabetHolder<I>, DeterministicAcceptorTS<S, I> {
+        extends FiniteRepresentation, GraphViewable, InputAlphabetHolder<I>, DeterministicAcceptorTS<VRAState<S, I, M>, I> {
     VRAlphabet<I> getInputAlphabet();
 
     /**
@@ -75,6 +75,13 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      * TODO
      */
     void removeProcedure(I proceduralSymbol);
+
+    /**
+     * TODO
+     */
+    VRA<S, I, M> removeBinStatesAndAutomata();
+
+    void visualizeIndividually();
 
     /**
      * Convenience method for {@link #getProcedures()} to quickly return the procedure of a given call symbol.

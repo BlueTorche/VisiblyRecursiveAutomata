@@ -2,16 +2,13 @@ package umons.ac.be.test;
 
 import learner.DFA.AbstractLStar;
 import learner.DFA.DefaultLStar;
-import learner.ObservationTable.ObservationTable;
-import learner.ObservationTable.RegularObservationTable;
-import net.automatalib.alphabet.Alphabet;
+import umons.ac.be.ObservationTable.RegularObservationTable;
 import net.automatalib.alphabet.GrowingAlphabet;
-import net.automatalib.alphabet.impl.Alphabets;
 import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
-import oracle.rl.RLOracleWithRegex;
+import umons.ac.be.oracle.rl.RLOracleWithRegex;
 
 public class TestObservationTable {
     public static void main(String[] args) {

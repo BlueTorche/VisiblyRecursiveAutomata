@@ -1,17 +1,16 @@
 package umons.ac.be.vra;
 
 import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.automaton.UniversalDeterministicAutomaton;
-import net.automatalib.automaton.fsa.DFA;
+import net.automatalib.graph.concept.GraphViewable;
+import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
 
-public abstract class AbstractVRA<S, I, M extends UniversalDeterministicAutomaton<S, I, ?, ?, ?>>
-        implements VRA<VRAState<S, I, M>, I,  M> {
+abstract class AbstractVRA<S, I, M extends UniversalDeterministicAutomaton<S, I, ?, ?, ?>>
+        implements VRA<S, I,  M> {
 
     private final VRAlphabet<I> vrAlphabet;
     private final Map<I, M> procedures;
@@ -76,5 +75,15 @@ public abstract class AbstractVRA<S, I, M extends UniversalDeterministicAutomato
     @Override
     public void removeProcedure(I proceduralSymbol){
         procedures.remove(proceduralSymbol);
+    }
+
+    @Override
+    public void visualizeIndividually() {
+//        System.out.println("Starting Procedure");
+//        Visualization.visualize((GraphViewable) startingProcedure);
+        for (Map.Entry<I, M> procedure: procedures.entrySet()) {
+            System.out.println("Procedure " + procedure.getKey());
+            Visualization.visualize((GraphViewable) procedure.getValue());
+        }
     }
 }

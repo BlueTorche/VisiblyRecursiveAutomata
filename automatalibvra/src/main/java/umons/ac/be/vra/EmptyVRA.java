@@ -41,17 +41,7 @@ public class EmptyVRA<I> implements VRA<Void, I,  DFA<Void, I>> {
     }
 
     @Override
-    public @Nullable Void getTransition(Void unused, I i) {
-        return null;
-    }
-
-    @Override
-    public boolean isAccepting(Void unused) {
-        return false;
-    }
-
-    @Override
-    public @Nullable Void getInitialState() {
+    public @Nullable VRAState<Void, I, DFA<Void, I>> getInitialState() {
         return null;
     }
 
@@ -62,4 +52,22 @@ public class EmptyVRA<I> implements VRA<Void, I,  DFA<Void, I>> {
 
     @Override
     public void removeProcedure(I proceduralSymbol) { }
+
+    @Override
+    public VRA<Void, I, DFA<Void, I>> removeBinStatesAndAutomata() {
+        return null;
+    }
+
+    @Override
+    public void visualizeIndividually() { }
+
+    @Override
+    public @Nullable VRAState<Void, I, DFA<Void, I>> getTransition(VRAState<Void, I, DFA<Void, I>> voidIDFAVRAState, I i) {
+        return null;
+    }
+
+    @Override
+    public boolean isAccepting(VRAState<Void, I, DFA<Void, I>> voidIDFAVRAState) {
+        return false;
+    }
 }

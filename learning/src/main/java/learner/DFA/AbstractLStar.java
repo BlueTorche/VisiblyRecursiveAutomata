@@ -1,12 +1,12 @@
 package learner.DFA;
 
-import learner.Learner;
-import learner.ObservationTable.RegularObservationTable;
+import umons.ac.be.learner.Learner;
+import umons.ac.be.ObservationTable.RegularObservationTable;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.word.Word;
-import oracle.rl.Oracle;
+import umons.ac.be.oracle.rl.Oracle;
 
 import java.util.HashMap;
 
@@ -34,6 +34,11 @@ public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
             gatheredKnowledge.put(word, oracle.MembershipQuery(word));
         }
         return gatheredKnowledge.get(word);
+    }
+
+    @Override
+    public void displayStats() {
+
     }
 
     @Override

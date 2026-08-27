@@ -12,7 +12,7 @@ import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
 
-public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
+abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
 
     public AbstractVRAwithDFA(VRAlphabet<I> vrAlphabet,
                               Map<I, DFA<S, I>> procedures,
@@ -23,6 +23,7 @@ public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, 
     @Override
     public VRAState<S, I, DFA<S, I>> getTransition(VRAState<S, I, DFA<S, I>> currentState, I symbolInput) {
         HashMap<DFA<S, I>, Set<S>> nextProceduresStates = new HashMap<>();
+//        System.out.println(symbolInput);
         switch (getInputAlphabet().getSymbolType(symbolInput)) {
             case VPAlphabet.SymbolType.INTERNAL -> {
                 for(DFA<S, I> procedure: currentState.getCurrentProcedures()) {
@@ -119,6 +120,7 @@ public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, 
         return false;
     }
 
+    @Override
     public AbstractVRAwithDFA<S, I> removeBinStatesAndAutomata() {
         Map<I, DFA<S, I>> newProcedures = new HashMap<>();
         for (Map.Entry<I, DFA<S, I>> dfa: getProcedures().entrySet()) {
