@@ -4,7 +4,7 @@ import de.learnlib.oracle.SingleQueryOracle;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
 
-public class VPLMembershipOracleFromAcceptor<I> implements SingleQueryOracle<I, Boolean> {
+public class VPLMembershipOracleFromAcceptor<I> implements  SingleQueryOracle.SingleQueryOracleDFA<I>{
     private final DeterministicAcceptorTS<?, I> teacherAutomata;
     private int counterNumberMQ = 0;
 
@@ -20,6 +20,7 @@ public class VPLMembershipOracleFromAcceptor<I> implements SingleQueryOracle<I, 
 
     @Override
     public Boolean answerQuery(Word<I> word, Word<I> word1) {
+        counterNumberMQ++;
         return teacherAutomata.accepts(Word.fromWords(word, word1));
     }
 

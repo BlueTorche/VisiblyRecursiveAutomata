@@ -41,6 +41,7 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
         );
         // Récupérer tous les symboles acceptant CX
         Set<Word<I>> allAccepting = recObsTab.getAllEquivalent(regularWord);
+
         // Si il n'y en a pas 1, ajouter v au "représentatif"
         Word<I> uniqueAccepting;
         if (allAccepting.size() != 1) {

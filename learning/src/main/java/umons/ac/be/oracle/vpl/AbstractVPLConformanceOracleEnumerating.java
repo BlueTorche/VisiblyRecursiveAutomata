@@ -4,31 +4,40 @@ import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.query.DefaultQuery;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.VPAlphabet;
-import net.automatalib.automaton.fsa.DFA;
-import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import umons.ac.be.vra.VRA;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class VPLConformanceOracleEnumeratingAcceptor<I> implements EquivalenceOracle<VRA<FastDFAState, I, DFA<FastDFAState, I>>, I, Boolean> {
+public class AbstractVPLConformanceOracleEnumerating<I, M extends DeterministicAcceptorTS<?, I>>
+        implements EquivalenceOracle<M, I, Boolean> {
     private final DeterministicAcceptorTS<?, I> teacherAutomata;
     private int counterNumberEQ = 0;
-    private final int maxLength = 10;
+    private int maxLength = 10;
     private final VPAlphabet<I> alphabet;
 
-    public VPLConformanceOracleEnumeratingAcceptor(DeterministicAcceptorTS<?, I> teacherAutomata, VPAlphabet<I> alphabet) {
+    public AbstractVPLConformanceOracleEnumerating(
+            DeterministicAcceptorTS<?, I> teacherAutomata,
+            VPAlphabet<I> alphabet) {
         this.teacherAutomata = teacherAutomata;
         this.alphabet = alphabet;
     }
 
+    public AbstractVPLConformanceOracleEnumerating(
+            DeterministicAcceptorTS<?, I> teacherAutomata,
+            VPAlphabet<I> alphabet,
+            int maxLength) {
+        this.teacherAutomata = teacherAutomata;
+        this.alphabet = alphabet;
+        this.maxLength = maxLength;
+    }
+
     @Override
     public @Nullable DefaultQuery<I, Boolean> findCounterExample(
-            VRA<FastDFAState, I, DFA<FastDFAState, I>> hypothesis, Collection<? extends I> collection) {
+           M hypothesis, Collection<? extends I> collection) {
         this.counterNumberEQ++;
 
         System.out.println("New Equivalence Query #" + counterNumberEQ);
@@ -40,6 +49,7 @@ public class VPLConformanceOracleEnumeratingAcceptor<I> implements EquivalenceOr
                 boolean accepted = teacherAutomata.accepts(word);
                 if (hypothesis.accepts(word)
                         != accepted) {
+                    System.out.println("Counterexample: " + word);
                     return new DefaultQuery<>(word, accepted);
                 }
                 // if (word.equals(Word.fromSymbols("c2", "c1", "c1", "r2", "r1", "r2"))) { throw  new RuntimeException("Error"); }
@@ -93,3 +103,4 @@ public class VPLConformanceOracleEnumeratingAcceptor<I> implements EquivalenceOr
         return alphabet;
     }
 }
+
