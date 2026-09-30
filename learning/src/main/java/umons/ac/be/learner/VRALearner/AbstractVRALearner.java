@@ -136,13 +136,13 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         for (int i = 0; i < 1000; i++) {
 //            printTables();
 //            displayStats();
-            System.out.println("Searching a counterexample...");
+            System.out.println("Searching a counterexample... " + numberOfEQ);
             VRA<FastDFAState, I, DFA<FastDFAState, I>> hypothesis = constructHypothesis();
 //            Visualization.visualize(hypothesis.removeBinStatesAndAutomata());
 //            Visualization.visualize(hypothesis);
             numberOfEQ++;
             Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis, null);
-            System.out.println("Processing counterexample: " + cx);
+//            System.out.println("Processing counterexample: " + cx);
             if (cx == null) {
                 break;
             } else {
@@ -239,7 +239,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         return regularWord;
     }
 
-    void printTables() {
+    public void printTables() {
         System.out.println("Starting Table:");
         System.out.println(startingObservationTable);
         System.out.println("\nRecursive Tables:");

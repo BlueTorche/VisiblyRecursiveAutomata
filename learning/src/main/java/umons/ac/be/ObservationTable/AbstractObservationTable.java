@@ -25,6 +25,7 @@ public abstract class AbstractObservationTable<I, M> implements ObservationTable
         if (!r.isEmpty()) {
             addRepresentative(r.prefix(r.size()-1));
         }
+        System.out.println("Adding representative " + r);
         representatives.add(r);
         Row<I> row = createNewRow(r);
         for(int idx = 0; idx < inputAlphabet.size(); idx++) {
@@ -35,9 +36,10 @@ public abstract class AbstractObservationTable<I, M> implements ObservationTable
     @Override
     public void addSeparator(Word<I> s) {
         if (!separators.contains(s)) {
-//            if (!s.isEmpty()) {
-//                addSeparator(s.suffix(s.size()-1));
-//            }
+            if (!s.isEmpty()) {
+                addSeparator(s.suffix(s.size()-1));
+            }
+            System.out.println("Adding separator " + s);
             separators.add(s);
             createNewColumn(separators.size()-1);
         }
@@ -48,7 +50,7 @@ public abstract class AbstractObservationTable<I, M> implements ObservationTable
         boolean toRet = false;
         for (Word<I> r: new HashSet<>(primeRepresentatives)) {
             if (!representatives.contains(r)) {
-                System.out.println("Non closed. Adding representatives " + r);
+                System.out.print("Non closed. ");
                 addRepresentative(r);
                 toRet = true;
             }

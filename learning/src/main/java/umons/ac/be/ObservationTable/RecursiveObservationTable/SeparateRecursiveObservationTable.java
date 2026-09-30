@@ -172,7 +172,7 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
                 if (!row.isContextPrime(recPrime)) {
                     Word<I> separator = getInconsistentSeparator(row, row.getContextParent(recPrime), context);
                     if (separator != null) {
-                        System.out.println("Non consistent. Adding separator " + separator);
+                        System.out.print("Non consistent. ");
                         addSeparator(separator);
 //                        System.out.println(r + " -- " + row.getContextParent(recPrime).getPrefix() + " -- " + separator + " -- " + context);
                         toRet = true;
