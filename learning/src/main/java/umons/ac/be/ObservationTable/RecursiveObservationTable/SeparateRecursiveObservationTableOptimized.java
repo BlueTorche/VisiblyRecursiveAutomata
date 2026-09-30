@@ -1,5 +1,6 @@
 package umons.ac.be.ObservationTable.RecursiveObservationTable;
 
+import umons.ac.be.ObservationTable.Row.Content.RecursiveContent;
 import umons.ac.be.ObservationTable.Row.SeparateRecursiveRow;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.alphabet.GrowingAlphabet;
@@ -23,11 +24,43 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
                     (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
                     input,
                     recEquivClass);
-            if (equivalent != null) {
-                result.add(getRecursiveEquivalent(equivalent));
+            if (areRecursiveEquivalent(recEquivClass, equivalent, 0)) {
+                result.add(recEquivClass);
             }
         }
         return result;
+    }
+
+    public BitSet getBitsetValue(Word<I> word) {
+        BitSet T = new BitSet();
+        for(int contIdx= 0; contIdx< contextPairs.size(); contIdx++) {
+            if (((AbstractVRALearner<I>) learner).recursiveMembershipQuery(
+                    contextPairs.get(contIdx).getFirst(),
+                    callSymbol,
+                    word,
+                    returnSymbol,
+                    contextPairs.get(contIdx).getSecond()
+            )) {
+                T.set(contIdx);
+            }
+        }
+        return T;
+    }
+
+    public Word<I> getRecursiveEquivalent(BitSet T) {
+        for (Word<I> recEquivClass: recursiveEquivalenceClasses){
+            if (((RecursiveContent) allRows.get(recEquivClass).getContent()).getContentVal(0).equals(T))
+                return recEquivClass;
+        }
+        return null;
+    }
+
+    public boolean isAccepted(Word<I> word, Word<I> recEquivClass) {
+        Word<I> equivalent = getTransitions(
+                (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
+                word,
+                recEquivClass);
+        return areRecursiveEquivalent(recEquivClass, equivalent, 0);
     }
 
     public Word<I> getTransitions(SeparateRecursiveRow<I> row, Word<I> toRead, Word<I> recEquivClass) {
