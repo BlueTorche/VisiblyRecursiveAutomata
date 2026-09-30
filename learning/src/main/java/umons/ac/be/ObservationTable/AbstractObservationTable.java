@@ -35,9 +35,9 @@ public abstract class AbstractObservationTable<I, M> implements ObservationTable
     @Override
     public void addSeparator(Word<I> s) {
         if (!separators.contains(s)) {
-            if (!s.isEmpty()) {
-                addSeparator(s.suffix(s.size()-1));
-            }
+//            if (!s.isEmpty()) {
+//                addSeparator(s.suffix(s.size()-1));
+//            }
             separators.add(s);
             createNewColumn(separators.size()-1);
         }

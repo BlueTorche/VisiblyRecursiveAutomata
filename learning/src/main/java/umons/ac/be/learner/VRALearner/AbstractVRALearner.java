@@ -11,7 +11,6 @@ import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.common.util.Pair;
-import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
 import umons.ac.be.vra.DefaultVRAwithDFA;
 import umons.ac.be.vra.VRA;
@@ -62,17 +61,17 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 
     public boolean recursiveMembershipQuery(Word<I> prefix, I callSymbol, Word<I> regularWord, I returnSymbol, Word<I> suffix) {
         return askMembership(Word.fromWords(
-                prefix, Word.fromLetter(callSymbol), extend(regularWord), Word.fromLetter(returnSymbol), suffix
+                prefix, Word.fromLetter(callSymbol), expand(regularWord), Word.fromLetter(returnSymbol), suffix
         ));
     }
 
     @Override
     public boolean askMembershipQuery(Word<I> regularWord) {
-        return askMembership(extend(regularWord));
+        return askMembership(expand(regularWord));
     }
 
     public void addProceduralSymbol(Word<I> regularWord, I callSymbol, I returnSymbol) {
-        I newSymbol = generateProceduralSymbol(extend(regularWord), callSymbol, returnSymbol);
+        I newSymbol = generateProceduralSymbol(expand(regularWord), callSymbol, returnSymbol);
         Word<I> recEquivClass = Word.fromWords(Word.fromLetter(callSymbol), regularWord, Word.fromLetter(returnSymbol));
 
         System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
@@ -94,11 +93,11 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         return (I) ("J" + ProceduralSymbolCounter);
     }
 
-    public Word<I> extend(Word<I> regularWord) {
+    public Word<I> expand(Word<I> regularWord) {
         Word<I> extendedWord = Word.epsilon();
         for (I symbol : regularWord) {
             if (alphabet.isProceduralSymbol(symbol)) {
-                extendedWord = Word.fromWords(extendedWord, extend(proceduralSymbolToWord.get(symbol)));
+                extendedWord = Word.fromWords(extendedWord, expand(proceduralSymbolToWord.get(symbol)));
             }
             else {
                 extendedWord = extendedWord.append(symbol);

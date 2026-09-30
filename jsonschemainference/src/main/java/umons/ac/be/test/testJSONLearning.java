@@ -45,7 +45,7 @@ public class testJSONLearning {
     }
 
     private static final boolean VISUALIZATION = false;
-    private static final int numberExperiment = 10;
+    private static final int numberExperiment = 1;
     private static float totalTime = 0;
     private static int totalMQ = 0;
     private static int totalEQ = 0;
@@ -55,7 +55,8 @@ public class testJSONLearning {
 
         String schema = new String[]{"recursiveList", "basicTypes", "vscode", "vim", "proxies", "codecov"}[schemaIndex];
         Path filePath = Paths.get(
-                "C:\\Users\\dubru\\IdeaProjects\\ValidatingJSONDocumentsWithLearnedVPA-main\\schemas\\benchmarks\\"
+//                "C:\\Users\\dubru\\IdeaProjects\\ValidatingJSONDocumentsWithLearnedVPA-main\\schemas\\benchmarks\\"
+                "D:\\TFE2-code-gaetan\\ValidatingJSONDocumentsWithLearnedVPA\\schemas\\benchmarks\\"
                         + schema + "\\" + schema + ".json"
         );
         EquivalenceOracleType equivalenceOracleType = schemaIndex < 3 ? EquivalenceOracleType.EXPLORATION : EquivalenceOracleType.RANDOM;
