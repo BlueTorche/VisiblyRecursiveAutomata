@@ -19,8 +19,6 @@ public interface ObservationTable<I, M> {
 
     M constructHypothesis();
 
-    Word<I> getInconsistentSeparator(Row<I> row1, Row<I> row2);
-
     Row<I> createNewRow(Word<I> r);
 
     void createNewColumn(int idx);
@@ -29,9 +27,13 @@ public interface ObservationTable<I, M> {
 
     void checkRowPrime(Row<I> row);
 
-    void checkNewPrimes();
+    void checkInconsistency(Row<I> row);
+
+    Word<I> getInconsistentSeparator(Row<I> row1, Row<I> row2);
+
+    void checkAllRowsPrimeAndInconsistence();
 
     void addSymbol(I symbol);
 
-    Word<I> getParent(Word<I> word);
+    Row<I> createNewEmptyRow(Word<I> r);
 }

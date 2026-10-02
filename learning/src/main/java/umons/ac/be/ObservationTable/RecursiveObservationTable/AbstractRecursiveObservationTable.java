@@ -3,71 +3,69 @@ package umons.ac.be.ObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.AbstractObservationTable;
 import umons.ac.be.ObservationTable.Row.Content.RecursiveContent;
 import umons.ac.be.ObservationTable.Row.Row;
+import umons.ac.be.learner.Learner;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.common.util.Pair;
 import net.automatalib.word.Word;
 
 import java.util.*;
+import java.util.stream.Stream;
 
-public abstract class AbstractRecursiveObservationTable<I>
-        extends AbstractObservationTable<I, Map<Word<I>, FastDFA<I>>>
+public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRALearner<I>>
+        extends AbstractObservationTable<I, Map<Word<I>, FastDFA<I>>, L>
         implements RecursiveObservationTable<I> {
     List<Pair<Word<I>, Word<I>>> contextPairs = new ArrayList<>();
 
     I callSymbol;
     I returnSymbol;
 
-    Set<Word<I>> recursiveEquivalenceClasses = new HashSet<>();
-
-    @Override
-    public Row<I> createNewRow(Word<I> r) {
-        if (!allRows.containsKey(r)) {
-            allRows.put(r, createNewEmptyRow(r));
-            for (int idx = 0; idx < separators.size(); idx++) {
-                fetchMembership(allRows.get(r), idx);
-            }
-            checkRowPrime(allRows.get(r));
-        }
-        return allRows.get(r);
-    }
+//    Set<Word<I>> recursiveEquivalenceClasses = new HashSet<>();
+    Map<Word<I>, BitSet> recursiveEquivalenceClasses = new HashMap<>();
+    Map<Word<I>, BitSet> newRecursivePrime = new HashMap<>();
 
     @Override
     public void fetchMembership(Row<I> row, int idx) {
         for (int contIdx = 0; contIdx < contextPairs.size(); contIdx++) {
             fetchMembershipContext(row, idx, contIdx);
         }
-    }
-
-    @Override
-    public Map<Word<I>, FastDFA<I>> constructHypothesis() {
-        Map<Word<I>, FastDFA<I>> allDFAs = new HashMap<>();
-//        System.out.println(recursiveEquivalenceClasses);
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
-            allDFAs.put(Word.fromWords(Word.fromLetter(callSymbol), recEquivClass, Word.fromLetter(returnSymbol)),
-                    constructIndividualHypothesis(recEquivClass));
-        }
-        return allDFAs;
-    }
-
-    @Override
-    public void enforce() {
-        while(procComplete() || close() || consistent()) {
-//            System.out.println(this);
+        if (isRecursivePrime(row.getPrefix(), idx)) {
+            newRecursivePrime.put(
+                    Word.fromWords(row.getPrefix(), separators.get(idx)),
+                    ((RecursiveContent) allRows.get(row.getPrefix()).getContent()).getContentVal(idx)
+            );
         }
     }
 
     @Override
     public void fetchMembershipContext(Row<I> row, int sepIdx, int contIdx) {
-        if(((AbstractVRALearner<I>) learner).recursiveMembershipQuery(
+        if(learner.recursiveMembershipQuery(
                 contextPairs.get(contIdx).getFirst(),
                 callSymbol,
                 Word.fromWords(row.getPrefix(), separators.get(sepIdx)),
                 returnSymbol,
                 contextPairs.get(contIdx).getSecond()
         )) {
-            row.getContent().set(Pair.of(sepIdx, contIdx));
+            ((RecursiveContent) row.getContent()).set(Pair.of(sepIdx, contIdx));
         }
+    }
+
+    @Override
+    public void enforce() {
+        while(procComplete() || close() || consistent()) { }
+    }
+
+    @Override
+    public Map<Word<I>, FastDFA<I>> constructHypothesis() {
+        Map<Word<I>, FastDFA<I>> allDFAs = new HashMap<>();
+//        System.out.println(recursiveEquivalenceClasses);
+        for (Word<I> recEquivClass: recursiveEquivalenceClasses.keySet()) {
+            allDFAs.put(
+                    Word.fromWords(Word.fromLetter(callSymbol), recEquivClass, Word.fromLetter(returnSymbol)),
+                    constructIndividualHypothesis(recEquivClass)
+            );
+        }
+        return allDFAs;
     }
 
     @Override
@@ -76,37 +74,54 @@ public abstract class AbstractRecursiveObservationTable<I>
         contextPairs.add(pair);
 
         for (Row<I> row : allRows.values()) {
-            for(int i = 0; i < separators.size(); i++) {
-                fetchMembershipContext(row, i, contextPairs.size()-1);
+            for(int idx = 0; idx < separators.size(); idx++) {
+                fetchMembershipContext(row, idx, contextPairs.size()-1);
             }
         }
-        checkNewPrimes();
+
+        // We loop again to ensure all primes values have been updated
+        for (Row<I> row : allRows.values()) {
+            for(int idx = 0; idx < separators.size(); idx++) {
+                if (isRecursivePrime(row.getPrefix(), idx)) {
+                    newRecursivePrime.put(
+                            Word.fromWords(row.getPrefix(), separators.get(idx)),
+                            ((RecursiveContent) allRows.get(row.getPrefix()).getContent()).getContentVal(idx)
+                    );
+                }
+            }
+        }
+        checkAllRowsPrimeAndInconsistence();
     }
 
     @Override
     public Word<I> getRecursiveEquivalent(Word<I> word) {
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
-            if (areRecursiveEquivalent(recEquivClass, word, 0)) {
-                return recEquivClass;
+        return getRecursiveEquivalent(word, 0);
+    }
+
+    @Override
+    public Word<I> getRecursiveEquivalent(Word<I> word, int separatorIdx) {
+        for (Map.Entry<Word<I>, BitSet> recEquivClass :
+                Stream.concat(
+                        recursiveEquivalenceClasses.entrySet().stream(),
+                        newRecursivePrime.entrySet().stream()
+                ).toList()) {
+            if (areRecursiveEquivalent(recEquivClass.getValue(), word, separatorIdx)) {
+                return recEquivClass.getKey();
             }
         }
         return null;
     }
 
     @Override
-    public boolean areRecursiveEquivalent(Word<I> recEquivClass, Word<I> representative, int separatorIdx) {
-        return ((RecursiveContent) allRows.get(recEquivClass).getContent()).getContentVal(0).equals(
+    public boolean areRecursiveEquivalent(BitSet recEquivClass, Word<I> representative, int separatorIdx) {
+        return recEquivClass.equals(
                 ((RecursiveContent) allRows.get(representative).getContent()).getContentVal(separatorIdx)
         );
     }
 
+    @Override
     public boolean isRecursivePrime(Word<I> rowPrefix, int separatorIdx) {
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
-            if (areRecursiveEquivalent(recEquivClass, rowPrefix, separatorIdx)) {
-                return false;
-            }
-        }
-        return true;
+        return getRecursiveEquivalent(rowPrefix, separatorIdx) == null;
     }
 
     @Override
@@ -127,5 +142,10 @@ public abstract class AbstractRecursiveObservationTable<I>
                 .append(returnSymbol)
                 .append(super.toString())
                 .toString();
+    }
+
+    @Override
+    public Map<Word<I>, BitSet> getRecursiveEquivalentClass() {
+        return recursiveEquivalenceClasses;
     }
 }

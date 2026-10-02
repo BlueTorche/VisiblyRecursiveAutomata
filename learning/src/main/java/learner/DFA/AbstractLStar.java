@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
     GrowingAlphabet<I> alphabet;
     Oracle<I, DFA<?, I>> oracle;
-    RegularObservationTable<I> observationTable;
+    RegularObservationTable<I, AbstractLStar<I>> observationTable;
     HashMap<Word<I>, Boolean> gatheredKnowledge = new HashMap<>();
 
     public AbstractLStar(GrowingAlphabet<I> alphabet, Oracle<I, DFA<?, I>> oracle) {
@@ -24,7 +24,7 @@ public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
 
     @Override
     public FastDFA<I> constructHypothesis() {
-        return (FastDFA<I>) observationTable.constructHypothesis();
+        return observationTable.constructHypothesis();
     }
 
     @Override

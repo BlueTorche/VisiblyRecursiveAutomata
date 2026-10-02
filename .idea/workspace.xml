@@ -4,14 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="Functionnal learning without RS optimization">
+    <list default="true" id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="Optimized counterexample processing">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONLearning.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONLearning.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/AbstractObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/AbstractObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/ObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/ObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/AbstractRecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/AbstractRecursiveObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/IsomorphicRecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/IsomorphicRecursiveObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/RecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/RecursiveObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTableOptimized.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTableOptimized.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RegularObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RegularObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/AbstractVRALearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/AbstractVRALearner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearnerOptimized.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearnerOptimized.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestObservationTable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -233,6 +240,7 @@
       <workItem from="1790752633487" duration="5130000" />
       <workItem from="1790838174325" duration="3935000" />
       <workItem from="1790845226162" duration="19102000" />
+      <workItem from="1790923208970" duration="17257000" />
     </task>
     <task id="LOCAL-00001" summary="Functionnal Learning of Separate VRA">
       <option name="closed" value="true" />
@@ -274,7 +282,15 @@
       <option name="project" value="LOCAL" />
       <updated>1790752712415</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Optimized counterexample processing">
+      <option name="closed" value="true" />
+      <created>1790923293379</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1790923293380</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -286,6 +302,7 @@
     <MESSAGE value="Implement JSON Oracles + modify previous oracles with Learnlib methods" />
     <MESSAGE value="Functionnal JSON learning and comparison with VPA" />
     <MESSAGE value="Functionnal learning without RS optimization" />
-    <option name="LAST_COMMIT_MESSAGE" value="Functionnal learning without RS optimization" />
+    <MESSAGE value="Optimized counterexample processing" />
+    <option name="LAST_COMMIT_MESSAGE" value="Optimized counterexample processing" />
   </component>
 </project>

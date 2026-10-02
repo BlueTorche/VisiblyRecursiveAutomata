@@ -44,9 +44,9 @@ public class testJSONLearning {
 
     private static final boolean VISUALIZATION = false;
     private static final TestLearningVRA.LearnerType LEARNER_TYPE =
-            TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
+        TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
     private static final int numberExperiment = 10;
-    private static final int schemaIndex = 3;
+    private static final int schemaIndex = 4;
     private static final boolean VPA = false;
 
     private static float totalTime = 0;

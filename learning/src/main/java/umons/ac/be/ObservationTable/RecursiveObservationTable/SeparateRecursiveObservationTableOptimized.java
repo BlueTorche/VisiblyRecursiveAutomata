@@ -6,30 +6,36 @@ import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.common.util.Pair;
 import net.automatalib.word.Word;
+import umons.ac.be.learner.VRALearner.VRASeparateLearnerOptimized;
 
 import java.util.*;
 
-public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecursiveObservationTable<I> {
-    public SeparateRecursiveObservationTableOptimized(GrowingAlphabet<I> inputAlphabet, AbstractVRALearner<I> learner, I callSymbol, I returnSymbol) {
+public class SeparateRecursiveObservationTableOptimized<I, L extends VRASeparateLearnerOptimized<I>>
+        extends SeparateRecursiveObservationTable<I, L> {
+    public SeparateRecursiveObservationTableOptimized(
+            GrowingAlphabet<I> inputAlphabet,
+            L learner,
+            I callSymbol,
+            I returnSymbol) {
         super(inputAlphabet, learner, callSymbol, returnSymbol);
     }
 
-    public Set<Word<I>> getAllEquivalent(Word<I> input) {
-        if (allRows.containsKey(input)) {
-            return Collections.singleton(getRecursiveEquivalent(input));
-        }
-        Set<Word<I>> result = new HashSet<>();
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
-            Word<I> equivalent = getTransitions(
-                    (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
-                    input,
-                    recEquivClass);
-            if (areRecursiveEquivalent(recEquivClass, equivalent, 0)) {
-                result.add(recEquivClass);
-            }
-        }
-        return result;
-    }
+//    public Set<Word<I>> getAllEquivalent(Word<I> input) {
+//        if (allRows.containsKey(input)) {
+//            return Collections.singleton(getRecursiveEquivalent(input));
+//        }
+//        Set<Word<I>> result = new HashSet<>();
+//        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
+//            Word<I> equivalent = getTransitions(
+//                    (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
+//                    input,
+//                    recEquivClass);
+//            if (areRecursiveEquivalent(recEquivClass, equivalent, 0)) {
+//                result.add(recEquivClass);
+//            }
+//        }
+//        return result;
+//    }
 
     public BitSet getBitsetValue(Word<I> word) {
         if (allRows.containsKey(word)) {
@@ -37,7 +43,7 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
         }
         BitSet T = new BitSet();
         for(int contIdx= 0; contIdx< contextPairs.size(); contIdx++) {
-            if (((AbstractVRALearner<I>) learner).recursiveMembershipQuery(
+            if (learner.recursiveMembershipQuery(
                     contextPairs.get(contIdx).getFirst(),
                     callSymbol,
                     word,
@@ -51,9 +57,9 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
     }
 
     public Word<I> getRecursiveEquivalent(BitSet T) {
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses){
-            if (((RecursiveContent) allRows.get(recEquivClass).getContent()).getContentVal(0).equals(T))
-                return recEquivClass;
+        for (Map.Entry<Word<I>, BitSet> recEquivClass: recursiveEquivalenceClasses.entrySet()){
+            if (recEquivClass.getValue().equals(T))
+                return recEquivClass.getKey();
         }
         return null;
     }
@@ -63,7 +69,7 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
                 (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
                 word,
                 recEquivClass);
-        return areRecursiveEquivalent(recEquivClass, equivalent, 0);
+        return areRecursiveEquivalent(recursiveEquivalenceClasses.get(recEquivClass), equivalent, 0);
     }
 
     public Word<I> getTransitions(SeparateRecursiveRow<I> row, Word<I> toRead, Word<I> recEquivClass) {
@@ -89,7 +95,7 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
     }
 
     public Set<Word<I>> getRecursiveEquivalenceClasses() {
-        return recursiveEquivalenceClasses;
+        return recursiveEquivalenceClasses.keySet();
     }
 
     public Word<I> getRegularEquivalent(Word<I> input, Word<I> recEquivClass) {

@@ -29,7 +29,7 @@ public class TestObservationTable {
             RLOracleWithRegex<String> oracle = new RLOracleWithRegex<>(alphabet, regex);
             AbstractLStar<String> learner = new DefaultLStar<>(alphabet, oracle);
 
-            RegularObservationTable<String> table = new RegularObservationTable<>(alphabet, learner);
+            RegularObservationTable<String, AbstractLStar<String>> table = new RegularObservationTable<>(alphabet, learner);
             table.initialize();
             System.out.println(table);
             table.addRepresentative(Word.fromWords(Word.fromLetter("a"), Word.fromLetter("b"), Word.fromLetter("a")));

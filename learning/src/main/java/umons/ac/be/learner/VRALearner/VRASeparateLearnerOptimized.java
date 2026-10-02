@@ -14,7 +14,7 @@ import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
 
-public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
+public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
     public VRASeparateLearnerOptimized(VRAlphabet<I> alphabet,
                                        MembershipOracle<I, Boolean> membershipOracle,
                                        EquivalenceOracle<VRA<FastDFAState, I, DFA<FastDFAState, I>>, I, Boolean> equivalenceOracle) {
@@ -32,8 +32,8 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
 
     @Override
     protected I processRecursiveCounterExample(Word<I> prefix, I callSymbol, Word<I> cx, I returnSymbol, Word<I> suffix) {
-        SeparateRecursiveObservationTableOptimized<I> recObsTab =
-                (SeparateRecursiveObservationTableOptimized<I>) recursiveObservationTables.get(Pair.of(callSymbol, returnSymbol));
+        SeparateRecursiveObservationTableOptimized<I, VRASeparateLearnerOptimized<I>> recObsTab =
+                (SeparateRecursiveObservationTableOptimized<I, VRASeparateLearnerOptimized<I>>) recursiveObservationTables.get(Pair.of(callSymbol, returnSymbol));
         Word<I> regularWord = getRegularWord(cx,
                 Word.fromWords(prefix, Word.fromLetter(callSymbol)),
                 Word.fromWords(Word.fromLetter(returnSymbol), suffix)
@@ -130,7 +130,7 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
     }
 
     private Word<I> findSeparator(Word<I> counterexample,
-                                  SeparateRecursiveObservationTableOptimized<I> recObsTab,
+                                  SeparateRecursiveObservationTableOptimized<I, VRASeparateLearnerOptimized<I>> recObsTab,
                                   Word<I> equivalenceClass,
                                   boolean shouldBeAccepted) {
         BitSet T_equivClass = recObsTab.getBitsetValue(equivalenceClass);

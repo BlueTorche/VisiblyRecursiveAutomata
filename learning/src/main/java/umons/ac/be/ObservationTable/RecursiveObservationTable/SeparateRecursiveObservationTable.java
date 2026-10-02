@@ -7,14 +7,16 @@ import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.word.Word;
+import umons.ac.be.learner.VRALearner.VRASeparateLearner;
 
 import java.util.*;
 
-public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObservationTable<I> {
+public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I>>
+        extends AbstractRecursiveObservationTable<I, L> {
     Map<Word<I>, Set<Word<I>>> primeContextRepresentatives = new HashMap<>();
 
     public SeparateRecursiveObservationTable(GrowingAlphabet<I> inputAlphabet,
-                                             AbstractVRALearner<I> learner,
+                                             L learner,
                                              I callSymbol,
                                              I returnSymbol) {
         this.inputAlphabet = inputAlphabet;
@@ -25,19 +27,12 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
 
     @Override
     public FastDFA<I> constructIndividualHypothesis(Word<I> recEquivClass) {
-//        BitSet context = getContext(recEquivClass);
-
-//        System.out.println(this);
-//        System.out.println();
-//        System.out.println(primeContextRepresentatives.get(recEquivClass));
-//        System.out.println();
-//        System.out.println(primeRepresentatives);
-//        System.out.println("---------------");
-
         FastDFA<I> hypothesis = new FastDFA<>(inputAlphabet);
         HashMap<Row<I>, Integer> rowToStateID = new HashMap<>();
         for(Word<I> eqClass : primeContextRepresentatives.get(recEquivClass)) {
-            FastDFAState s = hypothesis.addState(areRecursiveEquivalent(recEquivClass, eqClass, 0));
+            FastDFAState s = hypothesis.addState(
+                    areRecursiveEquivalent(recursiveEquivalenceClasses.get(recEquivClass), eqClass, 0)
+            );
             rowToStateID.put(allRows.get(eqClass), s.getId());
             if (eqClass.equals(Word.epsilon())) {
                 hypothesis.setInitial(s, true);
@@ -47,11 +42,6 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
             for (int idx = 0; idx < inputAlphabet.size(); idx++) {
                 SeparateRecursiveRow<I> ingoingRow = ((SeparateRecursiveRow<I>) allRows.get(eqClass))
                         .getSuccessor(idx, recEquivClass);
-
-//                System.out.println(allRows.get(eqClass));
-//                System.out.println(ingoingRow);
-//                System.out.println(ingoingRow.isContextPrime(recEquivClass));
-//                System.out.println(ingoingRow.getContextParent(recEquivClass));
 
                 hypothesis.addTransition(
                         hypothesis.getState(rowToStateID.get(allRows.get(eqClass))),
@@ -63,37 +53,19 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
         return hypothesis;
     }
 
-    @Override
-    public boolean procComplete() { // TODO can be optimized
-        for (Word<I> r: representatives) {
-            if (checkAndFetchRecursivePrime(r, 0)) {
-                return true;
-            }
-        }
-        for (Word<I> r: allRows.keySet()) {
-            if (representatives.contains(r)) {
-                continue;
-            }
-            for (int i =0; i < separators.size(); i++) {
-                if (checkAndFetchRecursivePrime(r, i)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
 
-    private boolean checkAndFetchRecursivePrime(Word<I> rep, int sepIdx) {
-        if (isRecursivePrime(rep, sepIdx)) {
-            Word<I> recEquivClass = Word.fromWords(rep, separators.get(sepIdx));
-            addRepresentative(recEquivClass);   // TODO should not be added
-            recursiveEquivalenceClasses.add(recEquivClass);
-            primeContextRepresentatives.put(recEquivClass, new HashSet<>());
-            primeContextRepresentatives.get(recEquivClass).add(recEquivClass);
-            primeRepresentatives.add(recEquivClass);
-            checkNewPrimes(recEquivClass);
-            ((AbstractVRALearner<I>) learner).addProceduralSymbol(recEquivClass, callSymbol, returnSymbol);
-            System.out.println("Added procedural symbol " + callSymbol + recEquivClass + returnSymbol);
+    @Override
+    public boolean procComplete() {
+        if(!newRecursivePrime.isEmpty()) {
+            Map.Entry<Word<I>, BitSet> newPrime = newRecursivePrime.entrySet().iterator().next();
+            newRecursivePrime.remove(newPrime.getKey());
+
+            recursiveEquivalenceClasses.put(newPrime.getKey(), newPrime.getValue());
+            primeContextRepresentatives.put(newPrime.getKey(), new HashSet<>());
+            checkNewPrimes(newPrime.getKey());
+
+            learner.addProceduralSymbol(newPrime.getKey(), callSymbol, returnSymbol);
+            System.out.println("Added procedural symbol " + callSymbol + newPrime.getKey() + returnSymbol);
             return true;
         }
         return false;
@@ -106,18 +78,19 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
 
     @Override
     public void checkRowPrime(Row<I> row) {
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
+        for (Word<I> recEquivClass: recursiveEquivalenceClasses.keySet()) {
             checkRowPrime((SeparateRecursiveRow<I>) row, recEquivClass);
         }
     }
 
     private void checkRowPrime(SeparateRecursiveRow<I> row, Word<I> recEquivClass) {
-        BitSet context = getContext(recEquivClass);
+        BitSet context = recursiveEquivalenceClasses.get(recEquivClass);
         for (Word<I> prime: primeContextRepresentatives.get(recEquivClass)) {
             SeparateRecursiveRow<I> primeRow = (SeparateRecursiveRow<I>) allRows.get(prime);
 //            System.out.println(primeRow + " -- " + row + " -- " + areEquivalent(primeRow, row, context));
             if (!primeRow.equals(row) && areEquivalent(primeRow, row, context)) {
                 row.setContextParent(primeRow, recEquivClass);
+                primeContextRepresentatives.get(recEquivClass).remove(row.getPrefix());
                 return;
             }
         }
@@ -130,14 +103,16 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
     }
 
     @Override
-    public void checkNewPrimes() {
-        for (Word<I> recEquivClass: recursiveEquivalenceClasses) {
-            BitSet context = getContext(recEquivClass);
+    public void checkAllRowsPrimeAndInconsistence() {
+        for (Word<I> recEquivClass: recursiveEquivalenceClasses.keySet()) {
+            BitSet context = recursiveEquivalenceClasses.get(recEquivClass);
             for (Word<I> r: representatives) {
                 SeparateRecursiveRow<I> row = (SeparateRecursiveRow<I>) allRows.get(r);
-                if (!row.isContextPrime(recEquivClass) && !areEquivalent(row.getContextParent(recEquivClass), row, context)) {
+                if (!row.isContextPrime(recEquivClass) &&
+                        !areEquivalent(row.getContextParent(recEquivClass), row, context)) {
                     checkRowPrime(row, recEquivClass);
                 }
+                checkInconsistency(row, recEquivClass);
             }
             for (Row<I> row: allRows.values()) {
                 if (!representatives.contains(row.getPrefix())) {
@@ -154,6 +129,7 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
         for (Word<I> r: representatives) {
             SeparateRecursiveRow<I> row = (SeparateRecursiveRow<I>) allRows.get(r);
             checkRowPrime(row, recEquivClass);
+            checkInconsistency(row, recEquivClass);
         }
         for (Row<I> row: allRows.values()) {
             if (!representatives.contains(row.getPrefix())) {
@@ -162,33 +138,36 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
         }
     }
 
-    @Override
-    public boolean consistent() {
-        boolean toRet = false;
-        for (Word<I> recPrime: recursiveEquivalenceClasses) {
-            BitSet context = getContext(recPrime);
-            for (Word<I> r : representatives) {
-                SeparateRecursiveRow<I> row = (SeparateRecursiveRow<I>) allRows.get(r);
-                if (!row.isContextPrime(recPrime)) {
-                    Word<I> separator = getInconsistentSeparator(row, row.getContextParent(recPrime), context);
-                    if (separator != null) {
-                        System.out.print("Non consistent. ");
-                        addSeparator(separator);
+//    @Override
+//    public boolean consistent() {
+//        boolean toRet = false;
+//        for (Word<I> recPrime: recursiveEquivalenceClasses) {
+//            BitSet context = getContext(recPrime);
+//            for (Word<I> r : representatives) {
+//                SeparateRecursiveRow<I> row = (SeparateRecursiveRow<I>) allRows.get(r);
+//                if (!row.isContextPrime(recPrime)) {
+//                    Word<I> separator = getInconsistentSeparator(row, row.getContextParent(recPrime), context);
+//                    if (separator != null) {
+//                        System.out.print("Non consistent. ");
+//                        addSeparator(separator);
 //                        System.out.println(r + " -- " + row.getContextParent(recPrime).getPrefix() + " -- " + separator + " -- " + context);
-                        toRet = true;
-                    }
-                }
-            }
-        }
-        return toRet;
-    }
+//                        toRet = true;
+//                    }
+//                }
+//            }
+//        }
+//        return toRet;
+//    }
 
     @Override
     public Word<I> getInconsistentSeparator(Row<I> row1, Row<I> row2) {
-        return null; // Nothing to do, this is not supposed to be call in this class
+        assert false; // Nothing to do, this is not supposed to be call in this class
+        return null;
     }
 
-    public Word<I> getInconsistentSeparator(SeparateRecursiveRow<I> row1, SeparateRecursiveRow<I> row2, BitSet context) {
+    public Word<I> getInconsistentSeparator(SeparateRecursiveRow<I> row1,
+                                            SeparateRecursiveRow<I> row2,
+                                            BitSet context) {
         int symbolIdx = row1.contextConsistentTo(row2, context);
         if (symbolIdx == -1)
             return null;
@@ -203,12 +182,23 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
         return Word.fromWords(Word.fromLetter(inputAlphabet.getSymbol(symbolIdx)), separators.get(separatorIdx));
     }
 
+    public void checkInconsistency(SeparateRecursiveRow<I> row, Word<I> recEquivClass) {
+        if (row.isContextPrime(recEquivClass)) {
+            return;
+        }
+
+        Word<I> separator = getInconsistentSeparator(
+                row,
+                row.getContextParent(recEquivClass),
+                recursiveEquivalenceClasses.get(recEquivClass)
+        );
+        if (separator != null) {
+            inconsistence = separator;
+        }
+    }
+
     public boolean areEquivalent(Row<I> prime, Row<I> row, BitSet context){
 //        System.out.println(prime + " equivalent to " + row + " " + ((SeparateRecursiveRow<I>) row).contextEquivalentTo(prime, context));
         return ((SeparateRecursiveRow<I>) row).contextEquivalentTo(prime, context);
-    }
-
-    public BitSet getContext(Word<I> recEquivClass){
-        return ((SeparateRecursiveRow<I>) allRows.get(recEquivClass)).getBaseContext();
     }
 }

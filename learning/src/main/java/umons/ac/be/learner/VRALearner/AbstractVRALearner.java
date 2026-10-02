@@ -3,6 +3,7 @@ package umons.ac.be.learner.VRALearner;
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.query.Query;
+import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.Learner;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.RegularObservationTable;
@@ -27,7 +28,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 
     protected HashMap<I, Word<I>> proceduralSymbolToWord = new HashMap<>();
     protected HashMap<Word<I>, I> wordToProceduralSymbol= new HashMap<>();
-    protected RegularObservationTable<I> startingObservationTable;
+    protected RegularObservationTable<I, AbstractVRALearner<I>> startingObservationTable;
     protected HashMap<Pair<I, I>, RecursiveObservationTable<I>> recursiveObservationTables = new HashMap<>();
 
     int ProceduralSymbolCounter = 0;
@@ -138,8 +139,9 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 //            displayStats();
             System.out.println("Searching a counterexample... " + numberOfEQ);
             VRA<FastDFAState, I, DFA<FastDFAState, I>> hypothesis = constructHypothesis();
+//            System.out.println(hypothesis);
 //            Visualization.visualize(hypothesis.removeBinStatesAndAutomata());
-//            Visualization.visualize(hypothesis);
+//            hypothesis.visualizeIndividually();
             numberOfEQ++;
             Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis, null);
 //            System.out.println("Processing counterexample: " + cx);
@@ -197,15 +199,15 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         recObsTab.addContext(prefix, suffix);
         enforce();
 
+//        System.out.println(recObsTab.getRecursiveEquivalentClass());
 //        System.out.println(recObsTab);
-//        System.out.println("Processed counterexample: " + cx +
-//                "\n\twith recursive equivalent " + wordToProceduralSymbol.get(
+//        System.out.println("Processed counterexample: " + cx);
+//        System.out.println("\twith recursive equivalent " + wordToProceduralSymbol.get(
 //                Word.fromWords(Word.fromLetter(callSymbol),
 //                        recObsTab.getRecursiveEquivalent(regularWord),
 //                        Word.fromLetter(returnSymbol)
-//                ))  +
-//                "\n\twith regular proj " + regularWord
-//        );
+//                )));
+//        System.out.println("\twith regular proj " + regularWord);
 
         return wordToProceduralSymbol.get(
                 Word.fromWords(Word.fromLetter(callSymbol),
