@@ -64,7 +64,7 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
     }
 
     @Override
-    public boolean procComplete() {
+    public boolean procComplete() { // TODO can be optimized
         for (Word<I> r: representatives) {
             if (checkAndFetchRecursivePrime(r, 0)) {
                 return true;
@@ -86,7 +86,7 @@ public class SeparateRecursiveObservationTable<I> extends AbstractRecursiveObser
     private boolean checkAndFetchRecursivePrime(Word<I> rep, int sepIdx) {
         if (isRecursivePrime(rep, sepIdx)) {
             Word<I> recEquivClass = Word.fromWords(rep, separators.get(sepIdx));
-            addRepresentative(recEquivClass);
+            addRepresentative(recEquivClass);   // TODO should not be added
             recursiveEquivalenceClasses.add(recEquivClass);
             primeContextRepresentatives.put(recEquivClass, new HashSet<>());
             primeContextRepresentatives.get(recEquivClass).add(recEquivClass);

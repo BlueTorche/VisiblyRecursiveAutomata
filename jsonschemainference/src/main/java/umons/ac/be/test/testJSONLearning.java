@@ -42,11 +42,11 @@ public class testJSONLearning {
     }
 
 
-    private static final boolean VISUALIZATION = true;
+    private static final boolean VISUALIZATION = false;
     private static final TestLearningVRA.LearnerType LEARNER_TYPE =
             TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
-    private static final int numberExperiment = 1;
-    private static final int schemaIndex = 2;
+    private static final int numberExperiment = 10;
+    private static final int schemaIndex = 3;
     private static final boolean VPA = false;
 
     private static float totalTime = 0;
@@ -56,8 +56,8 @@ public class testJSONLearning {
     public static void main(String[] args) throws JSONSchemaException, InterruptedException {
         String schema = new String[]{"recursiveList", "basicTypes", "vscode", "vim", "proxies", "codecov"}[schemaIndex];
         Path filePath = Paths.get(
-//                "C:\\Users\\dubru\\IdeaProjects\\ValidatingJSONDocumentsWithLearnedVPA-main\\schemas\\benchmarks\\"
-                "D:\\TFE2-code-gaetan\\ValidatingJSONDocumentsWithLearnedVPA\\schemas\\benchmarks\\"
+                "C:\\Users\\dubru\\IdeaProjects\\ValidatingJSONDocumentsWithLearnedVPA-main\\schemas\\benchmarks\\"
+               // "D:\\TFE2-code-gaetan\\ValidatingJSONDocumentsWithLearnedVPA\\schemas\\benchmarks\\"
                         + schema + "\\" + schema + ".json"
         );
         EquivalenceOracleType equivalenceOracleType = schemaIndex < 3 ? EquivalenceOracleType.EXPLORATION : EquivalenceOracleType.RANDOM;

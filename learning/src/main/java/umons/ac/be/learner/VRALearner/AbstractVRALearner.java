@@ -146,6 +146,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
             if (cx == null) {
                 break;
             } else {
+                System.out.println("Processing " + cx);
                 processCounterExample(cx.getInput());
             }
         }
@@ -178,6 +179,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 
     @Override
     public void processCounterExample(Word<I> cx) {
+//        printTables();
         Word<I> regularCX = getRegularWord(cx, Word.epsilon(), Word.epsilon());
 //        System.out.println("Processing counterexample: " + cx + " with regular proj " + regularCX);
         startingObservationTable.addRepresentative(regularCX);

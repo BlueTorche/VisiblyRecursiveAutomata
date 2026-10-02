@@ -2,6 +2,7 @@ package umons.ac.be.learner.VRALearner;
 
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
+import umons.ac.be.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.SeparateRecursiveObservationTableOptimized;
 import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.DFA;
@@ -38,6 +39,15 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
                 Word.fromWords(Word.fromLetter(returnSymbol), suffix)
         );
 
+        boolean flag = false;
+
+        if (recObsTab.isInRepresentatives(regularWord)) {
+            return wordToProceduralSymbol.get(
+                    Word.fromWords(Word.fromLetter(callSymbol),
+                            recObsTab.getRecursiveEquivalent(regularWord),
+                            Word.fromLetter(returnSymbol)
+                    ));
+        }
         // calculer T(regularWord)
         BitSet T_regularWord = recObsTab.getBitsetValue(regularWord);
 
@@ -58,31 +68,57 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
                 ))
             ) {
                 // ajouter (x,y) à C^{c,r}
+                System.out.println("Counterexample analysis. Adding context" + prefix + " ---- " + suffix);
                 recObsTab.addContext(prefix, suffix);
                 // récupérer J_w^{c,r} tq T(w) = T(regularWord)
                 enforce();
                 T_regularWord = recObsTab.getBitsetValue(regularWord);
                 equivalentWord = recObsTab.getRecursiveEquivalent(T_regularWord);
+                flag = true;
             }
         }
 
         // Si J_w^{c,r} n'existe pas:
         if (equivalentWord == null) {
-            // ajouter regularWord à S (intelligement) pour qu'il existe
-            recObsTab.addRepresentative(regularWord); // TODO
+            System.out.print("Counterexample analysis. A new DFA will be created. ");
+            // ajouter le plus petit prefix s de regularWord tq T(s)=T(regularWord)
+            for (Word<I> pref: regularWord.prefixes(false)) {
+                if (recObsTab.getBitsetValue(pref).equals(T_regularWord)) {
+                    recObsTab.addRepresentative(pref);
+                    break;
+                }
+            }
             enforce();
             // récupérer J_w^{c,r} tq T(w) = T(regularWord)
             equivalentWord = recObsTab.getRecursiveEquivalent(T_regularWord);
+            flag = true;
         }
 
-        //  Vérifier que regularWord est accepté par H^{J_w^{c,r}}
-        if(!recObsTab.isAccepted(regularWord, equivalentWord)) {
-            // récupérer le plus grand s tq regularword = u a s et us n'est pas accepté par H^{...} ?
-//            Word<I> s = recObsTab.findSmallestSeparator(regularWord, proceduralSymbolToWord.get(Jwcr));
-//            //  ajouter s à S
-//            recObsTab.addSeparator(s);
-            recObsTab.addRepresentative(regularWord); // TODO
-            enforce();
+        //  Vérifier pour tous H^{J_w^{c,r}} que regularWord n'est accepté que s'il est équivalent à w
+        for (Word<I> equivClass: recObsTab.getRecursiveEquivalenceClasses()) {
+            if(equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass)
+             || !equivClass.equals(equivalentWord) && recObsTab.isAccepted(regularWord, equivClass)) {
+                System.out.print("Counterexample of the DFA " + equivClass + ". ");
+                recObsTab.addSeparator(
+                        findSeparator(regularWord, recObsTab, equivClass, equivClass.equals(equivalentWord))
+                );
+                enforce();
+//                if(!(equivClass.equals(equivalentWord) && recObsTab.isAccepted(regularWord, equivClass)
+//                        || !equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass))) {
+//                    System.out.println("DFA " + equivClass + " " +
+//                            (recObsTab.isAccepted(regularWord, equivalentWord) ? "accepts": "rejects") +
+//                            " the word " + regularWord + " but shouldn't.");
+//                    System.out.println(recObsTab);
+//                    System.out.println(equivalentWord);
+//                }
+//                assert (equivClass.equals(equivalentWord) && recObsTab.isAccepted(regularWord, equivClass)
+//                        || !equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass));
+                flag = true;
+            }
+        }
+
+        if (flag) {
+//            System.out.println("Modification made to process " + regularWord);
         }
 
         // Retourner J_w^{c,r}
@@ -91,6 +127,28 @@ public class VRASeparateLearnerOptimized<I> extends AbstractVRALearner<I> {
                         recObsTab.getRecursiveEquivalent(T_regularWord),
                         Word.fromLetter(returnSymbol)
                 ));
+    }
+
+    private Word<I> findSeparator(Word<I> counterexample,
+                                  SeparateRecursiveObservationTableOptimized<I> recObsTab,
+                                  Word<I> equivalenceClass,
+                                  boolean shouldBeAccepted) {
+        BitSet T_equivClass = recObsTab.getBitsetValue(equivalenceClass);
+        for (int i = 1; i < counterexample.length()+1; i++) { // TODO binary search
+            Word<I> prefix = counterexample.prefix(counterexample.length() - i);
+            Word<I> suffix = counterexample.suffix(i);
+            Word<I> prefEquiv = recObsTab.getRegularEquivalent(prefix, equivalenceClass);
+            if(shouldBeAccepted ==
+                    recObsTab.getBitsetValue(Word.fromWords(prefEquiv, suffix)).equals(T_equivClass)) {
+//                System.out.println(recObsTab);
+//                System.out.println(prefix + " == " + prefEquiv);
+//                System.out.println(suffix);
+//                System.out.println(shouldBeAccepted);
+//                System.out.println(equivalenceClass);
+                return suffix.subWord(1);
+            }
+        }
+        return null;
     }
 
 //    private I getEquivalentSymbol(BitSet T, SeparateRecursiveObservationTableOptimized<I> recObsTab) {

@@ -32,6 +32,9 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
     }
 
     public BitSet getBitsetValue(Word<I> word) {
+        if (allRows.containsKey(word)) {
+            return ((RecursiveContent) allRows.get(word).getContent()).getContentVal(0);
+        }
         BitSet T = new BitSet();
         for(int contIdx= 0; contIdx< contextPairs.size(); contIdx++) {
             if (((AbstractVRALearner<I>) learner).recursiveMembershipQuery(
@@ -79,5 +82,21 @@ public class SeparateRecursiveObservationTableOptimized<I> extends SeparateRecur
 
     public List<Pair<Word<I>, Word<I>>> getContextPairs(){
         return contextPairs;
+    }
+
+    public boolean isInRepresentatives(Word<I> word) {
+        return representatives.contains(word);
+    }
+
+    public Set<Word<I>> getRecursiveEquivalenceClasses() {
+        return recursiveEquivalenceClasses;
+    }
+
+    public Word<I> getRegularEquivalent(Word<I> input, Word<I> recEquivClass) {
+        return getTransitions(
+                (SeparateRecursiveRow<I>) allRows.get(Word.epsilon()),
+                input,
+                recEquivClass
+        );
     }
 }
