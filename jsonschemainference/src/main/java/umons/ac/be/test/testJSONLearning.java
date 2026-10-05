@@ -9,6 +9,7 @@ import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.query.DefaultQuery;
 import net.automatalib.automaton.vpa.OneSEVPA;
+import net.automatalib.automaton.vpa.SEVPA;
 import umons.ac.be.JSONOracle.*;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import umons.ac.be.learner.VRALearner.VRAIsomorphicLearner;
@@ -19,6 +20,8 @@ import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.visualization.Visualization;
 import umons.ac.be.JSONutils.JSONSymbol;
 import umons.ac.be.learner.VRALearner.VRASeparateLearnerOptimized;
+import umons.ac.be.learner.VStar.AbstractVStarLearner;
+import umons.ac.be.learner.VStar.GreedyVStarLearner;
 import umons.ac.be.vra.VRA;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
@@ -45,9 +48,10 @@ public class testJSONLearning {
     private static final boolean VISUALIZATION = false;
     private static final TestLearningVRA.LearnerType LEARNER_TYPE =
         TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
-    private static final int numberExperiment = 10;
-    private static final int schemaIndex = 4;
-    private static final boolean VPA = false;
+    private static final int numberExperiment = 1;
+    private static final int schemaIndex = 3;
+    private static final boolean VPATTT = false;
+    private static final boolean VSTAR = true;
 
     private static float totalTime = 0;
     private static int totalMQ = 0;
@@ -67,8 +71,10 @@ public class testJSONLearning {
             System.out.println("Starting Experiment " + i);
             System.gc();
             TimeUnit.SECONDS.sleep(1);
-            if (VPA) {
+            if (VPATTT) {
                 testJSONVPALearning(filePath, equivalenceOracleType, new Random(i));
+            } else if (VSTAR) {
+                testJSONVSTARLearning(filePath, equivalenceOracleType, new Random(i));
             } else {
                 testJSONVRALearning(filePath, equivalenceOracleType, new Random(i));
             }
@@ -158,8 +164,8 @@ public class testJSONLearning {
         final JSONMembershipOracle membershipOracle = new JSONMembershipOracle(schema);
 //        final CounterOracle<JSONSymbol, Boolean> membershipOracle = new CounterOracle<>(sul, "membership queries");
 
-        final int numberTest = schema.toString().length() + 500;
-        final EquivalenceOracle<OneSEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle =
+        final int numberTest = schema.toString().length()*5 + 500;
+        final EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle =
                 switch (equivalenceOracleType) {
                     case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
@@ -204,6 +210,7 @@ public class testJSONLearning {
         System.out.println("Total learning time : " + runtime+ " s");
         totalTime += runtime;
         totalMQ += membershipOracle.getNumberOfMQ();
+        System.out.println("Total number of states: " + hypo.size());
 
         if (testJSONLearning.VISUALIZATION) {
             Visualization.visualize(hypo);
@@ -227,6 +234,72 @@ public class testJSONLearning {
 //        saveContent(resultsFile, "Total learning time : " + runtime+ " s\n" + learner.toString());
 //        System.out.println("Saved results to: " + resultsFile);
     }
+
+
+    private static void testJSONVSTARLearning(Path filePath,
+                                            EquivalenceOracleType equivalenceOracleType,
+                                            Random random) throws JSONSchemaException {
+        final JSONSchema schema = getSchema(filePath);
+        final VPAlphabet<JSONSymbol> alphabet = extractSymbolsFromSchema(schema);
+        final MembershipOracle<JSONSymbol, Boolean> membershipOracle = new JSONMembershipOracle(schema);
+        final int numberTest = schema.toString().length() + 500;
+        System.out.println("Number of tests: " + numberTest);
+        final EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle =
+                switch (equivalenceOracleType) {
+                    case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
+                            numberTest, true, 10, 2,
+                            schema, random, false, alphabet,
+                            10
+                    );
+                    case RANDOM -> new VPAJSONEquivalenceOracleRandom(
+                            numberTest, true, 10, 2,
+                            schema, random, false, alphabet,
+                            10
+                    );
+                };
+
+
+        final AbstractVStarLearner<JSONSymbol> learner =
+                new GreedyVStarLearner<>(
+                        alphabet,
+                        membershipOracle,
+                        equivalenceOracle
+                );
+
+
+        float startTime = System.nanoTime();
+        SEVPA<?, JSONSymbol> hypo = learner.learn();
+        float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
+        System.out.println("Total learning time : " + runtime+ " s");
+        learner.displayStats();
+
+        if (testJSONLearning.VISUALIZATION) {
+            Visualization.visualize(hypo);
+        }
+        totalTime += runtime;
+        totalMQ += learner.getNumberOfMQ();
+        totalEQ += learner.getNumberOfEQ();
+
+        Path parentFolder = filePath.getParent();
+
+        // Format : jourheure_schema_vra_learning_results.txt
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String dateTime = LocalDateTime.now().format(formatter);
+
+        // Récupération de "schema" depuis "schema.json"
+        String schemaName = filePath.getFileName().toString()
+                .replaceFirst("\\.json$", "");
+
+        Path resultsFolder = parentFolder.resolve("VSTAR_learning_results");
+
+        Path resultsFile = resultsFolder.resolve(
+                dateTime + "_" + schemaName + "_vra_learning_results.txt"
+        );
+
+        saveContent(resultsFile, "Total learning time : " + runtime+ " s\n" + learner);
+        System.out.println("Saved results to: " + resultsFile);
+    }
+
 
     public static JSONSchema getSchema(Path filePath) {
         final JSONSchemaStore schemaStore = new JSONSchemaStore(false);

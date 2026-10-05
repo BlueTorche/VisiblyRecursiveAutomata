@@ -31,6 +31,8 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
     protected RegularObservationTable<I, AbstractVRALearner<I>> startingObservationTable;
     protected HashMap<Pair<I, I>, RecursiveObservationTable<I>> recursiveObservationTables = new HashMap<>();
 
+    protected HashMap<Word<I>, Boolean> askedMembership = new HashMap<>();
+
     int ProceduralSymbolCounter = 0;
     int numberOfMQ = 0;
     int numberOfEQ = 0;
@@ -54,8 +56,12 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
     }
 
     private boolean askMembership(Word<I> input) {
+//        if (askedMembership.containsKey(input)) {
+//            return askedMembership.get(input);
+//        }
         numberOfMQ++;
-        boolean answer =  membershipOracle.answerQuery(input);
+        boolean answer = membershipOracle.answerQuery(input);
+//        askedMembership.put(input, answer);
 //        System.out.println("MQ of : " + input + " = " + answer);
         return answer;
     }

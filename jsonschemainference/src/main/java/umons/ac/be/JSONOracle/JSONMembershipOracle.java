@@ -1,5 +1,6 @@
 package umons.ac.be.JSONOracle;
 
+import java.util.HashMap;
 import java.util.Random;
 
 import org.json.JSONException;
@@ -29,6 +30,8 @@ public class JSONMembershipOracle implements SingleQueryOracle.SingleQueryOracle
     private final Validator validator;
     private int numberOfMQ = 0;
 
+    private final HashMap<Word<JSONSymbol>, Boolean> answeredQuery = new HashMap<>();
+
     public JSONMembershipOracle(JSONSchema schema) {
         this.schema = schema;
         this.validator = new DefaultValidator();
@@ -36,10 +39,14 @@ public class JSONMembershipOracle implements SingleQueryOracle.SingleQueryOracle
 
     @Override
     public Boolean answerQuery(Word<JSONSymbol> input) {
+//        if (answeredQuery.containsKey(input)) {
+//            return answeredQuery.get(input);
+//        }
         numberOfMQ++;
 
         String string = WordConversion.fromJSONSymbolWordToString(input);
         if (!Utils.validWord(string) || !Utils.validWordObject(input)) {
+//            answeredQuery.put(input, false);
             return false;
         }
         string = Utils.escapeSymbolsForJSON(string);
@@ -47,24 +54,30 @@ public class JSONMembershipOracle implements SingleQueryOracle.SingleQueryOracle
         try {
             json = new JSONObject(string);
         } catch (JSONException e) {
+//            answeredQuery.put(input, false);
             return false;
         }
 
         // Assert good order of key
         if (!input.equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json))) {
 //            System.out.println("Bad order of key:" + input + " --- " + WordConversion.fromJSONDocumentToJSONSymbolWord(json));
+//            answeredQuery.put(input, false);
             return false;
         }
 
         final Word<JSONSymbol> wordFromDocument = WordConversion.fromJSONDocumentToJSONSymbolWord(json);
         if (!wordFromDocument.equals(input)) {
+//            answeredQuery.put(input, false);
             return false;
         }
 
         try {
-            return validator.validate(schema, json);
+            boolean answer = validator.validate(schema, json);
+//            answeredQuery.put(input, answer);
+            return answer;
         } catch (JSONSchemaException e) {
             e.printStackTrace(System.err);
+            answeredQuery.put(input, false);
             return false;
         }
     }

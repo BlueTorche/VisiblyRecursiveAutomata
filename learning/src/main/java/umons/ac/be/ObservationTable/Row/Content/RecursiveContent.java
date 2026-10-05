@@ -93,9 +93,11 @@ public class RecursiveContent implements Content<Pair<Integer, Integer>> {
 //                System.out.println(content.get(i) + " " + other.content.get(i) + " " + context);
 //                System.out.println(content.get(i).equals(context) && !other.content.get(i).equals(context));
 //                System.out.println(!content.get(i).equals(context) && other.content.get(i).equals(context));
+                boolean A = content.get(i).equals(context);
+                boolean B = other.content.get(i).equals(context);
                 if (
-                        content.get(i).equals(context) && !other.content.get(i).equals(context)
-                     || !content.get(i).equals(context) && other.content.get(i).equals(context)
+                        A && !B
+                     || !A && B
                 )
                     return i;
 

@@ -2,7 +2,6 @@ package umons.ac.be.ObservationTable.RecursiveObservationTable;
 
 import umons.ac.be.ObservationTable.Row.Content.RecursiveContent;
 import umons.ac.be.ObservationTable.Row.SeparateRecursiveRow;
-import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.common.util.Pair;
 import net.automatalib.word.Word;
@@ -90,8 +89,8 @@ public class SeparateRecursiveObservationTableOptimized<I, L extends VRASeparate
         return contextPairs;
     }
 
-    public boolean isInRepresentatives(Word<I> word) {
-        return representatives.contains(word);
+    public boolean isInRows(Word<I> word) {
+        return allRows.containsKey(word);
     }
 
     public Set<Word<I>> getRecursiveEquivalenceClasses() {

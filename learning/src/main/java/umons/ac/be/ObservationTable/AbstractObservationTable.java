@@ -199,7 +199,9 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
         }
         output.append("\n----------------------");
         for(Word<I> r: allRows.keySet()){
-            if (!representatives.contains(r) && allRows.get(r).notEmpty()) {
+            if (!representatives.contains(r)
+                    // && allRows.get(r).notEmpty()
+            ) {
                 output.append("\n").append(allRows.get(r));
             }
         }
