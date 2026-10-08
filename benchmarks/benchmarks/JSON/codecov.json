@@ -1,0 +1,301 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://json.schemastore.org/codecov",
+  "type": "object",
+  "required": ["codecov", "coverage", "ignore", "fixes", "flags", "comment"],
+  "definitions": {
+    "flag": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["joined", "required", "ignore", "paths", "assume"],
+      "properties": {
+        "joined": { "type": "boolean" },
+        "required": { "type": "boolean" },
+        "ignore": { "type": "array", "items": { "type": "string" } },
+        "paths": { "type": "array", "items": { "type": "string" } },
+        "assume": {
+          "type": ["boolean", "array"],
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "layout": {
+      "anyOf": [{ }, {
+        "enum": [
+          "header",
+          "footer",
+          "diff",
+          "file",
+          "files",
+          "flag",
+          "flags",
+          "reach",
+          "sunburst",
+          "uncovered"
+        ]
+      }]
+    },
+    "notification": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths"],
+      "properties": {
+        "url": { "type": "string" },
+        "branches": { "type": "string" },
+        "threshold": { "type": "string" },
+        "message": { "type": "string" },
+        "flags": { "type": "string" },
+        "base": { "enum": ["parent", "pr", "auto"] },
+        "only_pulls": { "type": "boolean" },
+        "paths": { "type": "array", "items": { "type": "string" } }
+      }
+    }
+  },
+  "properties": {
+    "codecov": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["url", "slug", "bot", "branch", "ci", "assume_all_flags", "strict_yaml_branch", "max_report_age", "disable_default_path_fixes", "require_ci_to_pass", "allow_pseudo_compare", "archive", "notify", "ui"],
+      "properties": {
+        "url": { "type": "string" },
+        "slug": { "type": "string" },
+        "bot": {
+          "type": "string"
+        },
+        "branch": { "type": "string" },
+        "ci": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "assume_all_flags": { "type": "boolean" },
+        "strict_yaml_branch": { "type": "string" },
+        "max_report_age": { "type": ["string", "integer", "boolean"] },
+        "disable_default_path_fixes": { "type": "boolean" },
+        "require_ci_to_pass": { "type": "boolean" },
+        "allow_pseudo_compare": { "type": "boolean" },
+        "archive": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["uploads"],
+          "properties": { "uploads": { "type": "boolean" } }
+        },
+        "notify": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["after_n_builds", "countdown", "delay", "wait_for_ci"],
+          "properties": {
+            "after_n_builds": { "type": "integer" },
+            "countdown": { "type": "integer" },
+            "delay": { "type": "integer" },
+            "wait_for_ci": { "type": "boolean" }
+          }
+        },
+        "ui": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["hide_density", "hide_complexity", "hide_contextual", "hide_sunburst", "hide_search"],
+          "properties": {
+            "hide_density": {
+              "type": ["boolean", "array"],
+              "items": { "type": "string" }
+            },
+            "hide_complexity": {
+              "type": ["boolean", "array"],
+              "items": { "type": "string" }
+            },
+            "hide_contextual": { "type": "boolean" },
+            "hide_sunburst": { "type": "boolean" },
+            "hide_search": { "type": "boolean" }
+          }
+        }
+      }
+    },
+    "coverage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["precision", "round", "range", "notify", "status"],
+      "properties": {
+        "precision": { "type": "integer", "minimum": 0, "maximum": 5 },
+        "round": { "enum": ["down", "up", "nearest"] },
+        "range": {
+          "type": "string"
+        },
+        "notify": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["irc", "slack", "gitter", "hipchat", "webhook", "email"],
+          "properties": {
+            "irc": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths", "channel", "password", "nickserv_password", "notice"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } },
+                "channel": { "type": "string" },
+                "password": { "type": "string" },
+                "nickserv_password": { "type": "string" },
+                "notice": { "type": "boolean" }
+              }
+            },
+            "slack": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths", "attachments"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } },
+                "attachments": {
+                  "$ref": "#/definitions/layout"
+                }
+              }
+            },
+            "gitter": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } }
+              }
+            },
+            "hipchat": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths", "card", "notify"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } },
+                "card": { "type": "boolean" },
+                "notify": { "type": "boolean" }
+              }
+            },
+            "webhook": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } }
+              }
+            },
+            "email": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["url", "branches", "threshold", "message", "flags", "base", "only_pulls", "paths", "layout", "+to"],
+              "properties": {
+                "url": { "type": "string" },
+                "branches": { "type": "string" },
+                "threshold": { "type": "string" },
+                "message": { "type": "string" },
+                "flags": { "type": "string" },
+                "base": { "enum": ["parent", "pr", "auto"] },
+                "only_pulls": { "type": "boolean" },
+                "paths": { "type": "array", "items": { "type": "string" } },
+                "layout": { "$ref": "#/definitions/layout" },
+                "+to": { "type": "array", "items": { "type": "string" } }
+              }
+            }
+          }
+        },
+        "status": {
+          "type": ["boolean", "object"],
+          "additionalProperties": false,
+          "required": ["project", "patch", "changes"],
+          "properties": {
+            "project": {
+              "type": ["boolean", "object"],
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "patch": {
+              "type": ["boolean", "object"],
+              "additionalProperties": {
+                "type": "string"
+              }
+            },
+            "changes": {
+              "type": ["boolean", "object"],
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ignore": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "fixes": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "flags": {
+      "oneOf": [
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/flag" }
+        },
+        {
+          "type": "object",
+          "additionalProperties": { "$ref": "#/definitions/flag" }
+        }
+      ]
+    },
+    "comment": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["layout", "require_changes", "require_base", "require_head", "branches", "behavior", "flags", "paths"],
+          "properties": {
+            "layout": { "$ref": "#/definitions/layout" },
+            "require_changes": { "type": "boolean" },
+            "require_base": { "type": "boolean" },
+            "require_head": { "type": "boolean" },
+            "branches": { "type": "array", "items": { "type": "string" } },
+            "behavior": { "enum": ["default", "once", "new", "spammy"] },
+            "flags": { "type": "array", "items": { "$ref": "#/definitions/flag" } },
+            "paths": { "type": "array", "items": { "type": "string" } }
+          }
+        },
+        {
+          "const": false
+        }
+      ]
+    }
+  }
+}

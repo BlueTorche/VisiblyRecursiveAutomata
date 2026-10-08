@@ -24,7 +24,7 @@ public abstract class AbstractInitialObservationTable<I, L extends AbstractVStar
         if (!r.isEmpty()) {
             addRepresentative(getWellMatchedPrefix(r));
         }
-        System.out.println("Adding representative " + r);
+        // System.out.println("Adding representative " + r);
         representatives.add(r);
         Row<I> row = createNewRow(r);
         for(int idx = 0; idx < SigmaM.size(); idx++) {

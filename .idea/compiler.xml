@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="learning" />
         <module name="jsonschemainference" />
+        <module name="benchmarks" />
         <module name="vra" />
         <module name="automatalibvra" />
       </profile>

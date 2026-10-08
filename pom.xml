@@ -34,10 +34,11 @@
     ================================= MODULES ===================================
     -->
     <modules>
-        <module>vra</module>
+        <module>_vra</module>
         <module>learning</module>
         <module>automatalibvra</module>
         <module>jsonschemainference</module>
+        <module>benchmarks</module>
     </modules>
 
 
@@ -58,6 +59,7 @@
         <antlr.version>4.7.1</antlr.version>
         <jsonschematools.version>2.0</jsonschematools.version>
         <json.version>20231013</json.version>
+        <jacksonyaml.version>2.22.3</jacksonyaml.version>
     </properties>
 
 
@@ -77,10 +79,14 @@
                 <artifactId>automatalibvra</artifactId>
                 <version>${project.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>umons.ac.be</groupId>
                 <artifactId>learning</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>umons.ac.be</groupId>
+                <artifactId>jsonschemainference</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -124,6 +130,11 @@
                 <groupId>be.ac.umons.jsonschematools</groupId>
                 <artifactId>jsonschematools-generator</artifactId>
                 <version>${jsonschematools.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.dataformat</groupId>
+                <artifactId>jackson-dataformat-yaml</artifactId>
+                <version>${jacksonyaml.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

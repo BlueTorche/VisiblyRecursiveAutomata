@@ -1,0 +1,15 @@
+datasets:
+  type: JSON
+  file: JSON/vscode.json
+
+execution:
+  repetitions: 10
+  warmupRuns: 1
+  testConformance: 10_000
+  equivalenceOracleType: RANDOM
+
+measurement:
+  time: true
+  membership: true
+  equivalence: true
+  word: true

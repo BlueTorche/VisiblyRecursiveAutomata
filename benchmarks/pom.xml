@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>umons.ac.be</groupId>
+        <artifactId>visiblyrecursiveautomata</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>benchmarks</artifactId>
+
+    <properties>
+        <maven.compiler.source>24</maven.compiler.source>
+        <maven.compiler.target>24</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- Internal -->
+        <dependency>
+            <groupId>umons.ac.be</groupId>
+            <artifactId>automatalibvra</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>umons.ac.be</groupId>
+            <artifactId>learning</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>umons.ac.be</groupId>
+            <artifactId>jsonschemainference</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+        </dependency>
+    </dependencies>
+</project>

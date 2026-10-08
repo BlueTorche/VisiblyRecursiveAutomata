@@ -21,7 +21,7 @@ import net.automatalib.visualization.Visualization;
 import umons.ac.be.JSONutils.JSONSymbol;
 import umons.ac.be.learner.VRALearner.VRASeparateLearnerOptimized;
 import umons.ac.be.learner.VStar.AbstractVStarLearner;
-import umons.ac.be.learner.VStar.GreedyVStarLearner;
+import umons.ac.be.learner.VStar.VStarLearner;
 import umons.ac.be.vra.VRA;
 import umons.ac.be.vraalphabet.VRAlphabet;
 
@@ -49,9 +49,17 @@ public class testJSONLearning {
     private static final TestLearningVRA.LearnerType LEARNER_TYPE =
         TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
     private static final int numberExperiment = 1;
-    private static final int schemaIndex = 3;
+    private static final int schemaIndex = 0;
     private static final boolean VPATTT = false;
-    private static final boolean VSTAR = true;
+    private static final boolean VSTAR = false;
+    private static final int testConformance = new int[]{
+            50_000,
+            10_000,
+            10_000,
+            100_000,
+            50_000,
+            500_000
+    }[schemaIndex];
 
     private static float totalTime = 0;
     private static int totalMQ = 0;
@@ -59,11 +67,7 @@ public class testJSONLearning {
 
     public static void main(String[] args) throws JSONSchemaException, InterruptedException {
         String schema = new String[]{"recursiveList", "basicTypes", "vscode", "vim", "proxies", "codecov"}[schemaIndex];
-        Path filePath = Paths.get(
-                "C:\\Users\\dubru\\IdeaProjects\\ValidatingJSONDocumentsWithLearnedVPA-main\\schemas\\benchmarks\\"
-               // "D:\\TFE2-code-gaetan\\ValidatingJSONDocumentsWithLearnedVPA\\schemas\\benchmarks\\"
-                        + schema + "\\" + schema + ".json"
-        );
+        Path filePath = Paths.get("benchmarks\\benchmarks\\" + schema + ".json");
         EquivalenceOracleType equivalenceOracleType = schemaIndex < 3 ? EquivalenceOracleType.EXPLORATION : EquivalenceOracleType.RANDOM;
 //        testJSONLearning(filePath, ISOMORPHIC_LEARNER);
 //        testJSONLearning(filePath, SEPARATE_LEARNER);
@@ -92,9 +96,9 @@ public class testJSONLearning {
         final JSONSchema schema = getSchema(filePath);
         final VPAlphabet<JSONSymbol> alphabet = extractSymbolsFromSchema(schema);
         final MembershipOracle<JSONSymbol, Boolean> membershipOracle = new JSONMembershipOracle(schema);
-        final int numberTest = schema.toString().length() + 500;
+        final int numberTest = testConformance; //schema.toString().length() + 500;
         System.out.println("Number of tests: " + numberTest);
-        final EquivalenceOracle<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>, JSONSymbol, Boolean> equivalenceOracle =
+        final AbstractJSONConformance<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>> equivalenceOracle =
                 switch (equivalenceOracleType) {
                     case EXPLORATION -> new VRAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
@@ -111,11 +115,17 @@ public class testJSONLearning {
 
         final AbstractVRALearner<JSONSymbol> learner = switch (LEARNER_TYPE) {
             case ISOMORPHIC_LEARNER -> new VRAIsomorphicLearner<>(
-                    VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
+                    VRAlphabet.fromVPAlphabet(alphabet),
+                    membershipOracle,
+                    (EquivalenceOracle<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>, JSONSymbol, Boolean>) equivalenceOracle);
             case SEPARATE_LEARNER -> new VRASeparateLearner<>(
-                    VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
+                    VRAlphabet.fromVPAlphabet(alphabet),
+                    membershipOracle,
+                    (EquivalenceOracle<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>, JSONSymbol, Boolean>) equivalenceOracle);
             case SEPARATE_LEARNER_OPTIMIZED -> new VRASeparateLearnerOptimized<>(
-                    VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
+                    VRAlphabet.fromVPAlphabet(alphabet),
+                    membershipOracle,
+                    (EquivalenceOracle<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>, JSONSymbol, Boolean>) equivalenceOracle);
         };
 
 
@@ -123,15 +133,16 @@ public class testJSONLearning {
         VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>> hypo = learner.learn();
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
+        System.out.println("Time last EQ : " + equivalenceOracle.getTime() + " s");
         learner.displayStats();
 
         if (testJSONLearning.VISUALIZATION) {
 //            Visualization.visualize(hypo.removeBinStatesAndAutomata());
             hypo.removeBinStatesAndAutomata().visualizeIndividually();
         }
-        totalTime += runtime;
-        totalMQ += learner.getNumberMQ();
-        totalEQ += learner.getNumberEQ();
+        totalTime += runtime - equivalenceOracle.getTime();
+        totalMQ += learner.getNumberOfMQ();
+        totalEQ += learner.getNumberOfEQ();
 
         Path parentFolder = filePath.getParent();
 
@@ -164,8 +175,8 @@ public class testJSONLearning {
         final JSONMembershipOracle membershipOracle = new JSONMembershipOracle(schema);
 //        final CounterOracle<JSONSymbol, Boolean> membershipOracle = new CounterOracle<>(sul, "membership queries");
 
-        final int numberTest = schema.toString().length()*5 + 500;
-        final EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle =
+        final int numberTest = testConformance; // schema.toString().length()*5 + 500;
+        final AbstractJSONConformance<SEVPA<?, JSONSymbol>> equivalenceOracle =
                 switch (equivalenceOracleType) {
                     case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
@@ -195,7 +206,8 @@ public class testJSONLearning {
 
             System.out.println("Searching for counterexample " + totalEQ);
 
-            DefaultQuery<JSONSymbol, Boolean> ce = equivalenceOracle.findCounterExample(hypo, new HashSet<>());
+            DefaultQuery<JSONSymbol, Boolean> ce =
+                    ((EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> ) equivalenceOracle).findCounterExample(hypo, new HashSet<>());
 
             System.out.println("Found counterexample, processing...");
 
@@ -208,7 +220,8 @@ public class testJSONLearning {
 
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
-        totalTime += runtime;
+        System.out.println("Last equivalence  time : " + equivalenceOracle.getTime() + " s");
+        totalTime += runtime - equivalenceOracle.getTime();
         totalMQ += membershipOracle.getNumberOfMQ();
         System.out.println("Total number of states: " + hypo.size());
 
@@ -242,9 +255,9 @@ public class testJSONLearning {
         final JSONSchema schema = getSchema(filePath);
         final VPAlphabet<JSONSymbol> alphabet = extractSymbolsFromSchema(schema);
         final MembershipOracle<JSONSymbol, Boolean> membershipOracle = new JSONMembershipOracle(schema);
-        final int numberTest = schema.toString().length() + 500;
+        final int numberTest = testConformance;// schema.toString().length() + 500;
         System.out.println("Number of tests: " + numberTest);
-        final EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle =
+        final AbstractJSONConformance<SEVPA<?, JSONSymbol>> equivalenceOracle =
                 switch (equivalenceOracleType) {
                     case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
@@ -260,10 +273,10 @@ public class testJSONLearning {
 
 
         final AbstractVStarLearner<JSONSymbol> learner =
-                new GreedyVStarLearner<>(
+                new VStarLearner<>(
                         alphabet,
                         membershipOracle,
-                        equivalenceOracle
+                        (EquivalenceOracle<SEVPA<?, JSONSymbol>, JSONSymbol, Boolean> ) equivalenceOracle
                 );
 
 
@@ -271,12 +284,13 @@ public class testJSONLearning {
         SEVPA<?, JSONSymbol> hypo = learner.learn();
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
+        System.out.println("Last Equivalance time : " + equivalenceOracle.getTime() + " s");
         learner.displayStats();
 
         if (testJSONLearning.VISUALIZATION) {
             Visualization.visualize(hypo);
         }
-        totalTime += runtime;
+        totalTime += runtime - equivalenceOracle.getTime();
         totalMQ += learner.getNumberOfMQ();
         totalEQ += learner.getNumberOfEQ();
 

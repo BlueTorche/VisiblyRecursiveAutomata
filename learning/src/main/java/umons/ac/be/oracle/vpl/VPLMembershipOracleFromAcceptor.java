@@ -27,4 +27,8 @@ public class VPLMembershipOracleFromAcceptor<I> implements  SingleQueryOracle.Si
     public void displayStats(){
         System.out.println("Number of MQ: " + counterNumberMQ);
     }
+
+    public int getNumberOfMQ() {
+        return counterNumberMQ;
+    }
 }

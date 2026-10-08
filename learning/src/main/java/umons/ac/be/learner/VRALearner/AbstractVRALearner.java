@@ -3,7 +3,6 @@ package umons.ac.be.learner.VRALearner;
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.query.Query;
-import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.Learner;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.RegularObservationTable;
@@ -81,7 +80,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         I newSymbol = generateProceduralSymbol(expand(regularWord), callSymbol, returnSymbol);
         Word<I> recEquivClass = Word.fromWords(Word.fromLetter(callSymbol), regularWord, Word.fromLetter(returnSymbol));
 
-        System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
+        // System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
 
         alphabet.addProceduralSymbol(newSymbol, callSymbol, returnSymbol);
         proceduralSymbolToWord.put(newSymbol, recEquivClass);
@@ -154,7 +153,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
             if (cx == null) {
                 break;
             } else {
-                System.out.println("Processing " + cx);
+                // System.out.println("Processing " + cx);
                 processCounterExample(cx.getInput());
             }
         }
@@ -283,11 +282,11 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         return sb.toString();
     }
 
-    public int getNumberMQ() {
+    public int getNumberOfMQ() {
         return  numberOfMQ;
     }
 
-    public int getNumberEQ() {
+    public int getNumberOfEQ() {
         return  numberOfEQ;
     }
 }

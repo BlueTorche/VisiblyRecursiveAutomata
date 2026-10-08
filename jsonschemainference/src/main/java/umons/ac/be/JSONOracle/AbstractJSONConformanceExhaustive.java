@@ -120,24 +120,33 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
 
     @Nullable
     protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
+        numberGeneratedInvalidDocuments = 0;
         setMaximalDocumentDepth(maxDocumentDepth);
 
-        while (iteratorValidDocuments.hasNext() && continueValidGeneration()) {
-            JSONObject document = iteratorValidDocuments.next();
-            DefaultQuery<JSONSymbol, Boolean> query = findCounterexampleFromValid(hypothesis, document);
-            if (query != null) {
-                return query;
+        resetTime();
+
+        while (
+                iteratorValidDocuments.hasNext() && continueValidGeneration()
+            ||   iteratorInvalidDocuments.hasNext() && continueInvalidGeneration()
+        ) {
+            if (iteratorValidDocuments.hasNext()) {
+                JSONObject document = iteratorValidDocuments.next();
+                DefaultQuery<JSONSymbol, Boolean> query = findCounterexampleFromValid(hypothesis, document);
+                if (query != null) {
+                    return query;
+                }
+            }
+            if (iteratorInvalidDocuments.hasNext()) {
+                JSONObject document = iteratorInvalidDocuments.next();
+                DefaultQuery<JSONSymbol, Boolean> query = findCounterexampleFromInvalid(hypothesis, document);
+                if (query != null) {
+                    return query;
+                }
             }
         }
 //        LOGGER.info("Valid documents exhausted");
 
-        while (iteratorInvalidDocuments != null && iteratorInvalidDocuments.hasNext() && continueInvalidGeneration()) {
-            JSONObject document = iteratorInvalidDocuments.next();
-            DefaultQuery<JSONSymbol, Boolean> query = findCounterexampleFromInvalid(hypothesis, document);
-            if (query != null) {
-                return query;
-            }
-        }
+        setTime();
 
         return null;
     }

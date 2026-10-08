@@ -1,0 +1,15 @@
+datasets:
+  type: JSON
+  file: JSON/codevoc.json
+
+execution:
+  repetitions: 10
+  warmupRuns: 0
+  testConformance: 500_000
+  equivalenceOracleType: RANDOM
+
+measurement:
+  time: true
+  membership: true
+  equivalence: true
+  word: true

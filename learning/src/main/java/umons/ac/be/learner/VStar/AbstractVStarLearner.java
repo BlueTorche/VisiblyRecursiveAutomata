@@ -42,7 +42,7 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
             if (answer == null) {
                 return hypothesis;
             }
-            System.out.println("Processing counterexample " + numberOfEQ + ": " + answer);
+            System.out.println("Processing counterexample " + numberOfEQ + "...");
             processCounterExample(answer.getInput());
             enforceTables();
         }
@@ -166,7 +166,7 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
     }
 
     public void addSymbol(Word<I> q){
-        System.out.println("Adding symbol for " + q);
+        // System.out.println("Adding symbol for " + q);
         initialTable.addSymbol(q);
         for (AbstractCallObservationTable<I, ?> callTable: callTables.values()) {
             callTable.addSymbol(q);
@@ -181,7 +181,7 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
         return numberOfMQ;
     }
 
-    private void printTables(){
+    public void printTables(){
         System.out.println("Initial Table:");
         System.out.println(initialTable);
 

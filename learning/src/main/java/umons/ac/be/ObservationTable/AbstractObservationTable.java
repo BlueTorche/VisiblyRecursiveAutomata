@@ -30,7 +30,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
         if (!r.isEmpty()) {
             addRepresentative(r.prefix(r.size()-1));
         }
-        System.out.println("Adding representative " + r);
+        // System.out.println("Adding representative " + r);
         representatives.add(r);
         Row<I> row = createNewRow(r);
         for(int idx = 0; idx < inputAlphabet.size(); idx++) {
@@ -43,7 +43,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
     @Override
     public void addSeparator(Word<I> s) {
         if (!separators.contains(s)) {
-            System.out.println("Adding separator " + s);
+            // System.out.println("Adding separator " + s);
             separators.add(s);
             createNewColumn(separators.size()-1);
         }
@@ -94,7 +94,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
         boolean toRet = false;
         for (Word<I> r: new HashSet<>(primeRepresentatives)) {
             if (!representatives.contains(r)) {
-                System.out.print("Non closed. ");
+                // System.out.print("Non closed. ");
                 addRepresentative(r);
                 toRet = true;
             }
@@ -108,7 +108,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
         if (inconsistence == null) {
             return false;
         }
-        System.out.print("Non-consistent. ");
+        // System.out.print("Non-consistent. ");
         Word<I> s = Word.fromWords(inconsistence);
         inconsistence = null;
         addSeparator(s);

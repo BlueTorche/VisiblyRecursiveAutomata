@@ -76,6 +76,8 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
     }
 
     protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
+        resetTime();
+
         for (JSONObject document : documentsToTest) {
             DefaultQuery<JSONSymbol, Boolean> query = checkDocument(hypothesis, document);
             if (query != null) {
@@ -103,6 +105,8 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
             }
 
         }
+
+        setTime();
 
         return null;
     }

@@ -4,6 +4,7 @@ import de.learnlib.acex.AcexAnalyzers;
 import de.learnlib.algorithm.ttt.vpa.TTTLearnerVPA;
 import de.learnlib.query.DefaultQuery;
 import net.automatalib.automaton.vpa.OneSEVPA;
+import net.automatalib.automaton.vpa.SEVPA;
 import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import umons.ac.be.learner.VRALearner.VRAIsomorphicLearner;
@@ -21,6 +22,8 @@ import net.automatalib.automaton.vpa.impl.Location;
 import net.automatalib.common.util.Pair;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
+import umons.ac.be.learner.VStar.AbstractVStarLearner;
+import umons.ac.be.learner.VStar.VStarLearner;
 import umons.ac.be.oracle.vpl.VPAConformanceOracleEnumerating;
 import umons.ac.be.oracle.vpl.VRAConformanceOracleEnumerating;
 import umons.ac.be.oracle.vpl.VPLMembershipOracleFromAcceptor;
@@ -31,10 +34,11 @@ import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.TimeUnit;
 
 
 public class TestLearningVRA {
-    private final static int maxLength = 13; // TODO weird thing for VRA and benchmark poster 2: there is a counterexample that doesn't change the language of the VRA ?
+    private final static int maxLength = 10;
 
     enum LearnerType {
         ISOMORPHIC_LEARNER,
@@ -46,34 +50,62 @@ public class TestLearningVRA {
         VRA_BENCHMARK_1,
         VRA_BENCHMARK_2,
         VRA_BENCHMARK_POSTER_1,
-        VRA_BENCHMARK_POSTER_2,
-        VRA_BENCHMARK_BIGPAPER
+        VRA_BENCHMARK_POSTER_2, // c^n c^m r^m c^p r^p r^n
+        VRA_BENCHMARK_BIGPAPER,
+        VRA_BENCHMARK_LEARNINGPAPER
+    }
+    enum AutomatonType {
+        VRA,
+        oneSEVPA,
+        kSEVPA
     }
 
-    public static void main(String[] args) {
-        // testLearningIsomoprhicWithOneSEVPA1();
-//        testLearningVRA(BenchmarkType.ONE_SEVPA, LearnerType.ISOMORPHIC_LEARNER);
-//        testLearningVRA(BenchmarkType.ONE_SEVPA, LearnerType.SEPARATE_LEARNER);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.ISOMORPHIC_LEARNER);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.SEPARATE_LEARNER);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_1, LearnerType.SEPARATE_LEARNER_OPTIMIZED);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.ISOMORPHIC_LEARNER);
-//        testLearningVRA(BenchmarkType.VRA_BENCHMARK_2, LearnerType.SEPARATE_LEARNER);
-        for (int i = 0; i < 1; i++) {
-            testLearningVRA(BenchmarkType.VRA_BENCHMARK_POSTER_2, LearnerType.SEPARATE_LEARNER_OPTIMIZED);
-            testLearningVPA(BenchmarkType.VRA_BENCHMARK_POSTER_2);
+    static LearnerType VRA_LEARNER =  LearnerType.SEPARATE_LEARNER_OPTIMIZED;
+    static BenchmarkType BENCHMARK = BenchmarkType.VRA_BENCHMARK_LEARNINGPAPER;
+    static AutomatonType AUTOMATON = AutomatonType.kSEVPA;
+    static boolean VISUALIZATION = false;
+    static int NUMBER_EXPERIMENT = 10;
+
+    static float total_time = 0;
+    static int total_EQ = 0;
+    static int total_MQ = 0;
+
+    public static void main(String[] args) throws InterruptedException {
+        testLearningVRA(BENCHMARK, VRA_LEARNER, VISUALIZATION);
+        testLearningVPATTT(BENCHMARK, VISUALIZATION);
+        testLearningVPAVstar(BENCHMARK, VISUALIZATION);
+
+        total_time = 0;
+        total_EQ = 0;
+        total_MQ = 0;
+
+        for (int i = 0; i < NUMBER_EXPERIMENT; i++) {
+            System.out.println("Starting Experiment " + i);
+            System.gc();
+            TimeUnit.SECONDS.sleep(1);
+
+            switch (AUTOMATON) {
+                case VRA:
+                    testLearningVRA(BENCHMARK, VRA_LEARNER, false);
+                    break;
+                case oneSEVPA:
+                    testLearningVPATTT(BENCHMARK, false);
+                    break;
+                case kSEVPA:
+                    testLearningVPAVstar(BENCHMARK, false);
+                    break;
+            }
+        }
+        if (NUMBER_EXPERIMENT > 0) {
+            System.out.println("Mean time is " + total_time / NUMBER_EXPERIMENT);
+            System.out.println("Mean MQ is " + ((float) total_MQ) / NUMBER_EXPERIMENT);
+            System.out.println("Mean EQ is " + ((float) total_EQ) / NUMBER_EXPERIMENT);
         }
     }
 
-    public static void testLearningVPA(BenchmarkType benchmarkType) {
-        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> benchmark = switch(benchmarkType) {
-            case ONE_SEVPA -> getOneSEVPAOracle();
-            case VRA_BENCHMARK_1 -> getVRA_Benchmark1_Oracle();
-            case VRA_BENCHMARK_2 ->  getVRA_Benchmark2_Oracle();
-            case VRA_BENCHMARK_POSTER_1 ->  getVRABenchmarkPoster1();
-            case VRA_BENCHMARK_POSTER_2 ->  getVRABenchmarkPoster2();
-            case VRA_BENCHMARK_BIGPAPER ->  getVRA_Benchmark3_Oracle();
-        };
+    public static void testLearningVPATTT(BenchmarkType benchmarkType,
+                                          boolean visualization) {
+        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> benchmark = getBenchmark(benchmarkType);
 
         DeterministicAcceptorTS<?, String> teacherBlackbox = benchmark.getFirst();
         VPAlphabet<String> alphabet = benchmark.getSecond();
@@ -109,21 +141,23 @@ public class TestLearningVRA {
             assert refined;
         }
 
-        System.out.println("Time (s): " + (System.nanoTime() - time)/1000_000_000);
-        membershipOracle.displayStats();
-        equivalenceOracle.displayStats();
-        Visualization.visualize(hypo);
+        float runtime = (System.nanoTime() - time)/1000_000_000;
+        System.out.println("Total learning time : " + runtime+ " s");
+        System.out.println("Total number if MQ : " + membershipOracle.getNumberOfMQ());
+        System.out.println("Total number if EQ : " + totalEQ);
+
+        if (visualization) {
+            Visualization.visualize(hypo);
+        }
+        total_time += runtime;
+        total_MQ += membershipOracle.getNumberOfMQ();
+        total_EQ += totalEQ;
     }
 
-    public static void testLearningVRA(BenchmarkType benchmarkType, LearnerType learnerType) {
-        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> benchmark = switch(benchmarkType) {
-            case ONE_SEVPA -> getOneSEVPAOracle();
-            case VRA_BENCHMARK_1 -> getVRA_Benchmark1_Oracle();
-            case VRA_BENCHMARK_2 ->  getVRA_Benchmark2_Oracle();
-            case VRA_BENCHMARK_POSTER_1 ->  getVRABenchmarkPoster1();
-            case VRA_BENCHMARK_POSTER_2 ->  getVRABenchmarkPoster2();
-            case VRA_BENCHMARK_BIGPAPER -> getVRA_Benchmark3_Oracle();
-        };
+    public static void testLearningVRA(BenchmarkType benchmarkType,
+                                       LearnerType learnerType,
+                                       boolean visualization) {
+        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> benchmark = getBenchmark(benchmarkType);
 
         DeterministicAcceptorTS<?, String> teacherBlackbox = benchmark.getFirst();
         VPAlphabet<String> alphabet = benchmark.getSecond();
@@ -141,17 +175,48 @@ public class TestLearningVRA {
                     VRAlphabet.fromVPAlphabet(alphabet), membershipOracle, equivalenceOracle);
         };
 
-        float time = System.nanoTime();
-        VRA<FastDFAState, String, ?> learnedVRA = learner.learn();
-        System.out.println("Time (s): " + (System.nanoTime() - time)/1000_000_000);
-        membershipOracle.displayStats();
-        equivalenceOracle.displayStats();
 
-        learner.printTables();
+        float startTime = System.nanoTime();
+        VRA<?, String, DFA<FastDFAState, String>> learnedVRA = learner.learn();
+        float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
+        System.out.println("Total learning time : " + runtime+ " s");
+        learner.displayStats();
 
-        // Visualization.visualize(learnedVRA);
-         Visualization.visualize(learnedVRA.removeBinStatesAndAutomata());
-//        learnedVRA.removeBinStatesAndAutomata().visualizeIndividually();
+        if (visualization) {
+            learner.printTables();
+            Visualization.visualize(learnedVRA);
+            Visualization.visualize(learnedVRA.removeBinStatesAndAutomata());
+        }
+        total_time += runtime;
+        total_MQ += learner.getNumberOfMQ();
+        total_EQ += learner.getNumberOfEQ();
+    }
+
+    public static void testLearningVPAVstar(BenchmarkType benchmarkType,
+                                            boolean visualization) {
+        Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> benchmark = getBenchmark(benchmarkType);
+
+        DeterministicAcceptorTS<?, String> teacherBlackbox = benchmark.getFirst();
+        VPAlphabet<String> alphabet = benchmark.getSecond();
+
+        VPLMembershipOracleFromAcceptor<String> membershipOracle = new VPLMembershipOracleFromAcceptor<>(teacherBlackbox);
+        VRAConformanceOracleEnumerating<String> equivalenceOracle =
+                new VRAConformanceOracleEnumerating<>(teacherBlackbox, alphabet, maxLength);
+
+
+        float startTime = System.nanoTime();
+        final AbstractVStarLearner<String> learner = new VStarLearner(alphabet, membershipOracle, equivalenceOracle);
+        SEVPA<?, String> learnedVPA = learner.learn();
+        float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
+        System.out.println("Total learning time : " + runtime+ " s");
+        learner.displayStats();
+
+        if (visualization) {
+            Visualization.visualize(learnedVPA);
+        }
+        total_time += runtime;
+        total_MQ += learner.getNumberOfMQ();
+        total_EQ += learner.getNumberOfEQ();
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getOneSEVPAOracle() {
@@ -389,6 +454,50 @@ public class TestLearningVRA {
         return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
     }
 
+    private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>>  getVRA_Benchmark_LearningPaper() {
+        Alphabet<String> internalAlphabet = Alphabets.fromArray("a");
+        Alphabet<String> callAlphabet = Alphabets.fromArray("c");
+        Alphabet<String> returnAlphabet = Alphabets.fromArray("r");
+
+        VRAlphabet<String> alphabet = new DefaultVRAlphabet<>(internalAlphabet, callAlphabet, returnAlphabet);
+
+        alphabet.addProceduralSymbol("R", "c", "r");
+        alphabet.addProceduralSymbol("T", "c", "r");
+
+
+        DFA<?, String> startingProcedure = AutomatonBuilders.forDFA(new CompactDFA<>(alphabet.getAutomatonAlphabet()))
+                .withInitial("s0")
+                .from("s0").on("R").to("s1")
+                .withAccepting("s1")
+                .create();
+
+
+        DFA<?, String> RProcedure = AutomatonBuilders.forDFA(new CompactDFA<>(alphabet.getAutomatonAlphabet()))
+                .withInitial("r0")
+                .from("r0").on("a").to("r1")
+                .from("r0").on("T").to("r1")
+                .from("r1").on("a").to("r1")
+                .withAccepting("r0")
+                .withAccepting("r1")
+                .create();
+
+
+        DFA<?, String> TProcedure = AutomatonBuilders.forDFA(new CompactDFA<>(alphabet.getAutomatonAlphabet()))
+                .withInitial("t0")
+                .from("t0").on("a").to("t1")
+                .from("t0").on("T").to("t1")
+                .from("t1").on("T").to("t1")
+                .withAccepting("t1")
+                .create();
+
+        HashMap<String, DFA<?, String>> procedures = new HashMap<>();
+        procedures.put("R", RProcedure);
+        procedures.put("T", TProcedure);
+
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+    }
+
+
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>>  getVRA_Benchmark3_Oracle() {
         Alphabet<String> internalAlphabet = Alphabets.fromArray("a");
         Alphabet<String> callAlphabet = Alphabets.fromArray("c");
@@ -493,4 +602,16 @@ public class TestLearningVRA {
 //
 //        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
 //    }
+
+    private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getBenchmark(BenchmarkType benchmarkType) {
+        return switch(benchmarkType) {
+            case ONE_SEVPA -> getOneSEVPAOracle();
+            case VRA_BENCHMARK_1 -> getVRA_Benchmark1_Oracle();
+            case VRA_BENCHMARK_2 ->  getVRA_Benchmark2_Oracle();
+            case VRA_BENCHMARK_POSTER_1 ->  getVRABenchmarkPoster1();
+            case VRA_BENCHMARK_POSTER_2 ->  getVRABenchmarkPoster2();
+            case VRA_BENCHMARK_BIGPAPER ->  getVRA_Benchmark3_Oracle();
+            case VRA_BENCHMARK_LEARNINGPAPER ->  getVRA_Benchmark_LearningPaper();
+        };
+    }
 }

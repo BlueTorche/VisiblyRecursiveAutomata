@@ -60,7 +60,7 @@ public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
                 ))
             ) {
                 // ajouter (x,y) à C^{c,r}
-                System.out.println("Counterexample analysis. Adding context" + prefix + " ---- " + suffix);
+                // System.out.println("Counterexample analysis. Adding context" + prefix + " ---- " + suffix);
                 recObsTab.addContext(prefix, suffix);
                 // récupérer J_w^{c,r} tq T(w) = T(regularWord)
                 enforce();
@@ -80,7 +80,7 @@ public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
 
         // Si J_w^{c,r} n'existe pas:
         if (equivalentWord == null) {
-            System.out.print("Counterexample analysis. A new DFA will be created. ");
+            // System.out.print("Counterexample analysis. A new DFA will be created. ");
             // ajouter le plus petit prefix s de regularWord tq T(s)=T(regularWord)
             recObsTab.addRepresentative(regularWord);
             enforce();
@@ -93,7 +93,7 @@ public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
         for (Word<I> equivClass: recObsTab.getRecursiveEquivalenceClasses()) {
             if(equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass)
              || !equivClass.equals(equivalentWord) && recObsTab.isAccepted(regularWord, equivClass)) {
-                System.out.print("Counterexample of the DFA " + equivClass + ". ");
+                // System.out.print("Counterexample of the DFA " + equivClass + ". ");
                 recObsTab.addSeparator(
                         findSeparator(regularWord, recObsTab, equivClass, equivClass.equals(equivalentWord))
                 );

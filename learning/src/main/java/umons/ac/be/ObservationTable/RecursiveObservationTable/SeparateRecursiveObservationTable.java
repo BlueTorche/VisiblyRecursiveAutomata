@@ -65,7 +65,7 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
             checkNewPrimes(newPrime.getKey());
 
             learner.addProceduralSymbol(newPrime.getKey(), callSymbol, returnSymbol);
-            System.out.println("Added procedural symbol " + callSymbol + newPrime.getKey() + returnSymbol);
+            // System.out.println("Added procedural symbol " + callSymbol + newPrime.getKey() + returnSymbol);
             return true;
         }
         return false;

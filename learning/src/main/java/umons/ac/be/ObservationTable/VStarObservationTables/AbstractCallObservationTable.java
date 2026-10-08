@@ -24,7 +24,7 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
             addRepresentative(getWellMatchedPrefix(r));
         }
 
-        System.out.println("Adding representative " + r);
+        // System.out.println("Adding representative " + r);
         representatives.add(r);
         Row<I> row = createNewRow(r);
         for(int idx = 0; idx < SigmaM.size(); idx++) {
@@ -63,7 +63,7 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
     public void addSeparator(Word<I> s, Word<I> p) {
         Pair<Word<I>, Word<I>> newPair = Pair.of(s, p);
         if (!C.contains(newPair)) {
-            System.out.println("Adding separator " + s + " - " + p);
+            // System.out.println("Adding separator " + s + " - " + p);
             C.add(newPair);
             createNewColumn(C.size()-1);
         }
@@ -74,7 +74,7 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
         if (inconsistentC == null) {
             return false;
         }
-        System.out.print("Non-consistent. ");
+        // System.out.print("Non-consistent. ");
         Word<I> first = inconsistentC.getFirst();
         Word<I> second = inconsistentC.getSecond();
         inconsistentC = null;

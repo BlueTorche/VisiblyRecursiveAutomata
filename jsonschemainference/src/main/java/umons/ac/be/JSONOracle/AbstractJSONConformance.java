@@ -63,6 +63,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     private final int maxProperties;
     private final int maxItems;
     protected int numberValid;
+    protected long timeLastEQ;
 
     protected AbstractJSONConformance(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                       JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet) {
@@ -409,7 +410,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         }
 
         if (document.toString().length() > 2) {
-            for (int i = 0; i < numberTests / numberValid + 1; i++) {
+            for (int i = 0; i < numberTests / numberValid / 10 + 1; i++) {
                 JSONObject variant_document = generateReplacementArbitraryKey(new JSONObject(document.toString()));
                 query = checkDocument(hypothesis, variant_document);
                 if (query != null) {
@@ -478,5 +479,17 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
 
 //        query = checkWord(hypothesis, generateGibberishInternalSymbols());
 //        return query;
+    }
+
+    protected void resetTime() {
+        timeLastEQ = System.nanoTime();
+    }
+
+    protected void setTime() {
+        timeLastEQ = System.nanoTime() - timeLastEQ;
+    }
+
+    public float getTime() {
+        return ((float) timeLastEQ) / 1_000_000_000;
     }
 }
