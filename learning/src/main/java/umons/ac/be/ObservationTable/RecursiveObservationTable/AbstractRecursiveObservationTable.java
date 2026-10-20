@@ -29,12 +29,6 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
         for (int contIdx = 0; contIdx < contextPairs.size(); contIdx++) {
             fetchMembershipContext(row, idx, contIdx);
         }
-        if (isRecursivePrime(row.getPrefix(), idx)) {
-            newRecursivePrime.put(
-                    Word.fromWords(row.getPrefix(), separators.get(idx)),
-                    ((RecursiveContent) allRows.get(row.getPrefix()).getContent()).getContentVal(idx)
-            );
-        }
     }
 
     @Override
@@ -53,6 +47,18 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
     @Override
     public void enforce() {
         while(procComplete() || close() || consistent()) { }
+    }
+
+    @Override
+    public Row<I> createNewRow(Word<I> r) {
+        Row<I> row = super.createNewRow(r);
+        if (isRecursivePrime(row.getPrefix(), 0)) {
+            newRecursivePrime.put(
+                    row.getPrefix(),
+                    ((RecursiveContent) row.getContent()).getContentVal(0)
+            );
+        }
+        return row;
     }
 
     @Override
@@ -79,15 +85,15 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
             }
         }
 
+        recursiveEquivalenceClasses.replaceAll((p, v) -> ((RecursiveContent) allRows.get(p).getContent()).getContentVal(0));
+
         // We loop again to ensure all primes values have been updated
         for (Row<I> row : allRows.values()) {
-            for(int idx = 0; idx < separators.size(); idx++) {
-                if (isRecursivePrime(row.getPrefix(), idx)) {
-                    newRecursivePrime.put(
-                            Word.fromWords(row.getPrefix(), separators.get(idx)),
-                            ((RecursiveContent) allRows.get(row.getPrefix()).getContent()).getContentVal(idx)
-                    );
-                }
+            if (isRecursivePrime(row.getPrefix(), 0)) {
+                newRecursivePrime.put(
+                        row.getPrefix(),
+                        ((RecursiveContent) row.getContent()).getContentVal(0)
+                );
             }
         }
         checkAllRowsPrimeAndInconsistence();

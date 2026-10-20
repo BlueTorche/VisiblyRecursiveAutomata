@@ -24,6 +24,7 @@ import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.util.automaton.builder.AutomatonBuilders;
 import umons.ac.be.learner.VStar.AbstractVStarLearner;
 import umons.ac.be.learner.VStar.VStarLearner;
+import umons.ac.be.oracle.vpl.BestCaseForVRAMembership;
 import umons.ac.be.oracle.vpl.VPAConformanceOracleEnumerating;
 import umons.ac.be.oracle.vpl.VRAConformanceOracleEnumerating;
 import umons.ac.be.oracle.vpl.VPLMembershipOracleFromAcceptor;
@@ -60,15 +61,16 @@ public class TestLearningVRA {
         kSEVPA
     }
 
-    static LearnerType VRA_LEARNER =  LearnerType.SEPARATE_LEARNER_OPTIMIZED;
+    static LearnerType VRA_LEARNER =  LearnerType.SEPARATE_LEARNER;
     static BenchmarkType BENCHMARK = BenchmarkType.VRA_BENCHMARK_LEARNINGPAPER;
-    static AutomatonType AUTOMATON = AutomatonType.kSEVPA;
+    static AutomatonType AUTOMATON = AutomatonType.VRA;
     static boolean VISUALIZATION = false;
-    static int NUMBER_EXPERIMENT = 10;
+    static int NUMBER_EXPERIMENT = 1;
 
     static float total_time = 0;
     static int total_EQ = 0;
     static int total_MQ = 0;
+    static long total_EQ_Time = 0;
 
     public static void main(String[] args) throws InterruptedException {
         testLearningVRA(BENCHMARK, VRA_LEARNER, VISUALIZATION);
@@ -78,6 +80,7 @@ public class TestLearningVRA {
         total_time = 0;
         total_EQ = 0;
         total_MQ = 0;
+        total_EQ_Time = 0;
 
         for (int i = 0; i < NUMBER_EXPERIMENT; i++) {
             System.out.println("Starting Experiment " + i);
@@ -97,9 +100,10 @@ public class TestLearningVRA {
             }
         }
         if (NUMBER_EXPERIMENT > 0) {
-            System.out.println("Mean time is " + total_time / NUMBER_EXPERIMENT);
+            System.out.println("Mean time is (ms) " + total_time / NUMBER_EXPERIMENT);
             System.out.println("Mean MQ is " + ((float) total_MQ) / NUMBER_EXPERIMENT);
             System.out.println("Mean EQ is " + ((float) total_EQ) / NUMBER_EXPERIMENT);
+            System.out.println("Mean Total EQ time is (ms) " + ((float) total_EQ_Time) / NUMBER_EXPERIMENT);
         }
     }
 
@@ -141,7 +145,7 @@ public class TestLearningVRA {
             assert refined;
         }
 
-        float runtime = (System.nanoTime() - time)/1000_000_000;
+        float runtime = (System.nanoTime() - time)/1000_000 - equivalenceOracle.getLastEQTime();
         System.out.println("Total learning time : " + runtime+ " s");
         System.out.println("Total number if MQ : " + membershipOracle.getNumberOfMQ());
         System.out.println("Total number if EQ : " + totalEQ);
@@ -152,6 +156,9 @@ public class TestLearningVRA {
         total_time += runtime;
         total_MQ += membershipOracle.getNumberOfMQ();
         total_EQ += totalEQ;
+        total_EQ_Time += equivalenceOracle.getTotalEQTime() - equivalenceOracle.getLastEQTime();
+
+        System.out.println("Number of states: " + (hypo.size()-1));
     }
 
     public static void testLearningVRA(BenchmarkType benchmarkType,
@@ -178,7 +185,7 @@ public class TestLearningVRA {
 
         float startTime = System.nanoTime();
         VRA<?, String, DFA<FastDFAState, String>> learnedVRA = learner.learn();
-        float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
+        float runtime = (System.nanoTime() - startTime) / 1_000_000 - equivalenceOracle.getLastEQTime();
         System.out.println("Total learning time : " + runtime+ " s");
         learner.displayStats();
 
@@ -190,6 +197,9 @@ public class TestLearningVRA {
         total_time += runtime;
         total_MQ += learner.getNumberOfMQ();
         total_EQ += learner.getNumberOfEQ();
+        total_EQ_Time += equivalenceOracle.getTotalEQTime()- equivalenceOracle.getLastEQTime();
+
+        System.out.println("Number of states: " + learnedVRA.removeBinStatesAndAutomata().size());
     }
 
     public static void testLearningVPAVstar(BenchmarkType benchmarkType,
@@ -207,8 +217,8 @@ public class TestLearningVRA {
         float startTime = System.nanoTime();
         final AbstractVStarLearner<String> learner = new VStarLearner(alphabet, membershipOracle, equivalenceOracle);
         SEVPA<?, String> learnedVPA = learner.learn();
-        float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
-        System.out.println("Total learning time : " + runtime+ " s");
+        float runtime = (System.nanoTime() - startTime) / 1_000_000 - equivalenceOracle.getLastEQTime();
+        System.out.println("Total learning time : " + runtime+ " ms");
         learner.displayStats();
 
         if (visualization) {
@@ -217,6 +227,9 @@ public class TestLearningVRA {
         total_time += runtime;
         total_MQ += learner.getNumberOfMQ();
         total_EQ += learner.getNumberOfEQ();
+        total_EQ_Time += equivalenceOracle.getTotalEQTime() - equivalenceOracle.getLastEQTime();
+
+        System.out.println("Number of states: " + (learnedVPA.size()-2));
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getOneSEVPAOracle() {

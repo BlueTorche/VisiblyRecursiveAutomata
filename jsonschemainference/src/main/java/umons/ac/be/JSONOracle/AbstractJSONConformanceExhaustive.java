@@ -69,7 +69,7 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
 
     protected AbstractJSONConformanceExhaustive(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                                 JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet,
-                                                int maxDocumentDepth) {
+                                                int maxDocumentDepth, Collection<Word<JSONSymbol>> documentsToTest) {
         super(numberTests, canGenerateInvalid, maxProperties, maxItems,
                 schema, random, shuffleKeys, alphabet);
         this.generator = new DefaultExplorationGenerator(maxProperties, maxItems);
@@ -82,12 +82,27 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
         }
         numberGeneratedValidDocuments = 0;
         System.out.println("numberValid: " + numberValid);
+        this.documentsToTest = documentsToTest;
     }
 
     @Override
     public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypo,
                                                                           Collection<? extends JSONSymbol> inputs) {
-        return findCounterExample(hypo);
+
+        timeLastEQ = System.nanoTime();
+
+        for (Word<JSONSymbol> document : documentsToTest) {
+            DefaultQuery<JSONSymbol, Boolean> query = checkWord(hypo, document);
+            if (query != null) {
+                return query;
+            }
+        }
+
+        DefaultQuery<JSONSymbol, Boolean> q = findCounterExample(hypo);
+
+        timeLastEQ = System.nanoTime() - timeLastEQ;
+        totalTime += timeLastEQ;
+        return q;
     }
 
     private boolean continueInvalidGeneration() {
@@ -121,9 +136,9 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
     @Nullable
     protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
         numberGeneratedInvalidDocuments = 0;
-        setMaximalDocumentDepth(maxDocumentDepth);
 
-        resetTime();
+        setMaximalDocumentDepth(maxDocumentDepth);
+        int prevNumberOfWordTried = numberOfWordTried;
 
         while (
                 iteratorValidDocuments.hasNext() && continueValidGeneration()
@@ -145,8 +160,7 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
             }
         }
 //        LOGGER.info("Valid documents exhausted");
-
-        setTime();
+        numberOfWordTried = prevNumberOfWordTried;
 
         return null;
     }

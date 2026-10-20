@@ -3,8 +3,9 @@ package umons.ac.be.oracle.vpl;
 import de.learnlib.oracle.SingleQueryOracle;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
+import umons.ac.be.oracle.CounterMembershipOracle;
 
-public class VPLMembershipOracleFromAcceptor<I> implements  SingleQueryOracle.SingleQueryOracleDFA<I>{
+public class VPLMembershipOracleFromAcceptor<I> implements CounterMembershipOracle<I> {
     private final DeterministicAcceptorTS<?, I> teacherAutomata;
     private int counterNumberMQ = 0;
 

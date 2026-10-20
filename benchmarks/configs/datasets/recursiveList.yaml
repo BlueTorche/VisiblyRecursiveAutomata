@@ -1,15 +1,13 @@
 datasets:
   type: JSON
-  file: JSON/recursiveList.json
+  file: recursiveList.json
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
   repetitions: 10
-  warmupRuns: 1
+  warmupRuns: 0
   testConformance: 50_000
   equivalenceOracleType: EXHAUSTIVE
 
 measurement:
   time: true
-  membership: true
-  equivalence: true
-  word: true

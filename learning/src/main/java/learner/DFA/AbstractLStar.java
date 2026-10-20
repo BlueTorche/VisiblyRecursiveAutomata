@@ -10,11 +10,12 @@ import umons.ac.be.oracle.rl.Oracle;
 
 import java.util.HashMap;
 
-public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
+public abstract class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
     GrowingAlphabet<I> alphabet;
     Oracle<I, DFA<?, I>> oracle;
     RegularObservationTable<I, AbstractLStar<I>> observationTable;
     HashMap<Word<I>, Boolean> gatheredKnowledge = new HashMap<>();
+    int numberOfEQ;
 
     public AbstractLStar(GrowingAlphabet<I> alphabet, Oracle<I, DFA<?, I>> oracle) {
         this.observationTable = new RegularObservationTable<>(alphabet, this);
@@ -45,7 +46,8 @@ public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
     public FastDFA<I> learn() {
         observationTable.initialize();
         System.out.println(observationTable);
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 100; i++) {
+            numberOfEQ++;
             observationTable.enforce();
             System.out.println(observationTable);
 
@@ -65,5 +67,11 @@ public class AbstractLStar<I> implements Learner<I, FastDFA<I>> {
     @Override
     public void processCounterExample(Word<I> cx) {
         observationTable.addRepresentative(cx);
+    }
+
+
+    @Override
+    public int getNumberOfEQ() {
+        return numberOfEQ;
     }
 }

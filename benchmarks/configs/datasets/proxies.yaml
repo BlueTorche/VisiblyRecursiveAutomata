@@ -1,15 +1,13 @@
 datasets:
   type: JSON
-  file: JSON/proxies.json
+  file: proxies.json
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
   repetitions: 10
-  warmupRuns: 1
+  warmupRuns: 0
   testConformance: 50_000
   equivalenceOracleType: RANDOM
 
 measurement:
   time: true
-  membership: true
-  equivalence: true
-  word: true

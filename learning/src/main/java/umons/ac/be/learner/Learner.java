@@ -13,4 +13,6 @@ public interface Learner<I, M extends DeterministicAcceptorTS<?, I>> {
     boolean askMembershipQuery(Word<I> word);
 
     void displayStats();
+
+    int getNumberOfEQ();
 }

@@ -7,11 +7,9 @@ import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.automaton.vpa.SEVPA;
 import net.automatalib.automaton.vpa.impl.DefaultNSEVPA;
 import net.automatalib.automaton.vpa.impl.Location;
-import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
 import umons.ac.be.ObservationTable.VStarObservationTables.AbstractCallObservationTable;
 import umons.ac.be.ObservationTable.VStarObservationTables.AbstractInitialObservationTable;
-import umons.ac.be.ObservationTable.VStarObservationTables.CallObservationTable;
 import umons.ac.be.learner.Learner;
 
 import java.util.HashMap;
@@ -142,6 +140,10 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
     public boolean askMembershipQuery(Word<I> input) {
         numberOfMQ++;
         boolean answer = membershipOracle.answerQuery(input);
+//        System.out.println(input + " --> " + answer);
+//        if (input.toString().equals("{ \"\\S\": { \"body\": \"\\S\" , \"description\": \"\\S\" , \"prefix\": \"\\S\" , \"scope\": \"\\S\" } , \"body\": { \"body\": [ \"\\S\" ] , \"description\": \"\\S\" , \"prefix\": [ \"\\S\" ] , \"scope\": \"\\S\" } }")) {
+//            assert false;
+//        }
         return answer;
     }
 
@@ -173,6 +175,7 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
         }
     }
 
+    @Override
     public int getNumberOfEQ() {
         return numberOfEQ;
     }
@@ -191,4 +194,5 @@ public abstract class AbstractVStarLearner<I> implements Learner<I, SEVPA<?, I>>
             System.out.println(callTables.get(c));
         }
     }
+
 }

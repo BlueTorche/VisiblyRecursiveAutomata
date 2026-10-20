@@ -64,6 +64,9 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     private final int maxItems;
     protected int numberValid;
     protected long timeLastEQ;
+    protected long totalTime = 0;
+    protected int numberOfWordTried = 0;
+    protected Collection<Word<JSONSymbol>> documentsToTest;
 
     protected AbstractJSONConformance(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                       JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet) {
@@ -342,6 +345,8 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     }
 
     protected DefaultQuery<JSONSymbol, Boolean> checkDocument(A hypothesis, JSONObject document) {
+        numberOfWordTried++;
+
         boolean correctForSchema;
         try {
             correctForSchema = validator.validate(schema, document);
@@ -360,6 +365,8 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     }
 
     protected DefaultQuery<JSONSymbol, Boolean> checkWord(A hypothesis, Word<JSONSymbol> word) {
+        numberOfWordTried++;
+
         String string = WordConversion.fromJSONSymbolWordToString(word);
         string = Utils.escapeSymbolsForJSON(string);
         if (!Utils.validWord(string) || !Utils.validWordObject(word)) {
@@ -481,15 +488,15 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
 //        return query;
     }
 
-    protected void resetTime() {
-        timeLastEQ = System.nanoTime();
+    public long getLastEQTime() {
+        return timeLastEQ / 1_000_000;
     }
 
-    protected void setTime() {
-        timeLastEQ = System.nanoTime() - timeLastEQ;
+    public long getTotalTime() {
+        return totalTime / 1_000_000;
     }
 
-    public float getTime() {
-        return ((float) timeLastEQ) / 1_000_000_000;
+    public int getNumberOfWordTried() {
+        return numberOfWordTried;
     }
 }

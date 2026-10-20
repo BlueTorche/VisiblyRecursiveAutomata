@@ -1,5 +1,8 @@
 package umons.ac.be;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExperimentConfig {
     public DatasetConfig datasets;
     public AlgorithmConfig algorithm;
@@ -8,11 +11,24 @@ public class ExperimentConfig {
 
     public static class DatasetConfig {
         public enum DatasetType {
-            JSON
+            JSON,
+            BEST_CASE
         }
 
         public DatasetType type;
         public String file;
+        public String directory;
+        private List<String> problematicWords = new ArrayList<>();
+        public int n;
+        public int k;
+
+        public List<String> getProblematicWords() {
+            return problematicWords;
+        }
+
+        public void setProblematicWords(List<String> problematicWords) {
+            this.problematicWords = problematicWords;
+        }
     }
 
     public static class AlgorithmConfig {
@@ -41,12 +57,10 @@ public class ExperimentConfig {
         public int warmupRuns;
         public int testConformance;
         public EquivalenceOracleType equivalenceOracleType;
+        public int seed = 0;
     }
 
     public static class MeasurementConfig {
         public boolean time;
-        public boolean membership;
-        public boolean equivalence;
-        public boolean word;
     }
 }

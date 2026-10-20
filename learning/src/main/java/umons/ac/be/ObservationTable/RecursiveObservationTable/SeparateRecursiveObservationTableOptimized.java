@@ -104,4 +104,21 @@ public class SeparateRecursiveObservationTableOptimized<I, L extends VRASeparate
                 recEquivClass
         );
     }
+
+    public void createTemporaryEquivalenceClass(Word<I> word, BitSet T_val) {
+        recursiveEquivalenceClasses.put(word, T_val);
+        primeContextRepresentatives.put(word, new HashSet<>());
+        checkNewPrimes(word);
+    }
+
+    public void removeTemporaryEquivalenceClass(Word<I> word) {
+        for (Word<I> representative: primeContextRepresentatives.get(word)) {
+            if (areRecursiveEquivalent(recursiveEquivalenceClasses.get(word), representative, 0))  {
+                newRecursivePrime.put(representative, getBitsetValue(representative));
+                recursiveEquivalenceClasses.remove(word);
+                return;
+            }
+        }
+        assert false;
+    }
 }

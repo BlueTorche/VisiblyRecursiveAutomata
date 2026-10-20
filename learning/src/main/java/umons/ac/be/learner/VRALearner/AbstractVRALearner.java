@@ -3,6 +3,7 @@ package umons.ac.be.learner.VRALearner;
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.query.Query;
+import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.Learner;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.RegularObservationTable;
@@ -80,7 +81,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         I newSymbol = generateProceduralSymbol(expand(regularWord), callSymbol, returnSymbol);
         Word<I> recEquivClass = Word.fromWords(Word.fromLetter(callSymbol), regularWord, Word.fromLetter(returnSymbol));
 
-        // System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
+//         System.out.println("Adding procedural symbol " + newSymbol + " linked to " + recEquivClass);
 
         alphabet.addProceduralSymbol(newSymbol, callSymbol, returnSymbol);
         proceduralSymbolToWord.put(newSymbol, recEquivClass);
@@ -140,16 +141,16 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         }
         enforce();
         for (int i = 0; i < 1000; i++) {
-//            printTables();
+            printTables();
 //            displayStats();
             System.out.println("Searching a counterexample... " + numberOfEQ);
             VRA<FastDFAState, I, DFA<FastDFAState, I>> hypothesis = constructHypothesis();
-//            System.out.println(hypothesis);
+//            System.out.println(proceduralSymbolToWord);
 //            Visualization.visualize(hypothesis.removeBinStatesAndAutomata());
 //            hypothesis.visualizeIndividually();
             numberOfEQ++;
             Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis, null);
-//            System.out.println("Processing counterexample: " + cx);
+            System.out.println("Processing counterexample: " + cx);
             if (cx == null) {
                 break;
             } else {

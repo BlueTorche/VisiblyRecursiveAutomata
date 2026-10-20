@@ -1,0 +1,15 @@
+datasets:
+  type: JSON
+  file: vscode.json
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
+  problematicWords:
+    - '{ "description": { "\S": { "body": "\S" , "description": "\S" , "prefix": "\S" , "scope": "\S" } , "body": [ "\S" ] , "description": "\S" , "prefix": [ "\S" ] , "scope": "\S" } }'
+
+execution:
+  repetitions: 10
+  warmupRuns: 0
+  testConformance: 10_000
+  equivalenceOracleType: RANDOM
+
+measurement:
+  time: true

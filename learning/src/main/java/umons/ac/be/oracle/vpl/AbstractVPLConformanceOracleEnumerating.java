@@ -19,6 +19,9 @@ public class AbstractVPLConformanceOracleEnumerating<I, M extends DeterministicA
     private int maxLength = 10;
     private final VPAlphabet<I> alphabet;
 
+    private long lastEQTime;
+    private long totalEQTime = 0;
+
     public AbstractVPLConformanceOracleEnumerating(
             DeterministicAcceptorTS<?, I> teacherAutomata,
             VPAlphabet<I> alphabet) {
@@ -39,24 +42,36 @@ public class AbstractVPLConformanceOracleEnumerating<I, M extends DeterministicA
     public @Nullable DefaultQuery<I, Boolean> findCounterExample(
            M hypothesis, Collection<? extends I> collection) {
         this.counterNumberEQ++;
+        lastEQTime = System.nanoTime();
 
         System.out.println("New Equivalence Query #" + counterNumberEQ);
 
         for(int length = 1;  length < maxLength; length++) {
             List<Word<I>> toTest = generateWellMatchedWords(length, 0);
-            System.out.println("Testing word of size " + length);
+//            System.out.println("Testing word of size " + length);
             for (Word<I> word : toTest) {
                 boolean accepted = teacherAutomata.accepts(word);
                 if (hypothesis.accepts(word)
                         != accepted) {
-                    System.out.println("Counterexample: " + word);
+//                    System.out.println("Counterexample: " + word);
+                    lastEQTime = System.nanoTime() -  lastEQTime;
+                    totalEQTime += lastEQTime;
                     return new DefaultQuery<>(word, accepted);
                 }
                 // if (word.equals(Word.fromSymbols("c2", "c1", "c1", "r2", "r1", "r2"))) { throw  new RuntimeException("Error"); }
             }
         }
 
+        lastEQTime = System.nanoTime() -  lastEQTime;
+        totalEQTime += lastEQTime;
         return null;
+    }
+
+    public long getLastEQTime() {
+        return lastEQTime / 1_000_000;
+    }
+    public long getTotalEQTime() {
+        return totalEQTime / 1_000_000;
     }
 
 

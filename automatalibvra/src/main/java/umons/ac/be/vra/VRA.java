@@ -1,7 +1,9 @@
 package umons.ac.be.vra;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.ProceduralInputAlphabet;
@@ -58,9 +60,8 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
     Map<I, M> getProcedures();
 
     /**
-     * Returns a {@link Map} from {@link VRAlphabet#getProceduralAlphabet() call symbols} to the procedures of
-     * {@code this} system. Note that a (non-minimal) {@link VRA} may not contain a procedure for every
-     * procedural symbol.
+     * TODO
+     * same as before but also returns starting procedures labeled by symbol "S"
      *
      * @return the procedures of this system
      */
@@ -80,6 +81,7 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
      * TODO
      */
     VRA<S, I, M> removeBinStatesAndAutomata();
+
 
     void visualizeIndividually();
 
@@ -110,12 +112,14 @@ public interface VRA<S, I, M extends UniversalDeterministicAutomaton<?, I, ?, ?,
     default int size() {
         int size = 0;
 
-        for (M p : getProcedures().values()) {
+        for (M p : getAllProcedures().values()) {
             size += p.size();
         }
 
         return size;
     }
+
+    int numberOfTrans();
 
     @Override
     default Graph<?, ?> graphView() {

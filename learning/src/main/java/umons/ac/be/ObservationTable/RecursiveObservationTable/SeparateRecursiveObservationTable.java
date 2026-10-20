@@ -56,7 +56,8 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
 
     @Override
     public boolean procComplete() {
-        if(!newRecursivePrime.isEmpty()) {
+        if (newRecursivePrime.isEmpty()) return false;
+        while(!newRecursivePrime.isEmpty()) {
             Map.Entry<Word<I>, BitSet> newPrime = newRecursivePrime.entrySet().iterator().next();
             newRecursivePrime.remove(newPrime.getKey());
 
@@ -66,9 +67,8 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
 
             learner.addProceduralSymbol(newPrime.getKey(), callSymbol, returnSymbol);
             // System.out.println("Added procedural symbol " + callSymbol + newPrime.getKey() + returnSymbol);
-            return true;
         }
-        return false;
+        return true;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
         }
     }
 
-    private void checkNewPrimes(Word<I> recEquivClass) {
+    protected void checkNewPrimes(Word<I> recEquivClass) {
         for (Word<I> r: representatives) {
             SeparateRecursiveRow<I> row = (SeparateRecursiveRow<I>) allRows.get(r);
             checkRowPrime(row, recEquivClass);

@@ -15,6 +15,7 @@ import be.ac.umons.jsonschematools.validator.Validator;
 import umons.ac.be.JSONutils.JSONSymbol;
 import umons.ac.be.JSONutils.Utils;
 import umons.ac.be.JSONutils.WordConversion;
+import umons.ac.be.oracle.CounterMembershipOracle;
 
 
 /**
@@ -24,7 +25,7 @@ import umons.ac.be.JSONutils.WordConversion;
  *
  * @author Gaëtan Staquet
  */
-public class JSONMembershipOracle implements SingleQueryOracle.SingleQueryOracleDFA<JSONSymbol> {
+public class JSONMembershipOracle implements CounterMembershipOracle<JSONSymbol> {
 
     private final JSONSchema schema;
     private final Validator validator;

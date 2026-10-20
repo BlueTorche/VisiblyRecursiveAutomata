@@ -15,7 +15,7 @@ public class utils {
         for (S s: dfa.getStates()) {
             boolean to_remove = true;
             for (I i : alphabet) {
-                S nextState = dfa.getSuccessor(s, i);
+                S nextState = dfa.getTransition(s, i);
                 if (nextState != null && !nextState.equals(s)) {
                     to_remove = false;
                     break;

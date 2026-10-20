@@ -2,6 +2,7 @@ package umons.ac.be.vraalphabet;
 
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.ProceduralInputAlphabet;
+import net.automatalib.alphabet.VPAlphabet;
 
 /**
  * Default implementation of a {@link ProceduralInputAlphabet}.
@@ -15,5 +16,9 @@ public class DefaultVRAlphabet<I> extends AbstractVRAlphabet<I> implements VRAlp
             Alphabet<I> callAlphabet,
             Alphabet<I> returnAlphabet) {
         super(internalAlphabet, callAlphabet, returnAlphabet);
+    }
+
+    public DefaultVRAlphabet(VPAlphabet<I> vpAlphabet) {
+        super(vpAlphabet.getInternalAlphabet(), vpAlphabet.getCallAlphabet(), vpAlphabet.getReturnAlphabet());
     }
 }

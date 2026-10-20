@@ -63,4 +63,9 @@ public abstract class AbstractVPATTTLearner<I> implements Learner<I, OneSEVPA<?,
     public void displayStats() {
         System.out.println("Number of equivalence queries: " + numberOfEQ);
     }
+
+    @Override
+    public int getNumberOfEQ() {
+        return numberOfEQ;
+    }
 }

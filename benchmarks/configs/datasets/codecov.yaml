@@ -1,15 +1,14 @@
 datasets:
   type: JSON
-  file: JSON/codevoc.json
+  file: codecov.json
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
   repetitions: 10
   warmupRuns: 0
   testConformance: 500_000
   equivalenceOracleType: RANDOM
+  seed: 2
 
 measurement:
   time: true
-  membership: true
-  equivalence: true
-  word: true

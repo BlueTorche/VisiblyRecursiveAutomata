@@ -62,6 +62,11 @@ public class EmptyVRA<I> implements VRA<Void, I,  DFA<Void, I>> {
     public void visualizeIndividually() { }
 
     @Override
+    public int numberOfTrans() {
+        return 0;
+    }
+
+    @Override
     public @Nullable VRAState<Void, I, DFA<Void, I>> getTransition(VRAState<Void, I, DFA<Void, I>> voidIDFAVRAState, I i) {
         return null;
     }

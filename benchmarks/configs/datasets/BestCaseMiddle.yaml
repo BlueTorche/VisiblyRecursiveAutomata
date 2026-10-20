@@ -1,0 +1,14 @@
+datasets:
+  type: BEST_CASE
+  n: 5
+  k: 3
+  file: middle
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\BEST_CASE\
+
+execution:
+  repetitions: 10
+  warmupRuns: 1
+  testConformance: 100_000
+
+measurement:
+  time: true

@@ -49,7 +49,7 @@ public class testJSONLearning {
     private static final TestLearningVRA.LearnerType LEARNER_TYPE =
         TestLearningVRA.LearnerType.SEPARATE_LEARNER_OPTIMIZED;
     private static final int numberExperiment = 1;
-    private static final int schemaIndex = 0;
+    private static final int schemaIndex = 4;
     private static final boolean VPATTT = false;
     private static final boolean VSTAR = false;
     private static final int testConformance = new int[]{
@@ -67,7 +67,7 @@ public class testJSONLearning {
 
     public static void main(String[] args) throws JSONSchemaException, InterruptedException {
         String schema = new String[]{"recursiveList", "basicTypes", "vscode", "vim", "proxies", "codecov"}[schemaIndex];
-        Path filePath = Paths.get("benchmarks\\benchmarks\\" + schema + ".json");
+        Path filePath = Paths.get("benchmarks\\benchmarks\\JSON\\" + schema + ".json");
         EquivalenceOracleType equivalenceOracleType = schemaIndex < 3 ? EquivalenceOracleType.EXPLORATION : EquivalenceOracleType.RANDOM;
 //        testJSONLearning(filePath, ISOMORPHIC_LEARNER);
 //        testJSONLearning(filePath, SEPARATE_LEARNER);
@@ -103,12 +103,12 @@ public class testJSONLearning {
                     case EXPLORATION -> new VRAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                     case RANDOM -> new VRAJSONEquivalenceOracleRandom(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                 };
 
@@ -133,14 +133,14 @@ public class testJSONLearning {
         VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>> hypo = learner.learn();
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
-        System.out.println("Time last EQ : " + equivalenceOracle.getTime() + " s");
+        System.out.println("Time last EQ : " + equivalenceOracle.getLastEQTime() + " s");
         learner.displayStats();
 
         if (testJSONLearning.VISUALIZATION) {
 //            Visualization.visualize(hypo.removeBinStatesAndAutomata());
             hypo.removeBinStatesAndAutomata().visualizeIndividually();
         }
-        totalTime += runtime - equivalenceOracle.getTime();
+        totalTime += runtime - equivalenceOracle.getLastEQTime();
         totalMQ += learner.getNumberOfMQ();
         totalEQ += learner.getNumberOfEQ();
 
@@ -181,12 +181,12 @@ public class testJSONLearning {
                     case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                     case RANDOM -> new VPAJSONEquivalenceOracleRandom(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                 };
 //        final CounterEQOracle<OneSEVPA<?, JSONSymbol>, JSONSymbol, Boolean> equivalenceOracle = new CounterEQOracle<>(
@@ -220,8 +220,8 @@ public class testJSONLearning {
 
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
-        System.out.println("Last equivalence  time : " + equivalenceOracle.getTime() + " s");
-        totalTime += runtime - equivalenceOracle.getTime();
+        System.out.println("Last equivalence  time : " + equivalenceOracle.getLastEQTime() + " s");
+        totalTime += runtime - equivalenceOracle.getLastEQTime();
         totalMQ += membershipOracle.getNumberOfMQ();
         System.out.println("Total number of states: " + hypo.size());
 
@@ -262,12 +262,12 @@ public class testJSONLearning {
                     case EXPLORATION -> new VPAJSONEquivalenceOracleExhaustive(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                     case RANDOM -> new VPAJSONEquivalenceOracleRandom(
                             numberTest, true, 10, 2,
                             schema, random, false, alphabet,
-                            10
+                            10, new HashSet<>()
                     );
                 };
 
@@ -284,13 +284,13 @@ public class testJSONLearning {
         SEVPA<?, JSONSymbol> hypo = learner.learn();
         float runtime = (System.nanoTime() - startTime) / 1_000_000_000;
         System.out.println("Total learning time : " + runtime+ " s");
-        System.out.println("Last Equivalance time : " + equivalenceOracle.getTime() + " s");
+        System.out.println("Last Equivalance time : " + equivalenceOracle.getLastEQTime() + " s");
         learner.displayStats();
 
         if (testJSONLearning.VISUALIZATION) {
             Visualization.visualize(hypo);
         }
-        totalTime += runtime - equivalenceOracle.getTime();
+        totalTime += runtime - equivalenceOracle.getLastEQTime();
         totalMQ += learner.getNumberOfMQ();
         totalEQ += learner.getNumberOfEQ();
 

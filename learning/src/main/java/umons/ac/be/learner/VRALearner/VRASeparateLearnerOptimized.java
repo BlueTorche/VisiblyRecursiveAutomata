@@ -81,8 +81,18 @@ public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
         // Si J_w^{c,r} n'existe pas:
         if (equivalentWord == null) {
             // System.out.print("Counterexample analysis. A new DFA will be created. ");
-            // ajouter le plus petit prefix s de regularWord tq T(s)=T(regularWord)
-            recObsTab.addRepresentative(regularWord);
+            // ajouter des separateur jusqu'à ce que z soit accepté
+            recObsTab.createTemporaryEquivalenceClass(regularWord, T_regularWord);
+            enforce();
+
+            while(!recObsTab.isAccepted(regularWord, regularWord)) {
+                recObsTab.addSeparator(
+                        findSeparator(regularWord, recObsTab, regularWord, true)
+                );
+                enforce();
+            }
+
+            recObsTab.removeTemporaryEquivalenceClass(regularWord);
             enforce();
             // récupérer J_w^{c,r} tq T(w) = T(regularWord)
             equivalentWord = recObsTab.getRecursiveEquivalent(T_regularWord);
@@ -90,8 +100,8 @@ public class VRASeparateLearnerOptimized<I> extends VRASeparateLearner<I> {
         }
 
         //  Vérifier pour tous H^{J_w^{c,r}} que regularWord n'est accepté que s'il est équivalent à w
-        for (Word<I> equivClass: recObsTab.getRecursiveEquivalenceClasses()) {
-            if(equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass)
+        for (Word<I> equivClass: new HashSet<>(recObsTab.getRecursiveEquivalenceClasses())) {
+            while(equivClass.equals(equivalentWord) && !recObsTab.isAccepted(regularWord, equivClass)
              || !equivClass.equals(equivalentWord) && recObsTab.isAccepted(regularWord, equivClass)) {
                 // System.out.print("Counterexample of the DFA " + equivClass + ". ");
                 recObsTab.addSeparator(

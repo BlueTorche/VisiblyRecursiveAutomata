@@ -98,6 +98,11 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
                 row.getPrefix(),
                 C.get(idx).getSecond()
         ))) {
+            if (Word.fromWords(C.get(idx).getFirst(),
+                    row.getPrefix(),
+                    C.get(idx).getSecond()).toString().equals("{ \"\\S\": { \"body\": \"\\S\" , \"description\": \"\\S\" , \"prefix\": \"\\S\" , \"scope\": \"\\S\" } , \"body\": { \"body\": [ \"\\S\" ] , \"description\": \"\\S\" , \"prefix\": [ \"\\S\" ] , \"scope\": \"\\S\" } }")) {
+                System.out.println(row.getPrefix() + " " + idx);
+            }
             ((RegularRow<I>) row).fetchContent(idx);
         }
     }

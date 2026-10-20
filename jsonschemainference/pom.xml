@@ -34,15 +34,15 @@
             <artifactId>learnlib-distribution</artifactId>
             <type>pom</type>
         </dependency>
+        <dependency>
+            <groupId>be.ac.umons.jsonschematools</groupId>
+            <artifactId>jsonschematools-validator</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.antlr</groupId>
             <artifactId>antlr4-runtime</artifactId>
             <type>pom</type>
-        </dependency>
-        <dependency>
-            <groupId>be.ac.umons.jsonschematools</groupId>
-            <artifactId>jsonschematools-validator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.json</groupId>

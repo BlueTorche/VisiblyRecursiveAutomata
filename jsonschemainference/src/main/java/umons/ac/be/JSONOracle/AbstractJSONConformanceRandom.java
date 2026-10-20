@@ -53,11 +53,10 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
     private final Iterator<JSONObject> validIterator;
     private final Iterator<JSONObject> invalidIterator;
     private final int maxDocumentDepth;
-    private final Collection<JSONObject> documentsToTest;
 
     protected AbstractJSONConformanceRandom(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                             JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet,
-                                            int maxDocumentDepth, Collection<JSONObject> documentsToTest) {
+                                            int maxDocumentDepth, Collection<Word<JSONSymbol>> documentsToTest) {
         super(numberTests, canGenerateInvalid, maxProperties, maxItems, schema, random, shuffleKeys, alphabet);
         this.generator = new DefaultRandomGenerator(maxProperties, maxItems);
         this.validIterator = generator.createIterator(schema, -1, canGenerateInvalid, random);
@@ -72,14 +71,18 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
     @Override
     public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypo,
                                                                           Collection<? extends JSONSymbol> inputs) {
-        return findCounterExample(hypo);
+        timeLastEQ = System.nanoTime();
+        DefaultQuery<JSONSymbol, Boolean> q = findCounterExample(hypo);
+        timeLastEQ = System.nanoTime() - timeLastEQ;
+        totalTime += timeLastEQ;
+        return q;
     }
 
     protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
-        resetTime();
+        int prevNumberOfWordTried = numberOfWordTried;
 
-        for (JSONObject document : documentsToTest) {
-            DefaultQuery<JSONSymbol, Boolean> query = checkDocument(hypothesis, document);
+        for (Word<JSONSymbol> document : documentsToTest) {
+            DefaultQuery<JSONSymbol, Boolean> query = checkWord(hypothesis, document);
             if (query != null) {
                 return query;
             }
@@ -106,7 +109,7 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
 
         }
 
-        setTime();
+        numberOfWordTried = prevNumberOfWordTried;
 
         return null;
     }

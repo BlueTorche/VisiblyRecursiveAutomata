@@ -1,15 +1,13 @@
 datasets:
   type: JSON
-  file: JSON/basicTypes.json
+  file: basicTypes.json
+  directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
   repetitions: 10
-  warmupRuns: 1
+  warmupRuns: 0
   testConformance: 10000
   equivalenceOracleType: EXHAUSTIVE
 
 measurement:
   time: true
-  membership: true
-  equivalence: true
-  word: true

@@ -12,7 +12,7 @@ import umons.ac.be.vraalphabet.VRAlphabet;
 
 import java.util.*;
 
-abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
+public abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
 
     public AbstractVRAwithDFA(VRAlphabet<I> vrAlphabet,
                               Map<I, DFA<S, I>> procedures,
@@ -156,5 +156,22 @@ abstract class AbstractVRAwithDFA<S, I> extends AbstractVRA<S, I, DFA<S, I>> {
             }
         }
         return nonEmpty;
+    }
+
+    @Override
+    public int numberOfTrans() {
+        int total = 0;
+
+        for (DFA<S, I> p: getAllProcedures().values()) {
+            for (S states: p.getStates()) {
+                for (I symbol: getAutomatonAlphabet()) {
+                    if (p.getTransition(states, symbol) != null) {
+                        total++;
+                    }
+                }
+            }
+        }
+
+        return total;
     }
 }

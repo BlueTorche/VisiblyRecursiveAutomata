@@ -24,10 +24,12 @@ import de.learnlib.oracle.EquivalenceOracle;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
+import net.automatalib.word.Word;
 import umons.ac.be.JSONutils.JSONSymbol;
 import umons.ac.be.vra.VRA;
 
 import java.util.Random;
+import java.util.Set;
 
 public class VRAJSONEquivalenceOracleExhaustive
         extends AbstractJSONConformanceExhaustive<VRA<FastDFAState, JSONSymbol, DFA<FastDFAState, JSONSymbol>>>
@@ -35,9 +37,9 @@ public class VRAJSONEquivalenceOracleExhaustive
 
     public VRAJSONEquivalenceOracleExhaustive(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                               JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet,
-                                              int maxDocumentDepth) {
+                                              int maxDocumentDepth, Set<Word<JSONSymbol>> documentsToTest) {
         super(numberTests, canGenerateInvalid, maxProperties, maxItems,
                 schema, random, shuffleKeys, alphabet,
-                maxDocumentDepth);
+                maxDocumentDepth, documentsToTest);
     }
 }

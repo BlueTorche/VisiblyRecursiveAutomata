@@ -16,8 +16,8 @@ import java.nio.file.Paths;
 
 public class testJSONConformance {
     public static void main(String[] args) {
-//        testMembershipOracle();
-        testValidWord();
+        testMembershipOracle();
+//        testValidWord();
     }
 
     private static void testValidWord() {
@@ -107,39 +107,54 @@ public class testJSONConformance {
         final JSONSchema jsonSchema = testJSONLearning.getSchema(filePath);
         final MembershipOracle<JSONSymbol, Boolean> membershipOracle = new JSONMembershipOracle(jsonSchema);
 
-        Word<JSONSymbol> word1 = Word.fromSymbols(
+        Word<JSONSymbol> x = Word.fromSymbols(
                 JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"scope\":"),
-                JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"body\":"),
+                JSONSymbol.toSymbol("\"description\":"),
+                JSONSymbol.openingCurlyBraceSymbol
+        );
+
+        Word<JSONSymbol> word = Word.fromSymbols(
+                JSONSymbol.toSymbol("\"body\":")
+        );
+//        word = Word.fromSymbols(
+//                JSONSymbol.toSymbol("\"\\S\":"),
+//                JSONSymbol.openingCurlyBraceSymbol,
+//                JSONSymbol.toSymbol("\"body\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"description\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"prefix\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"scope\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.closingCurlyBraceSymbol,
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"body\":")
+//        );
+
+        Word<JSONSymbol> y = Word.fromSymbols(
+                JSONSymbol.openingBracketSymbol,
                 JSONSymbol.toSymbol("\"\\S\""),
+                JSONSymbol.closingBracketSymbol,
                 JSONSymbol.commaSymbol,
                 JSONSymbol.toSymbol("\"description\":"),
                 JSONSymbol.toSymbol("\"\\S\""),
                 JSONSymbol.commaSymbol,
                 JSONSymbol.toSymbol("\"prefix\":"),
+                JSONSymbol.openingBracketSymbol,
                 JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"scope\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.closingCurlyBraceSymbol,
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"\\S\":"),
-                JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"body\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"description\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"prefix\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
+                JSONSymbol.closingBracketSymbol,
                 JSONSymbol.commaSymbol,
                 JSONSymbol.toSymbol("\"scope\":"),
                 JSONSymbol.toSymbol("\"\\S\""),
                 JSONSymbol.closingCurlyBraceSymbol,
                 JSONSymbol.closingCurlyBraceSymbol
         );
+
+        Word<JSONSymbol> word1 = Word.fromWords(x, word, y);
 
         System.out.println(word1);
 
@@ -153,67 +168,67 @@ public class testJSONConformance {
             e.printStackTrace();
         }
         System.out.println(json1);
-        System.out.println(membershipOracle.answerQuery(word1));
+        System.out.println("Is accepted : " + membershipOracle.answerQuery(word1));
 
         System.out.println(WordConversion.fromJSONDocumentToJSONSymbolWord(json1));
         System.out.println(word1.equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json1)));
 
 
-        Word<JSONSymbol> word2 = Word.fromSymbols(
-                JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"\\S\":"),
-                JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"body\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"description\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"prefix\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"scope\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.closingCurlyBraceSymbol,
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"scope\":"),
-                JSONSymbol.openingCurlyBraceSymbol,
-                JSONSymbol.toSymbol("\"body\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"description\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"prefix\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.commaSymbol,
-                JSONSymbol.toSymbol("\"scope\":"),
-                JSONSymbol.toSymbol("\"\\S\""),
-                JSONSymbol.closingCurlyBraceSymbol,
-                JSONSymbol.closingCurlyBraceSymbol
-        );
-
-
-        System.out.println();
-        System.out.println(word2);
-
-        String string2 = WordConversion.fromJSONSymbolWordToString(word2);
-        string2 = Utils.escapeSymbolsForJSON(string2);
-        System.out.println(string2);
-        JSONObject json2 = null;
-        try {
-            json2 = new JSONObject(string2);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        System.out.println(json2);
-        System.out.println(membershipOracle.answerQuery(word2));
-
-        System.out.println(WordConversion.fromJSONDocumentToJSONSymbolWord(json2));
-        System.out.println(word2.equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json2)));
-
-        System.out.println();
-        System.out.println(json1.similar(json2));
-        System.out.println(WordConversion.fromJSONDocumentToJSONSymbolWord(json1).equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json2)));
+//        Word<JSONSymbol> word2 = Word.fromSymbols(
+//                JSONSymbol.openingCurlyBraceSymbol,
+//                JSONSymbol.toSymbol("\"\\S\":"),
+//                JSONSymbol.openingCurlyBraceSymbol,
+//                JSONSymbol.toSymbol("\"body\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"description\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"prefix\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"scope\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.closingCurlyBraceSymbol,
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"scope\":"),
+//                JSONSymbol.openingCurlyBraceSymbol,
+//                JSONSymbol.toSymbol("\"body\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"description\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"prefix\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.commaSymbol,
+//                JSONSymbol.toSymbol("\"scope\":"),
+//                JSONSymbol.toSymbol("\"\\S\""),
+//                JSONSymbol.closingCurlyBraceSymbol,
+//                JSONSymbol.closingCurlyBraceSymbol
+//        );
+//
+//
+//        System.out.println();
+//        System.out.println(word2);
+//
+//        String string2 = WordConversion.fromJSONSymbolWordToString(word2);
+//        string2 = Utils.escapeSymbolsForJSON(string2);
+//        System.out.println(string2);
+//        JSONObject json2 = null;
+//        try {
+//            json2 = new JSONObject(string2);
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+//        System.out.println(json2);
+//        System.out.println(membershipOracle.answerQuery(word2));
+//
+//        System.out.println(WordConversion.fromJSONDocumentToJSONSymbolWord(json2));
+//        System.out.println(word2.equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json2)));
+//
+//        System.out.println();
+//        System.out.println(json1.similar(json2));
+//        System.out.println(WordConversion.fromJSONDocumentToJSONSymbolWord(json1).equals(WordConversion.fromJSONDocumentToJSONSymbolWord(json2)));
     }
 }

@@ -1,8 +1,8 @@
 package umons.ac.be;
 
 public class Main {
-    private static final String DEFAULT_DATASET_FILE = "benchmarks/benchmarks/JSON/vscode.yaml";
-    private static final String DEFAULT_ALGORITHM_FILE = "benchmarks/algorithms/VPATTT.yaml";
+    private static final String DEFAULT_DATASET_FILE = "benchmarks/configs/datasets/BestCaseSmall.yaml";
+    private static final String DEFAULT_ALGORITHM_FILE = "benchmarks/configs/algorithms/VPATTT.yaml";
 
     public static void main(String[] args) throws Exception {
         String datasetConfigFile = null;
@@ -10,10 +10,10 @@ public class Main {
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--dataset-config") && i + 1 < args.length) {
-                datasetConfigFile = args[i];
+                datasetConfigFile = args[++i];
             }
             if (args[i].equals("--algorithm-config") && i + 1 < args.length) {
-                algorithmConfigFile = args[i];
+                algorithmConfigFile = args[++i];
             }
         }
         if (datasetConfigFile == null) {
