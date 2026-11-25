@@ -2,7 +2,6 @@ package umons.ac.be.ObservationTable.RecursiveObservationTable;
 
 import umons.ac.be.ObservationTable.Row.Row;
 import umons.ac.be.ObservationTable.Row.SeparateRecursiveRow;
-import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
@@ -90,7 +89,7 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
 //            System.out.println(primeRow + " -- " + row + " -- " + areEquivalent(primeRow, row, context));
             if (!primeRow.equals(row) && areEquivalent(primeRow, row, context)) {
                 row.setContextParent(primeRow, recEquivClass);
-                primeContextRepresentatives.get(recEquivClass).remove(row.getPrefix());
+                primeContextRepresentatives.get(recEquivClass).remove(row.getLabel());
                 return;
             }
         }
@@ -98,8 +97,8 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
 //        System.out.println(primeContextRepresentatives.get(recEquivClass));
 //        System.out.println("New prime detected for " + recEquivClass + ": " + row);
         row.setContextPrime(recEquivClass);
-        primeContextRepresentatives.get(recEquivClass).add(row.getPrefix());
-        primeRepresentatives.add(row.getPrefix());
+        primeContextRepresentatives.get(recEquivClass).add(row.getLabel());
+        primeRepresentatives.add(row.getLabel());
     }
 
     @Override
@@ -115,7 +114,7 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
                 checkInconsistency(row, recEquivClass);
             }
             for (Row<I> row: allRows.values()) {
-                if (!representatives.contains(row.getPrefix())) {
+                if (!representatives.contains(row.getLabel())) {
                     if (!((SeparateRecursiveRow<I>) row).isContextPrime(recEquivClass)
                             && !areEquivalent(((SeparateRecursiveRow<I>) row).getContextParent(recEquivClass), row, context)) {
                         checkRowPrime(((SeparateRecursiveRow<I>) row), recEquivClass);
@@ -132,7 +131,7 @@ public class SeparateRecursiveObservationTable<I, L extends VRASeparateLearner<I
             checkInconsistency(row, recEquivClass);
         }
         for (Row<I> row: allRows.values()) {
-            if (!representatives.contains(row.getPrefix())) {
+            if (!representatives.contains(row.getLabel())) {
                 checkRowPrime(((SeparateRecursiveRow<I>) row), recEquivClass);
             }
         }

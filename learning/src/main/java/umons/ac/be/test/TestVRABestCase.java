@@ -1,20 +1,14 @@
 package umons.ac.be.test;
 
-import de.learnlib.oracle.EquivalenceOracle;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.Alphabets;
 import net.automatalib.alphabet.impl.DefaultVPAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
-import net.automatalib.automaton.vpa.OneSEVPA;
 import net.automatalib.automaton.vpa.SEVPA;
-import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
-import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.Learner;
-import umons.ac.be.learner.VPATTT.VPATTTLearner;
+import umons.ac.be.learner.VPATTT.VPATTT;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
-import umons.ac.be.learner.VRALearner.VRAIsomorphicLearner;
-import umons.ac.be.learner.VRALearner.VRASeparateLearner;
 import umons.ac.be.learner.VRALearner.VRASeparateLearnerOptimized;
 import umons.ac.be.learner.VStar.VStarLearner;
 import umons.ac.be.oracle.vpl.BestCaseForVRAConformance;
@@ -48,8 +42,8 @@ public class TestVRABestCase {
         BestCaseForVRAMembership membershipOracle = new BestCaseForVRAMembership(alph, n);
         System.out.println("Oracle Size: " + membershipOracle.getVRA().size());
 
-        BestCaseForVRAConformance<VRA<FastDFAState, String, DFA<FastDFAState, String>>> equivalenceOracle =
-                new BestCaseForVRAConformance<>(membershipOracle, n, ITER, new Random(0));
+        BestCaseForVRAConformance equivalenceOracle =
+                new BestCaseForVRAConformance(membershipOracle, n, ITER, new Random(0));
 
 
         final AbstractVRALearner<String> learner = new VRASeparateLearnerOptimized<>(
@@ -69,11 +63,11 @@ public class TestVRABestCase {
 
 
         membershipOracle = new BestCaseForVRAMembership(alph, n);
-        BestCaseForVRAConformance<SEVPA<?, String>> equivalenceOracleVPA =
-                new BestCaseForVRAConformance<>(membershipOracle, n, ITER, new Random(0));
+        BestCaseForVRAConformance equivalenceOracleVPA =
+                new BestCaseForVRAConformance(membershipOracle, n, ITER, new Random(0));
 
 
-        final Learner<String, ? extends DeterministicAcceptorTS<?, String>> learnerTTT =  new VPATTTLearner<>(
+        final Learner<String, ?> learnerTTT =  new VPATTT<>(
                 alph,
                 membershipOracle,
                 equivalenceOracleVPA
@@ -89,10 +83,11 @@ public class TestVRABestCase {
 
         membershipOracle = new BestCaseForVRAMembership(alph, n);
 
-        final Learner<String, ? extends DeterministicAcceptorTS<?, String>> learnerVStar =  new VStarLearner<>(
+        final Learner<String, ?> learnerVStar =  new VStarLearner<>(
                 alph,
                 membershipOracle,
-                equivalenceOracleVPA
+                equivalenceOracleVPA,
+                10_000
         );
 
         startTime = System.nanoTime();

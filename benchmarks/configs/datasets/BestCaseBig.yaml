@@ -6,9 +6,9 @@ datasets:
   directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\BEST_CASE\
 
 execution:
-  repetitions: 10
+  repetitions: 1
   warmupRuns: 0
-  testConformance: 1_000_000
+  testConformance: 100_000
 
 measurement:
   time: true

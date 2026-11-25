@@ -16,10 +16,15 @@ public class RegularRow<I> implements Row<I> {
 
     public RegularRow(Word<I> prefix) {
         this.prefix = prefix;
-        contents = new RegularContent();
+        contents = new RegularContent(2);
     }
 
-    public Word<I> getPrefix() {
+    public RegularRow(Word<I> prefix, int contentSize) {
+        this.prefix = prefix;
+        contents = new RegularContent(contentSize);
+    }
+
+    public Word<I> getLabel() {
         return prefix;
     }
 
@@ -85,6 +90,10 @@ public class RegularRow<I> implements Row<I> {
 
     @Override
     public String toString() {
-        return prefix + "\t| " + contents + "\t| " + (isPrime() ? "" : equivalentParent.getPrefix());
+        return prefix + "\t| " + contents + "\t| " + (isPrime() ? "" : equivalentParent.getLabel());
+    }
+
+    public void setContent(Content content) {
+        this.contents = content;
     }
 }

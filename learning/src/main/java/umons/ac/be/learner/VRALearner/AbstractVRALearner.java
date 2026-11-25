@@ -3,6 +3,7 @@ package umons.ac.be.learner.VRALearner;
 import de.learnlib.oracle.EquivalenceOracle;
 import de.learnlib.oracle.MembershipOracle;
 import de.learnlib.query.Query;
+import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.visualization.Visualization;
 import umons.ac.be.learner.Learner;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.RecursiveObservationTable;
@@ -23,7 +24,7 @@ import java.util.Map;
 public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFAState, I, DFA<FastDFAState, I>>> {
     protected VRAlphabet<I> alphabet;
     protected MembershipOracle<I, Boolean> membershipOracle;
-    protected EquivalenceOracle<VRA<FastDFAState, I, DFA<FastDFAState, I>>, I, Boolean> equivalenceOracle;
+    protected EquivalenceOracle<DeterministicAcceptorTS<?, I>, I, Boolean> equivalenceOracle;
 //    protected Oracle<I, AbstractVRAwithDFA<?, I>> oracle;
 
     protected HashMap<I, Word<I>> proceduralSymbolToWord = new HashMap<>();
@@ -47,7 +48,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 
     public AbstractVRALearner(VRAlphabet<I> alphabet,
                               MembershipOracle<I, Boolean> membershipOracle,
-                              EquivalenceOracle<VRA<FastDFAState, I, DFA<FastDFAState, I>>, I, Boolean> equivalenceOracle) {
+                              EquivalenceOracle<DeterministicAcceptorTS<?, I>, I, Boolean> equivalenceOracle) {
         this.alphabet = alphabet;
         this.membershipOracle = membershipOracle;
         this.equivalenceOracle = equivalenceOracle;
@@ -141,7 +142,7 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
         }
         enforce();
         for (int i = 0; i < 1000; i++) {
-            printTables();
+            // printTables();
 //            displayStats();
             System.out.println("Searching a counterexample... " + numberOfEQ);
             VRA<FastDFAState, I, DFA<FastDFAState, I>> hypothesis = constructHypothesis();
@@ -149,8 +150,9 @@ public abstract class AbstractVRALearner<I> implements Learner<I, VRA<FastDFASta
 //            Visualization.visualize(hypothesis.removeBinStatesAndAutomata());
 //            hypothesis.visualizeIndividually();
             numberOfEQ++;
-            Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis, null);
-            System.out.println("Processing counterexample: " + cx);
+            Query<I, Boolean> cx = equivalenceOracle.findCounterExample(hypothesis.getSemantics(), null);
+            System.out.println("Processing counterexample: " + numberOfEQ);
+            //System.out.println(cx);
             if (cx == null) {
                 break;
             } else {

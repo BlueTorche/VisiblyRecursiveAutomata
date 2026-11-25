@@ -8,17 +8,17 @@
     <parent>
         <groupId>umons.ac.be</groupId>
         <artifactId>visiblyrecursiveautomata</artifactId>
-        <version>1.0</version>
+        <version>1.1</version>
     </parent>
 
     <artifactId>learning</artifactId>
 
     <dependencies>
         <!-- Internal -->
-        <dependency>
-            <groupId>umons.ac.be</groupId>
-            <artifactId>automatalibvra</artifactId>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>umons.ac.be</groupId>-->
+<!--            <artifactId>automatalibvra</artifactId>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>umons.ac.be</groupId>
             <artifactId>vra</artifactId>

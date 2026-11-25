@@ -76,7 +76,7 @@ public class SeparateRecursiveObservationTableOptimized<I, L extends VRASeparate
             return null;
         }
         if (toRead.isEmpty()) {
-            return row.getPrefix();
+            return row.getLabel();
         }
         return getTransitions(
                 row.getSuccessor(inputAlphabet.getSymbolIndex(toRead.firstSymbol()), recEquivClass),

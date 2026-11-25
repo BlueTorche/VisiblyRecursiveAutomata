@@ -98,13 +98,49 @@ public class WordConversion {
     }
 
     public static String fromJSONSymbolWordToString(Word<JSONSymbol> word) {
-        StringBuilder stringBuilder = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder(word.size());
         for (JSONSymbol symbol : word) {
-            String string = symbol.toString();
-            for (int i = 0; i < string.length(); i++) {
-                stringBuilder.append(string.charAt(i));
-            }
+            stringBuilder.append(symbol.toString());
         }
         return stringBuilder.toString();
+//        return word.toString();
+    }
+
+    public static int countNumberOfSymbols(JSONObject object) {
+        int total = 1 + object.keySet().size()*2;
+        for (String key : object.keySet()) {
+            if (object.get(key) instanceof JSONObject) {
+                total += countNumberOfSymbols((JSONObject) object.get(key));
+            }
+            else if (object.get(key) instanceof JSONArray) {
+                total += countNumberOfSymbols((JSONArray) object.get(key));
+            }
+            else {
+                total += 1;
+            }
+        }
+        if (object.isEmpty()) {
+            total += 1;
+        }
+        return total;
+    }
+
+    public static int countNumberOfSymbols(JSONArray array) {
+        int total = 1 + array.length()*2;
+        for (Object o : array) {
+            if (o instanceof JSONObject) {
+                total += countNumberOfSymbols((JSONObject) o);
+            }
+            else if (o instanceof JSONArray) {
+                total += countNumberOfSymbols((JSONArray) o);
+            }
+            else {
+                total += 1;
+            }
+        }
+        if (array.isEmpty()) {
+            total += 1;
+        }
+        return total;
     }
 }

@@ -1,20 +1,19 @@
 package umons.ac.be.JSONOracle;
 
 import java.util.HashMap;
-import java.util.Random;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import be.ac.umons.jsonschematools.JSONSchema;
 import be.ac.umons.jsonschematools.JSONSchemaException;
-import de.learnlib.oracle.SingleQueryOracle;
 import net.automatalib.word.Word;
 import be.ac.umons.jsonschematools.validator.DefaultValidator;
 import be.ac.umons.jsonschematools.validator.Validator;
 import umons.ac.be.JSONutils.JSONSymbol;
 import umons.ac.be.JSONutils.Utils;
 import umons.ac.be.JSONutils.WordConversion;
+import umons.ac.be.oracle.AbstractCounterMembershipOracle;
 import umons.ac.be.oracle.CounterMembershipOracle;
 
 
@@ -25,11 +24,9 @@ import umons.ac.be.oracle.CounterMembershipOracle;
  *
  * @author Gaëtan Staquet
  */
-public class JSONMembershipOracle implements CounterMembershipOracle<JSONSymbol> {
-
+public class JSONMembershipOracle extends AbstractCounterMembershipOracle<JSONSymbol> {
     private final JSONSchema schema;
     private final Validator validator;
-    private int numberOfMQ = 0;
 
     private final HashMap<Word<JSONSymbol>, Boolean> answeredQuery = new HashMap<>();
 
@@ -39,12 +36,7 @@ public class JSONMembershipOracle implements CounterMembershipOracle<JSONSymbol>
     }
 
     @Override
-    public Boolean answerQuery(Word<JSONSymbol> input) {
-//        if (answeredQuery.containsKey(input)) {
-//            return answeredQuery.get(input);
-//        }
-        numberOfMQ++;
-
+    public Boolean getAnswer(Word<JSONSymbol> input) {
         String string = WordConversion.fromJSONSymbolWordToString(input);
         if (!Utils.validWord(string) || !Utils.validWordObject(input)) {
 //            answeredQuery.put(input, false);
@@ -78,13 +70,9 @@ public class JSONMembershipOracle implements CounterMembershipOracle<JSONSymbol>
             return answer;
         } catch (JSONSchemaException e) {
             e.printStackTrace(System.err);
-            answeredQuery.put(input, false);
+            // answeredQuery.put(input, false);
             return false;
         }
-    }
-
-    public int getNumberOfMQ() {
-        return numberOfMQ;
     }
 
     @Override

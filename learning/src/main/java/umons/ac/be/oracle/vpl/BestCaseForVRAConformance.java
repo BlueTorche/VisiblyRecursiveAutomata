@@ -15,8 +15,7 @@ import javax.swing.plaf.synth.SynthUI;
 import java.util.Collection;
 import java.util.Random;
 
-public class BestCaseForVRAConformance<M  extends DeterministicAcceptorTS<?, String>>
-        implements EquivalenceOracle<M, String, Boolean> {
+public class BestCaseForVRAConformance implements EquivalenceOracle<DeterministicAcceptorTS<?, String>, String, Boolean> {
     AbstractVRAwithDFA<FastDFAState, String> vra;
     VRAlphabet<String> alphabet;
     int n;
@@ -39,7 +38,7 @@ public class BestCaseForVRAConformance<M  extends DeterministicAcceptorTS<?, Str
     }
 
     @Override
-    public @Nullable DefaultQuery<String, Boolean> findCounterExample(M m, Collection<? extends String> collection) {
+    public @Nullable DefaultQuery<String, Boolean> findCounterExample(DeterministicAcceptorTS<?, String> m, Collection<? extends String> collection) {
         timeLastEQ = System.nanoTime();
         DefaultQuery<String, Boolean> query = findCounterExample(m);
         timeLastEQ = System.nanoTime() - timeLastEQ;
@@ -47,7 +46,7 @@ public class BestCaseForVRAConformance<M  extends DeterministicAcceptorTS<?, Str
         return query;
     }
 
-    public @Nullable DefaultQuery<String, Boolean> findCounterExample(M m) {
+    public @Nullable DefaultQuery<String, Boolean> findCounterExample(DeterministicAcceptorTS<?, String> m) {
         numberOfEQ++;
 
         String call = alphabet.getCallSymbol(0);

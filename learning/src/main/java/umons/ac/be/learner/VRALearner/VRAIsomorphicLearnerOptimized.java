@@ -6,6 +6,7 @@ import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.DFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.common.util.Pair;
+import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import net.automatalib.word.Word;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.IsomorphicRecursiveObservationTable;
 import umons.ac.be.ObservationTable.RecursiveObservationTable.SeparateRecursiveObservationTableOptimized;
@@ -17,7 +18,7 @@ import java.util.BitSet;
 public class VRAIsomorphicLearnerOptimized<I> extends VRAIsomorphicLearner<I> {
     public VRAIsomorphicLearnerOptimized(VRAlphabet<I> alphabet,
                                        MembershipOracle<I, Boolean> membershipOracle,
-                                       EquivalenceOracle<VRA<FastDFAState, I, DFA<FastDFAState, I>>, I, Boolean> equivalenceOracle) {
+                                       EquivalenceOracle<DeterministicAcceptorTS<?, I>, I, Boolean> equivalenceOracle) {
         super(alphabet, membershipOracle, equivalenceOracle);
         for (I call : alphabet.getCallAlphabet()) {
             for (I ret : alphabet.getReturnAlphabet()) {

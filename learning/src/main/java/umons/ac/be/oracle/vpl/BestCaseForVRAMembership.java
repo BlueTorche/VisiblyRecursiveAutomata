@@ -1,18 +1,14 @@
 package umons.ac.be.oracle.vpl;
 
-import net.automatalib.alphabet.Alphabet;
-import net.automatalib.alphabet.GrowingAlphabet;
 import net.automatalib.alphabet.VPAlphabet;
-import net.automatalib.alphabet.impl.DefaultVPAlphabet;
-import net.automatalib.alphabet.impl.GrowingMapAlphabet;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.automaton.fsa.impl.FastDFAState;
 import net.automatalib.visualization.Visualization;
 import net.automatalib.word.Word;
+import umons.ac.be.oracle.AbstractCounterMembershipOracle;
 import umons.ac.be.oracle.CounterMembershipOracle;
 import umons.ac.be.vra.AbstractVRAwithDFA;
 import umons.ac.be.vra.DefaultVRAwithDFA;
-import umons.ac.be.vra.VRAAlphabet;
 import umons.ac.be.vraalphabet.AbstractVRAlphabet;
 import umons.ac.be.vraalphabet.DefaultVRAlphabet;
 
@@ -20,9 +16,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class BestCaseForVRAMembership  implements CounterMembershipOracle<String> {
+public class BestCaseForVRAMembership extends AbstractCounterMembershipOracle<String> {
     AbstractVRAwithDFA<FastDFAState, String> vra;
-    int numberOfMQ = 0;
 
     public BestCaseForVRAMembership(VPAlphabet<String> alphabet, int n) {
         assert n > 0;
@@ -170,19 +165,7 @@ public class BestCaseForVRAMembership  implements CounterMembershipOracle<String
     }
 
     @Override
-    public int getNumberOfMQ() {
-        return numberOfMQ;
-    }
-
-    @Override
-    public Boolean answerQuery(Word<String> word, Word<String> word1) {
-        numberOfMQ++;
-        return vra.accepts(Word.fromWords(word, word1));
-    }
-
-    @Override
-    public Boolean answerQuery(Word<String> word) {
-        numberOfMQ++;
+    public Boolean getAnswer(Word<String> word) {
         return vra.accepts(word);
     }
 

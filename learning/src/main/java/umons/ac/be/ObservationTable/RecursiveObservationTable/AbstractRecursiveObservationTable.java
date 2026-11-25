@@ -3,7 +3,6 @@ package umons.ac.be.ObservationTable.RecursiveObservationTable;
 import umons.ac.be.ObservationTable.AbstractObservationTable;
 import umons.ac.be.ObservationTable.Row.Content.RecursiveContent;
 import umons.ac.be.ObservationTable.Row.Row;
-import umons.ac.be.learner.Learner;
 import umons.ac.be.learner.VRALearner.AbstractVRALearner;
 import net.automatalib.automaton.fsa.impl.FastDFA;
 import net.automatalib.common.util.Pair;
@@ -36,7 +35,7 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
         if(learner.recursiveMembershipQuery(
                 contextPairs.get(contIdx).getFirst(),
                 callSymbol,
-                Word.fromWords(row.getPrefix(), separators.get(sepIdx)),
+                Word.fromWords(row.getLabel(), separators.get(sepIdx)),
                 returnSymbol,
                 contextPairs.get(contIdx).getSecond()
         )) {
@@ -52,9 +51,9 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
     @Override
     public Row<I> createNewRow(Word<I> r) {
         Row<I> row = super.createNewRow(r);
-        if (isRecursivePrime(row.getPrefix(), 0)) {
+        if (isRecursivePrime(row.getLabel(), 0)) {
             newRecursivePrime.put(
-                    row.getPrefix(),
+                    row.getLabel(),
                     ((RecursiveContent) row.getContent()).getContentVal(0)
             );
         }
@@ -89,9 +88,9 @@ public abstract class AbstractRecursiveObservationTable<I, L extends AbstractVRA
 
         // We loop again to ensure all primes values have been updated
         for (Row<I> row : allRows.values()) {
-            if (isRecursivePrime(row.getPrefix(), 0)) {
+            if (isRecursivePrime(row.getLabel(), 0)) {
                 newRecursivePrime.put(
-                        row.getPrefix(),
+                        row.getLabel(),
                         ((RecursiveContent) row.getContent()).getContentVal(0)
                 );
             }

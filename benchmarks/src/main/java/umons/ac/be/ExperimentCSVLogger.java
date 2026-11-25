@@ -12,12 +12,15 @@ public class ExperimentCSVLogger implements AutoCloseable {
     private final BufferedWriter writer;
 
     public final String[] headers = {
+            "seed",
             "#EQ",
             "#MQ",
-            "Time (ms)",
-            "#w Conformance",
-            "Last EQ time (ms)",
+            "Total Time (ms)",
             "Total EQ time (ms)",
+            "Total MQ time (ms)",
+            "Last EQ time (ms)",
+            "#w Conformance",
+            "|MQ| mean",
             "#module",
             "#states",
             "#trans"

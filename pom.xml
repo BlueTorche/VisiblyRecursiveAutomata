@@ -10,10 +10,10 @@
     -->
     <groupId>umons.ac.be</groupId>
     <artifactId>visiblyrecursiveautomata</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
     <packaging>pom</packaging>
 
-    <name>Validation and Learning of Visibly Recursive Automata</name>
+    <name>Active Learning of Visibly Recursive Automata</name>
 
     <licenses>
         <!-- TODO -->
@@ -34,9 +34,8 @@
     ================================= MODULES ===================================
     -->
     <modules>
-        <module>_vra</module>
         <module>learning</module>
-        <module>automatalibvra</module>
+        <module>vra</module>
         <module>jsonschemainference</module>
         <module>benchmarks</module>
     </modules>
@@ -54,8 +53,8 @@
         <maven.compiler.release>21</maven.compiler.release>
 
         <!-- Dependency versions -->
-        <automatalib.version>0.12.0</automatalib.version>
-        <learnlib.version>0.18.0</learnlib.version>
+        <automatalib.version>13.0.0</automatalib.version>
+        <learnlib.version>19.0.0</learnlib.version>
         <antlr.version>4.7.1</antlr.version>
         <jsonschematools.version>2.0</jsonschematools.version>
         <json.version>20231013</json.version>
@@ -72,11 +71,6 @@
             <dependency>
                 <groupId>umons.ac.be</groupId>
                 <artifactId>vra</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>umons.ac.be</groupId>
-                <artifactId>automatalibvra</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

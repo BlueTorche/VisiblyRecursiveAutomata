@@ -2,6 +2,7 @@ package umons.ac.be.ObservationTable.Row;
 
 import umons.ac.be.ObservationTable.Row.Content.RecursiveContent;
 import net.automatalib.word.Word;
+import umons.ac.be.learner.NewVRALearner.LearningSymbol;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public class SeparateRecursiveRow<I> extends IsomorphicRecursiveRow<I> {
     public String toString() {
         StringBuilder toRet = new StringBuilder(super.toString() + "\t");
         for (Map.Entry<Word<I>, SeparateRecursiveRow<I>> entry : parents.entrySet()) {
-            toRet.append(entry.getKey()).append("~").append(entry.getValue().getPrefix()).append("\t;\t");
+            toRet.append(entry.getKey()).append("~").append(entry.getValue().getLabel()).append("\t;\t");
         }
         return toRet.toString();
     }

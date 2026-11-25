@@ -7,6 +7,8 @@ import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.alphabet.impl.DefaultVPAlphabet;
 import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -288,13 +290,41 @@ public class Utils {
         internalSymbols.add(JSONSymbol.enumSymbol);
 
         internalSymbols.add(JSONSymbol.toSymbol("\"" + AbstractConstants.stringConstant + "\":"));
+
         // @formatter:off
         schema.getAllKeysDefinedInSchema().stream()
                 .map(k -> "\"" + k + "\":")
                 .map(k -> JSONSymbol.toSymbol(k))
                 .forEach(k -> internalSymbols.add(k));
         // @formatter:on
-
         return new DefaultVPAlphabet<>(internalSymbols, callSymbols, returnSymbols);
+    }
+
+    public static Object copyJson(Object value) {
+        if (value instanceof JSONObject) {
+            JSONObject source = (JSONObject) value;
+            JSONObject copy = new JSONObject();
+
+            for (String key : source.keySet()) {
+                copy.put(key, copyJson(source.get(key)));
+            }
+
+            return copy;
+        }
+
+        if (value instanceof JSONArray) {
+            JSONArray source = (JSONArray) value;
+            JSONArray copy = new JSONArray();
+
+            for (int i = 0; i < source.length(); i++) {
+                copy.put(copyJson(source.get(i)));
+            }
+
+            return copy;
+        }
+
+        // Les chaînes, nombres, booléens et null JSON
+        // peuvent généralement être réutilisés.
+        return value;
     }
 }

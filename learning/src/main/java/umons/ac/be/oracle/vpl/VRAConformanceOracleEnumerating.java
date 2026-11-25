@@ -7,7 +7,7 @@ import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
 import umons.ac.be.vra.VRA;
 
 public class VRAConformanceOracleEnumerating<I>
-        extends AbstractVPLConformanceOracleEnumerating<I, VRA<FastDFAState, I, DFA<FastDFAState, I>>> {
+        extends AbstractVPLConformanceOracleEnumerating<I, DeterministicAcceptorTS<?, I>> {
     public VRAConformanceOracleEnumerating(
             DeterministicAcceptorTS<?, I> teacherAutomata,
             VPAlphabet<I> alphabet) {

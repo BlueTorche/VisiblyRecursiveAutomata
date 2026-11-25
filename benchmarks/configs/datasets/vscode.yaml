@@ -7,7 +7,7 @@ datasets:
 
 execution:
   repetitions: 10
-  warmupRuns: 0
+  warmupRuns: 1
   testConformance: 10_000
   equivalenceOracleType: RANDOM
 

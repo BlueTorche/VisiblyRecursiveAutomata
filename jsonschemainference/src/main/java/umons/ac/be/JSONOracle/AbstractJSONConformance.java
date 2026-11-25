@@ -23,6 +23,7 @@ import be.ac.umons.jsonschematools.JSONSchema;
 import be.ac.umons.jsonschematools.JSONSchemaException;
 import be.ac.umons.jsonschematools.validator.DefaultValidator;
 import be.ac.umons.jsonschematools.validator.Validator;
+import de.learnlib.oracle.EquivalenceOracle;
 import net.automatalib.alphabet.Alphabet;
 import net.automatalib.alphabet.VPAlphabet;
 import net.automatalib.ts.acceptor.DeterministicAcceptorTS;
@@ -50,8 +51,9 @@ import java.util.*;
  * 
  * @author Gaëtan Staquet
  */
-public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<?, JSONSymbol>> {
-    protected static final int MAX_NUMBER_SYMBOLS_GIBBERISH = 15;
+public abstract class AbstractJSONConformance
+        implements EquivalenceOracle<DeterministicAcceptorTS<?, JSONSymbol>, JSONSymbol, Boolean> {
+    protected static final int MAX_NUMBER_SYMBOLS_GIBBERISH = 20;
 
     private final JSONSchema schema;
     private final Validator validator;
@@ -67,6 +69,8 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     protected long totalTime = 0;
     protected int numberOfWordTried = 0;
     protected Collection<Word<JSONSymbol>> documentsToTest;
+
+    private final int MAX_DOCUMENT_LENGTH = 50_000;
 
     protected AbstractJSONConformance(int numberTests, boolean canGenerateInvalid, int maxProperties, int maxItems,
                                       JSONSchema schema, Random random, boolean shuffleKeys, VPAlphabet<JSONSymbol> alphabet) {
@@ -145,8 +149,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return wordBuilder.toWord();
     }
 
-    protected Word<JSONSymbol> generateGibberishByAddingSymbol(JSONObject document) {
-        Word<JSONSymbol> word = WordConversion.fromJSONDocumentToJSONSymbolWord(document);
+    protected Word<JSONSymbol> generateGibberishByAddingSymbol(Word<JSONSymbol> word) {
         WordBuilder<JSONSymbol> wordBuilder = new WordBuilder<>();
 
         for (JSONSymbol symbol : word) {
@@ -158,8 +161,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return wordBuilder.toWord();
     }
 
-    protected Word<JSONSymbol> generateGibberishByRemovingSymbol(JSONObject document) {
-        Word<JSONSymbol> word = WordConversion.fromJSONDocumentToJSONSymbolWord(document);
+    protected Word<JSONSymbol> generateGibberishByRemovingSymbol(Word<JSONSymbol> word) {
         WordBuilder<JSONSymbol> wordBuilder = new WordBuilder<>();
 
         for (JSONSymbol symbol : word) {
@@ -170,8 +172,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return wordBuilder.toWord();
     }
 
-    protected Word<JSONSymbol> generateGibberishByRemovingComma(JSONObject document) {
-        Word<JSONSymbol> word = WordConversion.fromJSONDocumentToJSONSymbolWord(document);
+    protected Word<JSONSymbol> generateGibberishByRemovingComma(Word<JSONSymbol> word) {
         WordBuilder<JSONSymbol> wordBuilder = new WordBuilder<>();
 
         for (JSONSymbol symbol : word) {
@@ -206,12 +207,13 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
 
         int keyToDuplicate = rand.nextInt(1, numberOfKeys+1);
         int depth = 0;
-        boolean inserted = false;
 
         JSONSymbol key = null;
         WordBuilder<JSONSymbol> valueBuilder = new WordBuilder<>();
         Word<JSONSymbol> value = null;
+        boolean inserted = false;
         int keyDepth = -1;
+        List<Integer> pendingCall = new ArrayList<>();
         WordBuilder<JSONSymbol> wordBuilder = new WordBuilder<>();
         numberOfKeys = 0;
 
@@ -219,25 +221,17 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
             JSONSymbol symbol = word.getSymbol(i);
             if (symbol.equals(JSONSymbol.openingCurlyBraceSymbol) || symbol.equals(JSONSymbol.openingBracketSymbol)) {
                 depth += 1;
+                pendingCall.add(i);
             }
             if (symbol.equals(JSONSymbol.closingCurlyBraceSymbol) || symbol.equals(JSONSymbol.closingBracketSymbol)) {
                 depth -= 1;
+                pendingCall.removeLast();
             }
-
-            if (key != null && !inserted && depth == keyDepth-1) {
-                wordBuilder.add(JSONSymbol.commaSymbol);
-                wordBuilder.add(key);
-                for (JSONSymbol s : value) {
-                    wordBuilder.add(s);
-                }
-            }
-
-            wordBuilder.add(symbol);
 
             if (JSONSymbol.isKeySymbol(symbol)) {
                 numberOfKeys++;
 
-                if (numberOfKeys == keyToDuplicate && key == null) {
+                if (!inserted && numberOfKeys == keyToDuplicate) {
                     keyDepth = depth;
                     key = symbol;
                     valueBuilder.add(word.getSymbol(i+1));
@@ -261,36 +255,64 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
                     }
                     value = valueBuilder.toWord();
 //                    System.out.println("Duplicating key:value = " + key + " " + value + " at depth " + keyDepth);
+                    i = pendingCall.getLast();
+
+                    WordBuilder<JSONSymbol> wordBuilder2 = new WordBuilder<>(wordBuilder.size());
+                    for (int j = 0; j <= i; j++) {
+                        wordBuilder2.append(wordBuilder.getSymbol(j));
+                    }
+                    wordBuilder = wordBuilder2;
+                    continue;
                 }
             }
 
-            if (key != null && !inserted && depth == keyDepth) {
-                if (symbol.equals(JSONSymbol.commaSymbol)) {
-                    if (rand.nextInt(0, 3) == 0) {
+            if (key != null && !inserted && depth <= keyDepth) {
+                if (depth < keyDepth) {
+                    wordBuilder.add(JSONSymbol.commaSymbol);
+                    wordBuilder.add(key);
+                    wordBuilder.addAll(value.stream().toList());
+                    inserted = true;
+                    continue;
+                }
+                if (symbol.equals(JSONSymbol.commaSymbol) || symbol.equals(JSONSymbol.openingCurlyBraceSymbol)) {
+                    if (rand.nextBoolean() && rand.nextBoolean()) {
+                        wordBuilder.add(symbol);
                         wordBuilder.add(key);
-                        for (JSONSymbol s : value) {
-                            wordBuilder.add(s);
-                        }
+                        wordBuilder.addAll(value.stream().toList());
                         wordBuilder.add(JSONSymbol.commaSymbol);
                         inserted = true;
+                        continue;
                     }
                 }
             }
+
+            wordBuilder.add(symbol);
         }
 
 //        System.out.println("Duplicate key: " + wordBuilder.toWord()
-//                        + "\n\tfrom " + key + " " + value);
+//                        + "\n\tfrom " + key + " " + value + " of word " + word );
         return wordBuilder.toWord();
     }
 
     protected JSONObject generateReplacementArbitraryKey(JSONObject document) {
         if (document.keySet().contains("\\S")) {
-            String addKey = JSONSymbol.getRandomKey(rand).toString().replace("\"", "").replace(":", "");
-//            System.out.println(addKey);
-            if (!document.keySet().contains(addKey) && rand.nextBoolean()) {
-                document.put(JSONSymbol.getRandomKey(rand).toString().replace("\"", "").replace(":", ""),
-                        document.get("\\S"));
-                return generateReplacementArbitraryKey(document);
+            while (getRandom().nextBoolean()) {
+                String addKey;
+                int iter = 0;
+
+                do {
+                    addKey = JSONSymbol.getRandomKey(rand)
+                            .toString()
+                            .replace("\"", "")
+                            .replace(":", "");
+                    iter++;
+                } while (document.has(addKey) && iter < 10);
+
+                if (iter == 10) {
+                    break;
+                }
+
+                document.put(addKey, document.get("\\S"));
             }
         }
         for (String key : document.keySet()) {
@@ -329,13 +351,13 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
     }
 
     protected JSONArray generateDuplicateValueArray(JSONArray document) {
-        int max_size = document.length()*2;
-        for (int i = 0; i < max_size && i < document.length(); i++) {
+        final int max_size = document.length();
+        for (int i = 0; i < max_size; i++) {
             if (document.get(i) instanceof JSONObject) {
-                document.put(i, generateReplacementArbitraryKey((JSONObject) document.get(i)));
+                document.put(i, generateDuplicateValueArray((JSONObject) document.get(i)));
             }
             else if (document.get(i) instanceof JSONArray) {
-                document.put(i, generateReplacementArbitraryKey((JSONArray) document.get(i)));
+                document.put(i, generateDuplicateValueArray((JSONArray) document.get(i)));
             }
             if (rand.nextBoolean()) {
                 document.put(document.get(i));
@@ -344,7 +366,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return document;
     }
 
-    protected DefaultQuery<JSONSymbol, Boolean> checkDocument(A hypothesis, JSONObject document) {
+    protected DefaultQuery<JSONSymbol, Boolean> checkDocument(DeterministicAcceptorTS<?, JSONSymbol> hypothesis, JSONObject document) {
         numberOfWordTried++;
 
         boolean correctForSchema;
@@ -364,7 +386,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return null;
     }
 
-    protected DefaultQuery<JSONSymbol, Boolean> checkWord(A hypothesis, Word<JSONSymbol> word) {
+    protected DefaultQuery<JSONSymbol, Boolean> checkWord(DeterministicAcceptorTS<?, JSONSymbol> hypothesis, Word<JSONSymbol> word) {
         numberOfWordTried++;
 
         String string = WordConversion.fromJSONSymbolWordToString(word);
@@ -403,7 +425,7 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
         return null;
     }
 
-    protected DefaultQuery<JSONSymbol, Boolean> findCounterexampleFromValid(A hypothesis, JSONObject document) {
+    protected DefaultQuery<JSONSymbol, Boolean> findCounterexampleFromValid(DeterministicAcceptorTS<?, JSONSymbol> hypothesis, JSONObject document) {
         if (Thread.interrupted()) {
             Thread.currentThread().interrupt();
             return null;
@@ -416,59 +438,63 @@ public abstract class AbstractJSONConformance<A extends DeterministicAcceptorTS<
             return query;
         }
 
-        if (document.toString().length() > 2) {
+        if (!document.isEmpty()) {
             for (int i = 0; i < numberTests / numberValid / 10 + 1; i++) {
-                JSONObject variant_document = generateReplacementArbitraryKey(new JSONObject(document.toString()));
-                query = checkDocument(hypothesis, variant_document);
-                if (query != null) {
-                    return query;
+                JSONObject variant_document = generateReplacementArbitraryKey((JSONObject) Utils.copyJson(document));
+                if (WordConversion.countNumberOfSymbols(variant_document) < MAX_DOCUMENT_LENGTH) {
+                    query = checkDocument(hypothesis, variant_document);
+                    if (query != null) {
+                        return query;
+                    }
                 }
 
-                query = checkWord(hypothesis, generateDuplicateKeyFromValid(variant_document));
-                if (query != null) {
-                    return query;
+                if (WordConversion.countNumberOfSymbols(variant_document) < MAX_DOCUMENT_LENGTH / 2) {
+                    query = checkWord(hypothesis, generateDuplicateKeyFromValid(variant_document));
+                    if (query != null) {
+                        return query;
+                    }
+                }
+                variant_document.clear();
+
+                if (WordConversion.countNumberOfSymbols(document) < MAX_DOCUMENT_LENGTH / 2) {
+                    query = checkWord(hypothesis, generateDuplicateKeyFromValid(document));
+                    if (query != null) {
+                        return query;
+                    }
                 }
 
-                variant_document = generateDuplicateValueArray(new JSONObject(document.toString()));
-                query = checkDocument(hypothesis, variant_document);
-                if (query != null) {
-                    return query;
-                }
+                variant_document = generateDuplicateValueArray((JSONObject) Utils.copyJson(document));
+                if (WordConversion.countNumberOfSymbols(variant_document) < MAX_DOCUMENT_LENGTH) {
+                    query = checkDocument(hypothesis, variant_document);
+                    if (query != null) {
+                        return query;
+                    }
 
-                query = checkWord(hypothesis, generateGibberishByAddingSymbol(variant_document));
-                if (query != null) {
-                    return query;
-                }
+                    Word<JSONSymbol> word = WordConversion.fromJSONDocumentToJSONSymbolWord(variant_document);
+                    variant_document.clear();
 
-                query = checkWord(hypothesis, generateGibberishByRemovingSymbol(variant_document));
-                if (query != null) {
-                    return query;
-                }
+                    query = checkWord(hypothesis, generateGibberishByAddingSymbol(word));
+                    if (query != null) {
+                        return query;
+                    }
 
-                query = checkWord(hypothesis, generateGibberishByRemovingComma(variant_document));
-                if (query != null) {
-                    return query;
-                }
+                    query = checkWord(hypothesis, generateGibberishByRemovingSymbol(word));
+                    if (query != null) {
+                        return query;
+                    }
 
-//                if (hypothesis.accepts(word)) {/*
-//                 *  We are suppose to use:
-//                 *      query = checkDocument(hypothesis, document)
-//                 *  but this doesn't work. Sometimes, a JSON is accepted by the schema, even if it is not a valid JSON document
-//                 *                          (for instance, when it contains an array [ true false ] without comma).
-//                 *  We should check if the problem comes from the validator.
-//                fixed ?
-//                 */
-//                    System.out.println("Found gibberish cx:" + word);
-//                    return new DefaultQuery<>(word, false);
-//                }
-//
+                    query = checkWord(hypothesis, generateGibberishByRemovingComma(word));
+                    if (query != null) {
+                        return query;
+                    }
+                }
             }
         }
 
         return null;
     }
 
-    protected DefaultQuery<JSONSymbol, Boolean> findCounterexampleFromInvalid(A hypothesis, JSONObject document) {
+    protected DefaultQuery<JSONSymbol, Boolean> findCounterexampleFromInvalid(DeterministicAcceptorTS<?, JSONSymbol> hypothesis, JSONObject document) {
         if (Thread.interrupted()) {
             Thread.currentThread().interrupt();
             return null;

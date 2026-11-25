@@ -117,7 +117,7 @@ public abstract class AbstractInitialObservationTable<I, L extends AbstractVStar
             // System.out.println(SigmaM);
             symbolToSuccessor.put(
                     SigmaM.get(i),
-                    successor.isPrime() ? successor.getPrefix() : successor.getParent().getPrefix()
+                    successor.isPrime() ? successor.getLabel() : successor.getParent().getLabel()
             );
         }
         return symbolToSuccessor;
@@ -128,6 +128,6 @@ public abstract class AbstractInitialObservationTable<I, L extends AbstractVStar
         int idx = SigmaM.indexOf(symbol);
         assert idx >= 0;
         Row<I> successor = allRows.get(state).getSuccessor(idx);
-        return successor.isPrime() ? successor.getPrefix() : successor.getParent().getPrefix();
+        return successor.isPrime() ? successor.getLabel() : successor.getParent().getLabel();
     }
 }

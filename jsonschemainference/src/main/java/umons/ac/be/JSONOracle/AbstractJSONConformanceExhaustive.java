@@ -55,8 +55,8 @@ import java.util.Random;
  * @param <A> Automaton type
  * @author Gaëtan Staquet
  */
-abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptorTS<?, JSONSymbol>>
-        extends AbstractJSONConformance<A> implements EquivalenceOracle<A, JSONSymbol, Boolean> {
+abstract class AbstractJSONConformanceExhaustive
+        extends AbstractJSONConformance {
 
 //    private final static LearnLogger LOGGER = LearnLogger.getLogger(AbstractExplorationJSONConformance.class); TODO
 
@@ -86,7 +86,7 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
     }
 
     @Override
-    public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypo,
+    public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(DeterministicAcceptorTS<?, JSONSymbol> hypo,
                                                                           Collection<? extends JSONSymbol> inputs) {
 
         timeLastEQ = System.nanoTime();
@@ -134,7 +134,7 @@ abstract class AbstractJSONConformanceExhaustive<A extends DeterministicAcceptor
     }
 
     @Nullable
-    protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
+    protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(DeterministicAcceptorTS<?, JSONSymbol> hypothesis) {
         numberGeneratedInvalidDocuments = 0;
 
         setMaximalDocumentDepth(maxDocumentDepth);

@@ -134,7 +134,7 @@ public class TestLearningVRA {
 
             System.out.println("Searching for counterexample " + totalEQ);
 
-            DefaultQuery<String, Boolean> ce = equivalenceOracle.findCounterExample(hypo, new HashSet<>());
+            DefaultQuery<String, Boolean> ce = equivalenceOracle.findCounterExample(hypo.getSemantics(), new HashSet<>());
 
             System.out.println("Found counterexample, processing...");
 
@@ -215,7 +215,7 @@ public class TestLearningVRA {
 
 
         float startTime = System.nanoTime();
-        final AbstractVStarLearner<String> learner = new VStarLearner(alphabet, membershipOracle, equivalenceOracle);
+        final AbstractVStarLearner<String> learner = new VStarLearner(alphabet, membershipOracle, equivalenceOracle, 10_000);
         SEVPA<?, String> learnedVPA = learner.learn();
         float runtime = (System.nanoTime() - startTime) / 1_000_000 - equivalenceOracle.getLastEQTime();
         System.out.println("Total learning time : " + runtime+ " ms");
@@ -225,7 +225,7 @@ public class TestLearningVRA {
             Visualization.visualize(learnedVPA);
         }
         total_time += runtime;
-        total_MQ += learner.getNumberOfMQ();
+        total_MQ += 0;//learner.getNumberOfMQ();
         total_EQ += learner.getNumberOfEQ();
         total_EQ_Time += equivalenceOracle.getTotalEQTime() - equivalenceOracle.getLastEQTime();
 
@@ -238,8 +238,8 @@ public class TestLearningVRA {
         );
         final DefaultOneSEVPA<String> oneSEVPA = new DefaultOneSEVPA<>(alphabet);
 
-        final Location l0 = oneSEVPA.addInitialLocation(false);
-        final Location l1 = oneSEVPA.addLocation(true);
+        final Location l0 = oneSEVPA.addInitialState(false);
+        final Location l1 = oneSEVPA.addState(true);
 
         oneSEVPA.setInternalSuccessor(l0, "i1", l1);
         oneSEVPA.setInternalSuccessor(l1, "i2", l0);
@@ -249,7 +249,7 @@ public class TestLearningVRA {
 
 //        Visualization.visualize(oneSEVPA);
 
-        return Pair.of(oneSEVPA, alphabet);
+        return Pair.of(oneSEVPA.getSemantics(), alphabet);
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRA_Benchmark1_Oracle() {
@@ -308,7 +308,7 @@ public class TestLearningVRA {
         procedures.put("J2", J2Procedure);
         procedures.put("J3", J3Procedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRA_Benchmark2_Oracle() {
@@ -380,7 +380,7 @@ public class TestLearningVRA {
         procedures.put("J2", J2Procedure);
         procedures.put("J3", J3Procedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRABenchmarkPoster1() {
@@ -422,7 +422,7 @@ public class TestLearningVRA {
         procedures.put("R", RProcedure);
         procedures.put("T", TProcedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>> getVRABenchmarkPoster2() {
@@ -464,7 +464,7 @@ public class TestLearningVRA {
         procedures.put("R", RProcedure);
         procedures.put("T", TProcedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
     }
 
     private static Pair<DeterministicAcceptorTS<?, String>, VPAlphabet<String>>  getVRA_Benchmark_LearningPaper() {
@@ -507,7 +507,7 @@ public class TestLearningVRA {
         procedures.put("R", RProcedure);
         procedures.put("T", TProcedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
     }
 
 
@@ -552,7 +552,7 @@ public class TestLearningVRA {
         procedures.put("J1", J1Procedure);
         procedures.put("J2", J2Procedure);
 
-        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure), alphabet);
+        return Pair.of(new DefaultVRAwithDFA<>(alphabet, procedures, startingProcedure).getSemantics(), alphabet);
 
     }
 

@@ -4,10 +4,11 @@ datasets:
   directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
-  repetitions: 10
-  warmupRuns: 0
-  testConformance: 100_000
+  repetitions: 1
+  warmupRuns: 1
+  testConformance: 50_000
   equivalenceOracleType: RANDOM
+  seed: 0
 
 measurement:
   time: true

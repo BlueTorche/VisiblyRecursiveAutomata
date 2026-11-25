@@ -4,7 +4,7 @@ import umons.ac.be.ObservationTable.Row.Content.Content;
 import net.automatalib.word.Word;
 
 public interface Row<I> {
-    Word<I> getPrefix();
+    Word<I> getLabel();
 
     void setSuccessorRow(int succIdx, Row<I> row);
 

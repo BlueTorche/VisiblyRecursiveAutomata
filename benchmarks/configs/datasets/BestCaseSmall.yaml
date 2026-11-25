@@ -1,12 +1,12 @@
 datasets:
   type: BEST_CASE
   n: 4
-  k: 3
+  k: 2
   file: small
   directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\BEST_CASE\
 
 execution:
-  repetitions: 3
+  repetitions: 2
   warmupRuns: 1
   testConformance: 50_000
 

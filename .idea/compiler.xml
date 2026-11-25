@@ -10,7 +10,6 @@
         <module name="jsonschemainference" />
         <module name="benchmarks" />
         <module name="vra" />
-        <module name="automatalibvra" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

@@ -47,8 +47,8 @@ import java.util.Random;
  *
  * @author Gaëtan Staquet
  */
-public abstract class AbstractJSONConformanceRandom<A extends DeterministicAcceptorTS<?, JSONSymbol>>
-        extends AbstractJSONConformance<A> implements EquivalenceOracle<A, JSONSymbol, Boolean> {
+public abstract class AbstractJSONConformanceRandom
+        extends AbstractJSONConformance {
     private final RandomGenerator generator;
     private final Iterator<JSONObject> validIterator;
     private final Iterator<JSONObject> invalidIterator;
@@ -69,7 +69,7 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
     }
 
     @Override
-    public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypo,
+    public @Nullable DefaultQuery<JSONSymbol, Boolean> findCounterExample(DeterministicAcceptorTS<?, JSONSymbol> hypo,
                                                                           Collection<? extends JSONSymbol> inputs) {
         timeLastEQ = System.nanoTime();
         DefaultQuery<JSONSymbol, Boolean> q = findCounterExample(hypo);
@@ -78,7 +78,7 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
         return q;
     }
 
-    protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(A hypothesis) {
+    protected DefaultQuery<JSONSymbol, Boolean> findCounterExample(DeterministicAcceptorTS<?, JSONSymbol> hypothesis) {
         int prevNumberOfWordTried = numberOfWordTried;
 
         for (Word<JSONSymbol> document : documentsToTest) {
@@ -89,8 +89,11 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
         }
 
         for (int i = 0; i < numberTests(); i++) {
-            if (i % 500 == 0 && i > 0) {
+            if (i % 2500 == 0 && i > 0) {
                 System.out.println(i + " iteration of searching CX out of " + numberTests());
+                if (i % 10_000 == 0) {
+                    System.gc();
+                }
             }
 
             JSONObject document = validIterator.next();
@@ -98,6 +101,7 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
             if (query != null) {
                 return query;
             }
+            document.clear();
 
             if (canGenerateInvalid()) {
                 document = invalidIterator.next();
@@ -106,7 +110,7 @@ public abstract class AbstractJSONConformanceRandom<A extends DeterministicAccep
                     return query;
                 }
             }
-
+            document.clear();
         }
 
         numberOfWordTried = prevNumberOfWordTried;

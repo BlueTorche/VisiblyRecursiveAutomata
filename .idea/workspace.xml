@@ -4,46 +4,76 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="Add ExperimentRunners and all config stuffs">
-      <change afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseBig.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseMiddle.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseSmall.yaml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentCSVLogger.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/CounterMembershipOracle.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAConformance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAMembership.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestVRABestCase.java" afterDir="false" />
+    <list default="true" id="b0b70134-3a25-4c9c-8508-514cc75971f5" name="Changes" comment="Version of paper submitted">
+      <change afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VRA_ISO.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VRA_SEPOLD.yaml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/AbstractVRALearner.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/AbstractVRAStar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/LearningSymbol.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/VRALearnerIsomorphic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/VRALearnerSeparate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/VRAStarIsomorphic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/NewVRALearner/VRAStarSeparate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VStar/VStar.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/AbstractRegularObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/Row/RecursiveRow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/Row/RegularRow.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/Row/Row.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VRA/AbstractRecursiveObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VRA/RecursiveObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VRA/RecursiveObservationTableIsomorphic.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VRA/RecursiveObservationTableSeperate.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VRA/VRAInitialObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VStar/VStarCallObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learnlibObservationTable/VStar/VStarInitialObservationTable.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/AbstractCounterMembershipOracle.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/AbstractVRAwithDFA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/utils.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/AbstractVRAwithDFA.java" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/AbstractVRAwithDFA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/EmptyVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/EmptyVRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/VRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/VRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vraalphabet/DefaultVRAlphabet.java" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vraalphabet/DefaultVRAlphabet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testSPA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testSPA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRAlphabet.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRAlphabet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/utils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/DefaultVRAwithDFA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/DefaultVRAwithDFA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/EmptyVRA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/EmptyVRA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRAState.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRAState.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/AbstractVRAlphabet.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/AbstractVRAlphabet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/DefaultVRAlphabet.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/DefaultVRAlphabet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/VRAlphabet.class" beforeDir="false" afterPath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/VRAlphabet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/algorithms/VPATTT.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VPATTT.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/algorithms/VPAVSTAR.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VPAVSTAR.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/algorithms/VRA_SEP.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VRA_SEP.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/basicTypes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/basicTypes.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/codevoc.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/codecov.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/proxies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/proxies.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/recursiveList.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/recursiveList.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/vim.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/vim.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/benchmarks/benchmarks/JSON/vscode.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/vscode.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/_vra/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/_vra/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/vra/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/test/testSPA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/test/testSPA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/test/testVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/test/testVRA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/test/testVRAlphabet.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/test/testVRAlphabet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/AbstractVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/AbstractVRA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/AbstractVRAwithDFA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/VRAWithDFASemantics.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/DefaultVRAwithDFA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/DefaultVRAwithDFA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/EmptyVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/EmptyVRA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/VRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/VRA.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vra/VRAState.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vra/VRAState.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vraalphabet/AbstractVRAlphabet.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vraalphabet/AbstractVRAlphabet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vraalphabet/DefaultVRAlphabet.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vraalphabet/DefaultVRAlphabet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/src/main/java/umons/ac/be/vraalphabet/VRAlphabet.java" beforeDir="false" afterPath="$PROJECT_DIR$/vra/src/main/java/umons/ac/be/vraalphabet/VRAlphabet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testSPA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/test/testVRAlphabet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/utils.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/AbstractVRAwithDFA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/DefaultVRAwithDFA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/EmptyVRA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRA.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vra/VRAState.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/AbstractVRAlphabet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/DefaultVRAlphabet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/automatalibvra/target/classes/umons/ac/be/vraalphabet/VRAlphabet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/algorithms/VRA_SEP.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/algorithms/VRA_SEP.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseBig.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseBig.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseMiddle.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseMiddle.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseSmall.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/BestCaseSmall.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/basicTypes.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/basicTypes.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/codecov.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/codecov.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/proxies.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/proxies.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/recursiveList.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/recursiveList.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/vim.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/vim.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/configs/datasets/vscode.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/configs/datasets/vscode.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benchmarks/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentCSVLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentCSVLogger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentConfig.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentRunner.java" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/ExperimentRunner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/benchmarks/src/main/java/umons/ac/be/Main.java" afterDir="false" />
@@ -52,31 +82,53 @@
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/AbstractJSONConformanceExhaustive.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/AbstractJSONConformanceExhaustive.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/AbstractJSONConformanceRandom.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/AbstractJSONConformanceRandom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/JSONMembershipOracle.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/JSONMembershipOracle.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleExhaustive.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleExhaustive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleRandom.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleRandom.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleExhaustive.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/JSONEquivalenceOracleExhaustive.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VPAJSONEquivalenceOracleRandom.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/JSONEquivalenceOracleRandom.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VRAJSONEquivalenceOracleExhaustive.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VRAJSONEquivalenceOracleExhaustive.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VRAJSONEquivalenceOracleRandom.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONOracle/VRAJSONEquivalenceOracleRandom.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONConformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONConformance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/JSONSymbol.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/JSONSymbol.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/Utils.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/Utils.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/WordConversion.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/JSONutils/WordConversion.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONLearning.java" beforeDir="false" afterPath="$PROJECT_DIR$/jsonschemainference/src/main/java/umons/ac/be/test/testJSONLearning.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/learning/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/ClosingStrategy/ClosingStrategies.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/ClosingStrategy/ClosingStrategy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/AbstractLStar.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/learner/DFA/DefaultLStar.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/AbstractObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/AbstractObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/AbstractRecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/AbstractRecursiveObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTableOptimized.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/RecursiveObservationTable/SeparateRecursiveObservationTableOptimized.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/Content/RegularContent.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/Content/RegularContent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/RegularRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/RegularRow.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/Row.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/Row.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/SeparateRecursiveRow.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/Row/SeparateRecursiveRow.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/VStarObservationTables/AbstractCallObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/VStarObservationTables/AbstractCallObservationTable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/VStarObservationTables/AbstractInitialObservationTable.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/ObservationTable/VStarObservationTables/AbstractInitialObservationTable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/Learner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/Learner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/AbstractVPATTTLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/AbstractVPATTTLearner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/AbstractVPATTTLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/AbstractVPATTT.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/VPATTTLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VPATTT/VPATTT.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/AbstractVRALearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/AbstractVRALearner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRAIsomorphicLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRAIsomorphicLearner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRAIsomorphicLearnerOptimized.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRAIsomorphicLearnerOptimized.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearner.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearnerOptimized.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VRALearner/VRASeparateLearnerOptimized.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VStar/AbstractVStarLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VStar/AbstractVStarLearner.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/AbstractVPLConformanceOracleEnumerating.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/AbstractVPLConformanceOracleEnumerating.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VStar/VStarLearner.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/learner/VStar/VStarLearner.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/CounterMembershipOracle.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/CounterMembershipOracle.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAConformance.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAConformance.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAMembership.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/BestCaseForVRAMembership.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VPAConformanceOracleEnumerating.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VPAConformanceOracleEnumerating.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VPLMembershipOracleFromAcceptor.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VPLMembershipOracleFromAcceptor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VRAConformanceOracleEnumerating.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/oracle/vpl/VRAConformanceOracleEnumerating.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningDFA.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningVRA.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestLearningVRA.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/target/classes/learner/DFA/AbstractLStar.class" beforeDir="false" afterPath="$PROJECT_DIR$/learning/target/classes/learner/DFA/AbstractLStar.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/target/classes/learner/DFA/DefaultLStar.class" beforeDir="false" afterPath="$PROJECT_DIR$/learning/target/classes/learner/DFA/DefaultLStar.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestBitSet.class" beforeDir="false" afterPath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestBitSet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestObservationTable.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestVRABestCase.java" beforeDir="false" afterPath="$PROJECT_DIR$/learning/src/main/java/umons/ac/be/test/TestVRABestCase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/target/classes/learner/DFA/AbstractLStar.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/target/classes/learner/DFA/DefaultLStar.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestLearningVRA.class" beforeDir="false" afterPath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestLearningVRA.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestObservationTable.class" beforeDir="false" afterPath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestObservationTable.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/learning/target/classes/umons/ac/be/test/TestObservationTable.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -110,6 +162,9 @@
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="Security Analysis" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -134,7 +189,11 @@
     &quot;Maven.benchmarks [install].executor&quot;: &quot;Run&quot;,
     &quot;Maven.benchmarks [validate].executor&quot;: &quot;Run&quot;,
     &quot;Maven.visiblyrecursiveautomata [clean].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.visiblyrecursiveautomata [compile].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.visiblyrecursiveautomata [dependency:tree...].executor&quot;: &quot;Run&quot;,
     &quot;Maven.visiblyrecursiveautomata [deploy].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.visiblyrecursiveautomata [install].executor&quot;: &quot;Run&quot;,
+    &quot;Maven.visiblyrecursiveautomata [org.apache.maven.plugins:maven-clean-plugin:3.2.0:clean].executor&quot;: &quot;Run&quot;,
     &quot;Maven.visiblyrecursiveautomata [package].executor&quot;: &quot;Run&quot;,
     &quot;Maven.visiblyrecursiveautomata [test].executor&quot;: &quot;Run&quot;,
     &quot;Maven.visiblyrecursiveautomata [validate].executor&quot;: &quot;Run&quot;,
@@ -147,7 +206,7 @@
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/dubru/IdeaProjects/VRA/benchmarks&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dubru/IdeaProjects/VRA/benchmarks/configs/algorithms&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -157,12 +216,14 @@
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;MavenSettings&quot;,
     &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\dubru\IdeaProjects\VRA\benchmarks\configs\algorithms" />
       <recent name="C:\Users\dubru\IdeaProjects\VRA\benchmarks" />
       <recent name="C:\Users\dubru\IdeaProjects\VRA" />
     </key>
@@ -178,7 +239,12 @@
       <recent name="umons.ac.be.JSONOracle" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.TestLearningVRA">
+  <component name="RunAnythingCache">
+    <option name="myCommands">
+      <command value="mvn dependency:tree -Dverbose" />
+    </option>
+  </component>
+  <component name="RunManager" selected="Application.Main">
     <configuration name="Main (1)" type="Application" factoryName="Application" temporary="true">
       <option name="MAIN_CLASS_NAME" value="umons.ac.be.Main" />
       <module name="jsonschemainference" />
@@ -269,8 +335,8 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.TestLearningVRA" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.TestLearningVRA" />
         <item itemvalue="Application.TestVRABestCase" />
         <item itemvalue="Application.testJSONConformance" />
         <item itemvalue="Application.Main (1)" />
@@ -318,6 +384,18 @@
       <workItem from="1791529579716" duration="19666000" />
       <workItem from="1791705502512" duration="20241000" />
       <workItem from="1791967621126" duration="1911000" />
+      <workItem from="1792500423631" duration="4174000" />
+      <workItem from="1792658570897" duration="21836000" />
+      <workItem from="1792736945904" duration="1625000" />
+      <workItem from="1792738747267" duration="23559000" />
+      <workItem from="1793174088748" duration="52157000" />
+      <workItem from="1793692928681" duration="44670000" />
+      <workItem from="1793896577458" duration="5629000" />
+      <workItem from="1794209942064" duration="31546000" />
+      <workItem from="1794470445578" duration="19834000" />
+      <workItem from="1795006341257" duration="636000" />
+      <workItem from="1795075391823" duration="3841000" />
+      <workItem from="1795160118950" duration="15759000" />
     </task>
     <task id="LOCAL-00001" summary="Functionnal Learning of Separate VRA">
       <option name="closed" value="true" />
@@ -391,11 +469,30 @@
       <option name="project" value="LOCAL" />
       <updated>1791451898453</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Version of paper submitted">
+      <option name="closed" value="true" />
+      <created>1792500453625</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1792500453625</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Functionnal Learning of Separate VRA" />
@@ -407,6 +504,17 @@
     <MESSAGE value="Optimized enforcing student" />
     <MESSAGE value="Functionnal Vstar algorithm" />
     <MESSAGE value="Add ExperimentRunners and all config stuffs" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add ExperimentRunners and all config stuffs" />
+    <MESSAGE value="Version of paper submitted" />
+    <option name="LAST_COMMIT_MESSAGE" value="Version of paper submitted" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.IndexOutOfBoundsException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

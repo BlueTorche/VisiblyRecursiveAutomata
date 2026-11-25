@@ -4,7 +4,7 @@ datasets:
   directory: C:\Users\dubru\IdeaProjects\VRA\benchmarks\benchmarks\JSON\
 
 execution:
-  repetitions: 10
+  repetitions: 2
   warmupRuns: 0
   testConformance: 10000
   equivalenceOracleType: EXHAUSTIVE

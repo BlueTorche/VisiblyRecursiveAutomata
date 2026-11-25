@@ -1,6 +1,5 @@
 package umons.ac.be.ObservationTable;
 
-import net.automatalib.common.util.Pair;
 import umons.ac.be.ObservationTable.Row.RegularRow;
 import umons.ac.be.ObservationTable.Row.Row;
 import net.automatalib.alphabet.GrowingAlphabet;
@@ -76,7 +75,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
     @Override
     public void fetchMembership(Row<I> row, int idx) {
         if (learner.askMembershipQuery(
-                Word.fromWords(row.getPrefix(), separators.get(idx))
+                Word.fromWords(row.getLabel(), separators.get(idx))
         )) {
             ((RegularRow<I>) row).fetchContent(idx);
         }
@@ -124,7 +123,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
             }
         }
         row.setParent(null);
-        primeRepresentatives.add(row.getPrefix());
+        primeRepresentatives.add(row.getLabel());
     }
 
     @Override
@@ -148,7 +147,7 @@ public abstract class AbstractObservationTable<I, M, L extends Learner<I, ?>>
             checkInconsistency(row);
         }
         for (Row<I> row: allRows.values()) {
-            if (!representatives.contains(row.getPrefix())) {
+            if (!representatives.contains(row.getLabel())) {
                 if (!row.isPrime() && !areEquivalent(row.getParent(), row)) {
                     checkRowPrime(row);
                 }

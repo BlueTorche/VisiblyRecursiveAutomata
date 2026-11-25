@@ -3,7 +3,11 @@ package umons.ac.be.ObservationTable.Row.Content;
 import java.util.BitSet;
 
 public class RegularContent implements Content<Integer>{
-    BitSet content = new BitSet();
+    BitSet content;
+
+    public RegularContent(int contentSize) {
+        this.content = new BitSet(contentSize);
+    }
 
     public void set(Integer idx) {
         content.set(idx);
@@ -35,7 +39,6 @@ public class RegularContent implements Content<Integer>{
     public String toString() {
         return content.toString();
     }
-
 
     @Override
     public boolean notEmpty() {

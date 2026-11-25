@@ -40,7 +40,7 @@ public class ExperimentConfig {
         public enum AlgorithmMode {
             ISO,
             SEP,
-            SEP_OPT,
+            SEPOLD
         }
 
         public AutomatonType automatonType;
@@ -58,6 +58,7 @@ public class ExperimentConfig {
         public int testConformance;
         public EquivalenceOracleType equivalenceOracleType;
         public int seed = 0;
+        public int mq_batch_size = 50_000;
     }
 
     public static class MeasurementConfig {

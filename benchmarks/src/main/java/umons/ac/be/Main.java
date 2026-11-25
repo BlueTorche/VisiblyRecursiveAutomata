@@ -1,12 +1,14 @@
 package umons.ac.be;
 
 public class Main {
-    private static final String DEFAULT_DATASET_FILE = "benchmarks/configs/datasets/BestCaseSmall.yaml";
-    private static final String DEFAULT_ALGORITHM_FILE = "benchmarks/configs/algorithms/VPATTT.yaml";
+    private static final String DEFAULT_DATASET_FILE = "benchmarks/configs/datasets/vscode.yaml";
+    private static final String DEFAULT_ALGORITHM_FILE = "benchmarks/configs/algorithms/VRA_SEP.yaml";
 
     public static void main(String[] args) throws Exception {
         String datasetConfigFile = null;
         String algorithmConfigFile = null;
+        int seed = -1;
+        int batchSize = 1000;
 
         for (int i = 0; i < args.length; i++) {
             if (args[i].equals("--dataset-config") && i + 1 < args.length) {
@@ -14,6 +16,12 @@ public class Main {
             }
             if (args[i].equals("--algorithm-config") && i + 1 < args.length) {
                 algorithmConfigFile = args[++i];
+            }
+            if (args[i].equals("--seed") && i + 1 < args.length) {
+                seed = Integer.parseInt(args[++i]);
+            }
+            if (args[i].equals("--batch-size") && i + 1 < args.length) {
+                batchSize = Integer.parseInt(args[++i]);
             }
         }
         if (datasetConfigFile == null) {
@@ -34,7 +42,7 @@ public class Main {
             );
         }
 
-        ExperimentRunner runner = new ExperimentRunner(datasetConfigFile, algorithmConfigFile);
+        ExperimentRunner runner = new ExperimentRunner(datasetConfigFile, algorithmConfigFile, seed, batchSize);
         runner.run();
     }
 }

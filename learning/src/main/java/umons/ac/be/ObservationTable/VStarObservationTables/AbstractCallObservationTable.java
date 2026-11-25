@@ -34,11 +34,11 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
             );
         }
         for (I ret: alphabet.getReturnAlphabet()) {
-            learner.addSymbol(Word.fromWords(
-                    Word.fromLetter(callSymbol),
-                    r,
-                    Word.fromLetter(ret)
-            ));
+//            learner.add(Word.fromWords(
+//                    Word.fromLetter(callSymbol),
+//                    r,
+//                    Word.fromLetter(ret)
+//            ));
         }
         checkInconsistency(row);
     }
@@ -95,13 +95,13 @@ public abstract class AbstractCallObservationTable<I, L extends AbstractVStarLea
         //System.out.println("Fetching membership for " + row.getPrefix());
         if(learner.askMembershipQuery(Word.fromWords(
                 C.get(idx).getFirst(),
-                row.getPrefix(),
+                row.getLabel(),
                 C.get(idx).getSecond()
         ))) {
             if (Word.fromWords(C.get(idx).getFirst(),
-                    row.getPrefix(),
+                    row.getLabel(),
                     C.get(idx).getSecond()).toString().equals("{ \"\\S\": { \"body\": \"\\S\" , \"description\": \"\\S\" , \"prefix\": \"\\S\" , \"scope\": \"\\S\" } , \"body\": { \"body\": [ \"\\S\" ] , \"description\": \"\\S\" , \"prefix\": [ \"\\S\" ] , \"scope\": \"\\S\" } }")) {
-                System.out.println(row.getPrefix() + " " + idx);
+                System.out.println(row.getLabel() + " " + idx);
             }
             ((RegularRow<I>) row).fetchContent(idx);
         }

@@ -9,8 +9,12 @@ import net.automatalib.word.Word;
 import net.automatalib.word.WordBuilder;
 import net.automatalib.alphabet.impl.AbstractSymbol;
 import net.automatalib.alphabet.impl.Alphabets;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
-public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
+public class JSONSymbol
+        extends AbstractMutableNumericID
+        implements Comparable<JSONSymbol> {
     private static final Map<String, JSONSymbol> symbols = new HashMap<>();
 
     public static final JSONSymbol commaSymbol = JSONSymbol.toSymbol(",");
@@ -92,17 +96,17 @@ public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
         return symbols.get(actualSymbol);
     }
 
-//    @Override
-//    public boolean equals(Object obj) {
-//        if (obj == this) {
-//            return true;
-//        }
-//        if (!(obj instanceof JSONSymbol)) {
-//            return false;
-//        }
-//        JSONSymbol o = (JSONSymbol) obj;
-//        return Objects.equals(actualSymbol, o.actualSymbol);
-//    }
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (!(obj instanceof JSONSymbol)) {
+            return false;
+        }
+        JSONSymbol o = (JSONSymbol) obj;
+        return Objects.equals(actualSymbol, o.actualSymbol);
+    }
 
     @Override
     public int compareTo(JSONSymbol other) {
@@ -147,9 +151,9 @@ public class JSONSymbol extends AbstractSymbol<JSONSymbol> {
         return actualSymbol;
     }
 
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(actualSymbol);
-//    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(actualSymbol);
+    }
 
 }
